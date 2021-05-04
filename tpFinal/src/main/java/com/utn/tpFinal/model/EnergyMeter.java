@@ -23,8 +23,16 @@ public class EnergyMeter {
     @Column(name = "numero_serie")
     String serialNumber;
 
+    /*@OneToOne
+    @JoinColumn(name="domicilio_id")
+    private Residence residence;
 
-    //domicilio 1t1
-    //MOdelo 1t1
-    //marca 1t1
+    @OneToOne
+    @JoinColumn(name="modelo_id")
+    private MeterModel meterModel;
+
+    @OneToOne
+    @JoinColumn(name="marca_id")
+    private MeterBrand meterBrand;*/
+
 }

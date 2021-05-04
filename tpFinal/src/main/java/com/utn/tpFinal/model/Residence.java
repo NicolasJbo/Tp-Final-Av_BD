@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="domicilio")
+@Table(name ="domicilios")
 public class Residence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +28,24 @@ public class Residence {
     @Column(name = "departamento")
     String apartament;
 
-    //Medidior 1t1
-    //cliente 1t1
-    //tarifa 1t1
-    //Factura 1 t Many
+    @ManyToOne
+    @JoinColumn(name="client_id")
+    private Client client;
+/*
+    @OneToOne
+    @JoinColumn(name="medidor_id")
+    private EnergyMeter energyMeter;
 
+
+
+    @OneToOne
+    @JoinColumn(name="tarifa_id")
+    private Tariff tariff;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="facturas_id")
+    private List<Bill> bill;
+
+*/
 
 }

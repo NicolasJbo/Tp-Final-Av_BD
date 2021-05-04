@@ -1,10 +1,13 @@
 package com.utn.tpFinal.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,7 +34,10 @@ public class Client {
     @Column(name = "contraseña")
     String password;
 
-    //domicilio Manyt1
+    //@OneToMany(fetch = FetchType.EAGER) //EAGER-> trae la lista ya modelada (con objetos) cuando traes el cliente
+
+    @OneToMany(mappedBy = "client")
+    private List<Residence> residencesList;
 
 
 }

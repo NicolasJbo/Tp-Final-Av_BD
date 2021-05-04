@@ -27,7 +27,9 @@ public class Measure {
     @Column(name = "consumo")
     Float total;
 
-    //Domicilio
+    /*@OneToOne
+    @JoinColumn(name="domicilio_id")
+    private Residence residence;*/
 
     //Factura 1tMany NULL NO FACTURADO
 

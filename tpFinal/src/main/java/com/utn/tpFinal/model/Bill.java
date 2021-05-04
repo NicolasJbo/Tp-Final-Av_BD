@@ -32,12 +32,14 @@ public class Bill {
     Date finalDate;
     @Column(name="consumo_total")
     Float totalEnergy;
-    @Column(name="total_a_pagar")
+    @Column(name="total_pagar")
     Float finalAmount;
-    @Column(name="fehca_vencimiento")
+    @Column(name="fecha_vencimiento")
     Date expirationDate;
 
-    //Domicilio 1t1
+    @OneToOne
+    @JoinColumn(name="domicilio_id")
+    private Residence residence;
 
 
 
