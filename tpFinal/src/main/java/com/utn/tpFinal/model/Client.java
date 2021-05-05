@@ -38,7 +38,6 @@ public class Client {
 
     //@OneToMany(fetch = FetchType.EAGER) //EAGER-> trae la lista ya modelada (con objetos) cuando traes el cliente
 
-
     @OneToMany(mappedBy = "client")
     private List<Residence> residencesList;
 
@@ -53,5 +52,18 @@ public class Client {
     @Override
     public int hashCode() {
         return Objects.hash(id, dni, name, lastName, birthday, mail, password);
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", dni='" + dni + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthday=" + birthday +
+                ", mail='" + mail + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
