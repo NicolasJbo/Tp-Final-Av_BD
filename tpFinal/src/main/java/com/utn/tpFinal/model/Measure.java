@@ -21,7 +21,7 @@ public class Measure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "fecha_consumo")
+    @Column(name = "fechaConsumo")
     Date date;
 
     @Column(name = "consumo")

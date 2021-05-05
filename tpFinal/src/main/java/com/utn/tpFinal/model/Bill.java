@@ -20,25 +20,25 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "esta_pagada")
+    @Column(name = "estaPagada")
     Boolean isPaid;
-    @Column(name = "medicion_inicial")
+    @Column(name = "medicionInicial")
     String initialMedition;
-    @Column(name = "fecha_inicial")
+    @Column(name = "fechaInicial")
     Date initialDate;
-    @Column(name = "medicion_final")
+    @Column(name = "medicionFinal")
     String finalMedition;
-    @Column(name = "fecha_final")
+    @Column(name = "fechaFinal")
     Date finalDate;
-    @Column(name="consumo_total")
+    @Column(name="consumoTotal")
     Float totalEnergy;
-    @Column(name="total_pagar")
+    @Column(name="totalPagar")
     Float finalAmount;
-    @Column(name="fecha_vencimiento")
+    @Column(name="fechaVencimiento")
     Date expirationDate;
 
     @OneToOne
-    @JoinColumn(name="domicilio_id")
+    @JoinColumn(name="idDomicilio")
     private Residence residence;
 
 

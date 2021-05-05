@@ -20,7 +20,7 @@ public class EnergyMeter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "numero_serie")
+    @Column(name = "numeroSerie")
     String serialNumber;
 
     /*@OneToOne

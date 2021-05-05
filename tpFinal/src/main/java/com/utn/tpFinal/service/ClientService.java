@@ -51,4 +51,10 @@ public class ClientService {
         c.getResidencesList().add(r);
         clientRepository.save(c);
     }
+
+    public List<Residence> getClientResidences(Integer idClient) {
+        Client c = getClientById(idClient);
+        return residenceRepository.findByClient(c);
+
+    }
 }
