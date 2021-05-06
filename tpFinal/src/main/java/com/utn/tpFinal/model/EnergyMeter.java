@@ -13,26 +13,26 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="medidores")
+@Table(name ="energy_meters")
 public class EnergyMeter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @Column(name = "numeroSerie")
-    String serialNumber;
+    private String serialNumber;
 
-    /*@OneToOne
-    @JoinColumn(name="domicilio_id")
+    @ManyToOne
+    @JoinColumn(name="id_model")
+    private MeterModel model;
+
+    @ManyToOne
+    @JoinColumn(name="id_brand")
+    private MeterBrand brand;
+
+    @OneToOne(mappedBy = "energyMeter")
     private Residence residence;
 
-    @OneToOne
-    @JoinColumn(name="modelo_id")
-    private MeterModel meterModel;
-
-    @OneToOne
-    @JoinColumn(name="marca_id")
-    private MeterBrand meterBrand;*/
+    //----------------------------------------->> METODOS <<-----------------------------------------
 
 }

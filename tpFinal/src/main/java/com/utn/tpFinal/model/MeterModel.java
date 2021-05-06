@@ -6,20 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="modelosMedidor")
+@Table(name ="meter_models")
 public class MeterModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @Column(name = "modelo")
-    String name;
+    private String name;
+
+    @OneToMany(mappedBy = "model")
+    private List<EnergyMeter> energyMeters;
 
 }

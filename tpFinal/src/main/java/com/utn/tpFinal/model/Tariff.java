@@ -13,18 +13,14 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="tarifas")
+@Table(name ="tariffs")
 public class Tariff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    @Column(name = "nombre")
-    String name;
-
-    @Column(name = "monto")
-    Float amount;
+    private Integer id;
+    private String name;
+    private Float amount;
 
     //domicilio 1t1
 

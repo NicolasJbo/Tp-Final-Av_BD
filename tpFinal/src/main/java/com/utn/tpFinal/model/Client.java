@@ -16,30 +16,26 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="clientes")
+@Table(name ="clients")
 public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @Column
-    String dni;
-    @Column(name = "nombre")
-    String name;
-    @Column(name = "apellido")
-    String lastName;
-    @Column(name = "fechaNacimiento")
-    Date birthday;
-    @Column
-    String mail;
-    @Column(name = "contraseña")
-    String password;
+    private String dni;
+    private String name;
+    private String lastName;
+    private Date birthday;
+    private String mail;
+    private String password;
 
     //@OneToMany(fetch = FetchType.EAGER) //EAGER-> trae la lista ya modelada (con objetos) cuando traes el cliente
 
     @OneToMany(mappedBy = "client")
     private List<Residence> residencesList;
+
+    //----------------------------------------->> METODOS <<-----------------------------------------
 
     @Override
     public boolean equals(Object o) {

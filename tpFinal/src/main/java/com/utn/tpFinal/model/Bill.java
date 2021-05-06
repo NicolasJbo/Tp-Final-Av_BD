@@ -13,34 +13,27 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="facturas")
+@Table(name ="bills")
 public class Bill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @Column(name = "estaPagada")
-    Boolean isPaid;
-    @Column(name = "medicionInicial")
-    String initialMedition;
-    @Column(name = "fechaInicial")
-    Date initialDate;
-    @Column(name = "medicionFinal")
-    String finalMedition;
-    @Column(name = "fechaFinal")
-    Date finalDate;
-    @Column(name="consumoTotal")
-    Float totalEnergy;
-    @Column(name="totalPagar")
-    Float finalAmount;
-    @Column(name="fechaVencimiento")
-    Date expirationDate;
+    private Boolean isPaid;
+    private String initialMedition;
+    private Date initialDate;
+    private String finalMedition;
+    private Date finalDate;
+    private Float totalEnergy;
+    private Float finalAmount;
+    private Date expirationDate;
 
-    @OneToOne
-    @JoinColumn(name="idDomicilio")
+    @ManyToOne
+    @JoinColumn(name="id_residence")
     private Residence residence;
 
+    //----------------------------------------->> METODOS <<-----------------------------------------
 
 
 }

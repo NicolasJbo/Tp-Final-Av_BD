@@ -44,9 +44,9 @@ public class ClientService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
-    public void addResidenseToClient(Integer id, Integer idDomicilio) {
+    public void addResidenseToClient(Integer id, Integer idResidence) {
         Client c = getClientById(id);
-        Residence r = residenceService.getResidenceById(idDomicilio);
+        Residence r = residenceService.getResidenceById(idResidence);
         residenceService.addClientToResidence(c, r);
         c.getResidencesList().add(r);
         clientRepository.save(c);

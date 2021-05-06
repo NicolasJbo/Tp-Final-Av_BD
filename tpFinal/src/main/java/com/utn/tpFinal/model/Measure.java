@@ -14,22 +14,20 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="mediciones")
+@Table(name ="measures")
 public class Measure {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @Column(name = "fechaConsumo")
-    Date date;
+    private Date date;
 
-    @Column(name = "consumo")
-    Float total;
+    private Float total;
 
-    /*@OneToOne
-    @JoinColumn(name="domicilio_id")
-    private Residence residence;*/
+    @OneToOne
+    @JoinColumn(name="id_residence")
+    private Residence residence;
 
     //Factura 1tMany NULL NO FACTURADO
 

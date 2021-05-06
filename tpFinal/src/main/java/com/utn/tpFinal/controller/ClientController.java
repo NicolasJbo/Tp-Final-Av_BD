@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/client")
 public class ClientController {
 
     @Autowired
@@ -25,14 +25,14 @@ public class ClientController {
         return clientService.getAll(name);
     }
 
-    @GetMapping("/{idClient}/domicilios")
+    @GetMapping("/{idClient}/residences")
     public List<Residence>getClientResidences(@PathVariable Integer idClient){
         return clientService.getClientResidences(idClient);
     }
 
-    @PutMapping("/{id}/domicilio/{idDomicilio}")
-    public void addResidenseToClient(@PathVariable Integer id, @PathVariable Integer idDomicilio) {
-        clientService.addResidenseToClient(id,idDomicilio);
+    @PutMapping("/{id}/residence/{idResidence}")
+    public void addResidenseToClient(@PathVariable Integer id, @PathVariable Integer idResidence) {
+        clientService.addResidenseToClient(id,idResidence);
     }
 
 }

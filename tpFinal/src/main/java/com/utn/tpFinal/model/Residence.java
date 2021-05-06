@@ -15,41 +15,35 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name ="domicilios")
+@Table(name ="residences")
 public class Residence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @Column(name = "calle")
-    String street;
-    @Column(name = "altura")
-    Integer number;
-    @Column(name = "piso")
-    String floor;
-    @Column(name = "departamento")
-    String apartament;
+    private String street;
+    private Integer number;
+    private String floor;
+    private String apartament;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="idCliente")
+    @JoinColumn(name="id_client")
     private Client client;
-/*
-    @OneToOne
-    @JoinColumn(name="medidor_id")
-    private EnergyMeter energyMeter;
 
-
-
-    @OneToOne
-    @JoinColumn(name="tarifa_id")
-    private Tariff tariff;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="facturas_id")
+    @OneToMany(mappedBy = "residence")
     private List<Bill> bill;
 
-*/
+    @OneToOne
+    @JoinColumn(name="id_energyMeter")
+    private EnergyMeter energyMeter;
+
+    @OneToOne
+    @JoinColumn(name="id_tariff")
+    private Tariff tariff;
+
+
+
 
     @Override
     public boolean equals(Object o) {
