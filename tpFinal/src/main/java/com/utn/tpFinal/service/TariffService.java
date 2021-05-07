@@ -16,7 +16,10 @@ import static java.util.Objects.isNull;
 @Service
 public class TariffService {
     @Autowired
-    TariffRepository tariffRepository;
+    private TariffRepository tariffRepository;
+
+//-------------------------------------------->> BRAND <<--------------------------------------------
+
 
     public void addTariff(Tariff tariff) {
         tariffRepository.save(tariff);

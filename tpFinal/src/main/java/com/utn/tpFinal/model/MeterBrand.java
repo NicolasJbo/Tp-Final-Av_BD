@@ -17,7 +17,6 @@ import java.util.List;
 @Table(name ="meter_brands")
 public class MeterBrand {
 
-
     @Id
     String name;
 

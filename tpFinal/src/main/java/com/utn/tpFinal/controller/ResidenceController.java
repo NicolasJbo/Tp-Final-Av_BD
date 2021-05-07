@@ -14,7 +14,7 @@ import java.util.List;
 public class ResidenceController {
 
     @Autowired
-    ResidenceService residenceService;
+    private ResidenceService residenceService;
 
     @PostMapping
     public void addResidence(@RequestBody Residence residence){

@@ -18,12 +18,18 @@ import static java.util.Objects.isNull;
 @Service
 public class ResidenceService {
 
+    private ResidenceRepository residenceRepository;
+    private EnergyMeterService  energyMeterService;
+    private TariffService tariffService;
+
     @Autowired
-    ResidenceRepository residenceRepository;
-    @Autowired
-    EnergyMeterService  energyMeterService;
-    @Autowired
-    TariffService tariffService;
+    public ResidenceService(ResidenceRepository residenceRepository, EnergyMeterService energyMeterService, TariffService tariffService) {
+        this.residenceRepository = residenceRepository;
+        this.energyMeterService = energyMeterService;
+        this.tariffService = tariffService;
+    }
+
+//-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
     public void addResidence(Residence residence) {
         residenceRepository.save(residence);
@@ -46,7 +52,6 @@ public class ResidenceService {
         residenceRepository.save(residence);
     }
 
-
     public void addEnergyMeterToResidence(Integer idResidence, Integer idEnergyMeter) {
         Residence residence = getResidenceById(idResidence);
 
@@ -57,12 +62,10 @@ public class ResidenceService {
         //add the meter to the residence
         residence.setEnergyMeter(energyMeter);
         residenceRepository.save(residence);
-
     }
 
     public void addTariffToResidence(Integer idResidence, String idTariff) {
         Residence residence = getResidenceById(idResidence);
-
         //retrive the Tariff to add at the residence
         Tariff tariff= tariffService.getTariffById(idTariff);
         //Add residence to Tariff

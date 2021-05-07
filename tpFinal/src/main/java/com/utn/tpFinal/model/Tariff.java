@@ -20,12 +20,9 @@ import java.util.List;
 @Table(name ="tariffs")
 public class Tariff {
 
-
-
     @Id
     @Size(min = 1, max = 2 ,message = "The name MUST be at least 2 character.")
     private String name;
-
     private Float amount;
 
     @OneToMany(mappedBy = "tariff")

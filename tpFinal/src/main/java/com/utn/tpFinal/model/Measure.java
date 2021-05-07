@@ -20,9 +20,7 @@ public class Measure {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private Date date;
-
     private Float total;
 
     @OneToOne

@@ -20,7 +20,6 @@ public class EnergyMeter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String serialNumber;
 
     @ManyToOne

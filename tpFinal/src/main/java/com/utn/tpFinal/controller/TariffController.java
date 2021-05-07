@@ -15,7 +15,7 @@ import java.util.List;
 public class TariffController {
 
     @Autowired
-    TariffService tariffService;
+    private TariffService tariffService;
 
     @PostMapping
     public void addTariff(@RequestBody Tariff tariff){
@@ -26,9 +26,9 @@ public class TariffController {
     public List<Tariff> getAll(){
         return tariffService.getAll();
     }
+
     @GetMapping("/{nameTariff}/residences")
-    public List<Residence> getResidencesByTariff(@PathVariable String nameTariff)
-    {
+    public List<Residence> getResidencesByTariff(@PathVariable String nameTariff) {
         return tariffService.getResidencesByTariff(nameTariff);
     }
 

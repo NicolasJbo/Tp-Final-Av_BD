@@ -22,7 +22,6 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String dni;
     private String name;
     private String lastName;

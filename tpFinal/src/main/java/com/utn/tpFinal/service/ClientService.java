@@ -17,9 +17,9 @@ import static java.util.Objects.isNull;
 @Service
 public class ClientService {
 
-    ClientRepository clientRepository;
-    ResidenceRepository residenceRepository;
-    ResidenceService residenceService;
+    private ClientRepository clientRepository;
+    private ResidenceRepository residenceRepository;
+    private ResidenceService residenceService;
 
     @Autowired
     public ClientService(ClientRepository clientRepository, ResidenceService residenceService,ResidenceRepository residenceRepository) {
@@ -27,6 +27,8 @@ public class ClientService {
         this.residenceService = residenceService;
         this.residenceRepository = residenceRepository;
     }
+
+//-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
     public void add(Client client) {
         clientRepository.save(client);
@@ -55,6 +57,9 @@ public class ClientService {
     public List<Residence> getClientResidences(Integer idClient) {
         Client c = getClientById(idClient);
         return residenceRepository.findByClient(c);
+    }
 
+    public void deleteClientById(Integer idClient) {
+        clientRepository.delete( getClientById(idClient) );
     }
 }

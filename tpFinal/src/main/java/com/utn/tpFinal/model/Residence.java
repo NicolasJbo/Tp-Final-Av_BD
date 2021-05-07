@@ -20,7 +20,6 @@ public class Residence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String street;
     private Integer number;
     private String floor;

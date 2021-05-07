@@ -18,7 +18,6 @@ import java.util.List;
 @Table(name ="meter_models")
 public class MeterModel {
 
-
     @Id
     private String name;
 

@@ -13,11 +13,16 @@ import java.util.List;
 public class ClientController {
 
     @Autowired
-    ClientService clientService;
+    private ClientService clientService;
 
     @PostMapping
     public void addClient(@RequestBody Client client){
         clientService.add(client);
+    }
+
+    @GetMapping("{idClient}/delete")
+    public void deleteClientById(@PathVariable Integer idClient){
+        clientService.deleteClientById(idClient);
     }
 
     @GetMapping
@@ -34,5 +39,9 @@ public class ClientController {
     public void addResidenseToClient(@PathVariable Integer id, @PathVariable Integer idResidence) {
         clientService.addResidenseToClient(id,idResidence);
     }
+
+
+
+
 
 }
