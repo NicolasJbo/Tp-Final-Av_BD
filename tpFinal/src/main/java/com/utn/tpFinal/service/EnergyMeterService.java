@@ -27,12 +27,42 @@ public class EnergyMeterService {
         this.meterBrandRepository = meterBrandRepository;
         this.meterModelRepository = meterModelRepository;
     }
-
     public void addEnergyMeter(EnergyMeter energyMeter) {
         energyMeterRepository.save(energyMeter);
     }
 
+//--------------------------- BRAND --------------------------------------------
+    public MeterBrand getMeterBrandByName(String name) {
+        return meterBrandRepository.findById(name)
+            .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+    }
+    public void addEnergyMeterToBrand(EnergyMeter energyMeter, MeterBrand brand){
+        brand.getEnergyMeters().add(energyMeter); //agrega el medidor a la lista de medidores de la marca
+        meterBrandRepository.save(brand);
+    }
 
+    public List<EnergyMeter> getEnergyMetersByBrand(String nameBrand) {
+        MeterBrand brand = getMeterBrandByName(nameBrand);
+        return energyMeterRepository.findByBrand(brand);
+    }
+//--------------------------- MODEL --------------------------------------------
+
+    public MeterModel getMeterModelByName(String name) {
+        return meterModelRepository.findById(name)
+            .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+    }
+
+    public void addEnergyMeterToModel(EnergyMeter energyMeter, MeterModel model){
+        model.getEnergyMeters().add(energyMeter); //agrega el medidor a la lista de medidores de la modelos
+        meterModelRepository.save(model);
+    }
+
+    public List<EnergyMeter> getEnergyMetersByModel(String nameModel) {
+        MeterModel model= getMeterModelByName(nameModel);
+        return energyMeterRepository.findByModel(model);
+
+    }
+//--------------------------- ENERGYMETER --------------------------------------------
     public List<EnergyMeter> getAllEnergyMeters(String serialNumber) {
         if(isNull(serialNumber))
             return energyMeterRepository.findAll();
@@ -45,7 +75,7 @@ public class EnergyMeterService {
     }
 
     public List<MeterBrand> getAllMeterBrands(){
-            return meterBrandRepository.findAll();
+        return meterBrandRepository.findAll();
 
     }
 
@@ -54,36 +84,13 @@ public class EnergyMeterService {
     }
 
     public List<MeterModel> getAllMeterModels() {
-            return meterModelRepository.findAll();
+        return meterModelRepository.findAll();
     }
 
     public EnergyMeter getEnergyMeterById(Integer id) {
         return energyMeterRepository.findById(id)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
-
-    public MeterBrand getMeterBrandByName(String name) {
-        return meterBrandRepository.findById(name)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
-
-
-    }
-
-    public MeterModel getMeterModelById(String name) {
-        return meterModelRepository.findById(name)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
-    }
-
-    public void addEnergyMeterToBrand(EnergyMeter energyMeter, MeterBrand brand){
-        brand.getEnergyMeters().add(energyMeter); //agrega el medidor a la lista de medidores de la marca
-        meterBrandRepository.save(brand);
-    }
-
-    public void addEnergyMeterToModel(EnergyMeter energyMeter, MeterModel model){
-        model.getEnergyMeters().add(energyMeter); //agrega el medidor a la lista de medidores de la modelos
-        meterModelRepository.save(model);
-    }
-
 
     public void addBrandAndModelToEnergyMeter(Integer id, String nameBrand, String nameModel) {
 
@@ -94,7 +101,7 @@ public class EnergyMeterService {
             energyMeter.setBrand(brand);
         }
         if(!isNull(nameModel)){
-            MeterModel model = getMeterModelById(nameModel);
+            MeterModel model = getMeterModelByName(nameModel);
             addEnergyMeterToModel(energyMeter,model);
             energyMeter.setModel(model);
         }
@@ -103,11 +110,17 @@ public class EnergyMeterService {
         }
 
     }
+//--------------------------- RESIDENCE --------------------------------------------
 
-
-
-    public List<EnergyMeter> getEnergyMetersByBrand(String nameBrand) {
-        MeterBrand brand = getMeterBrandByName(nameBrand);
-        return getAllEnergyMeters(null);
+    public  void addResidenceToMeter(Residence residence,Integer idEnergyMeter){
+        EnergyMeter energyMeter = getEnergyMeterById(idEnergyMeter);
+        energyMeter.setResidence(residence);
+        energyMeterRepository.save(energyMeter);
     }
+    public Residence getResidenceByEnergyMeterId(Integer idEnergyMeter) {
+        EnergyMeter energyMeter =getEnergyMeterById(idEnergyMeter);
+        return energyMeter.getResidence();
+    }
+
+
 }

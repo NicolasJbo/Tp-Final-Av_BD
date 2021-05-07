@@ -1,6 +1,7 @@
 package com.utn.tpFinal.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class EnergyMeter {
     private MeterBrand brand;
 
     @OneToOne(mappedBy = "energyMeter")
+    @JsonIgnore
     private Residence residence;
 
     @Override
