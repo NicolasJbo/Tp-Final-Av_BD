@@ -33,6 +33,12 @@ public class EnergyMeter {
     @OneToOne(mappedBy = "energyMeter")
     private Residence residence;
 
+    @Override
+     public String toString(){
+        return "SerialNumber : "+this.serialNumber+
+                "Modelo: "+this.model+
+                "Marca: "+this.brand;
+    }
     //----------------------------------------->> METODOS <<-----------------------------------------
 
 }

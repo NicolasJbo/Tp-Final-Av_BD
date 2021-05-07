@@ -1,5 +1,6 @@
 package com.utn.tpFinal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,14 @@ public class MeterBrand {
     String name;
 
     @OneToMany(mappedBy = "model")
+    @JsonIgnore
     private List<EnergyMeter> energyMeters;
 
+    @Override
+    public String toString() {
+        return "MeterBrand{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

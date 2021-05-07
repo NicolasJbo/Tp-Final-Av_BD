@@ -90,6 +90,7 @@ public class EnergyMeterService {
 
 
     public void addBrandAndModelToEnergyMeter(Integer id, Integer idBrand, Integer idModel) {
+
         EnergyMeter energyMeter = getEnergyMeterById(id);
         if(!isNull(idBrand)){
             MeterBrand brand = getMeterBrandById(idBrand);
@@ -101,10 +102,16 @@ public class EnergyMeterService {
             addEnergyMeterToModel(energyMeter,model);
             energyMeter.setModel(model);
         }
-        if(!isNull(idBrand) || !isNull(idModel))
+        if(!isNull(idBrand) || !isNull(idModel)) {
             energyMeterRepository.save(energyMeter);
+        }
 
     }
 
 
+
+    public List<EnergyMeter> getEnergyMetersByBrand(Integer idBrand) {
+        MeterBrand brand = getMeterBrandById(idBrand);
+        return getAllEnergyMeters(null);
+    }
 }
