@@ -30,4 +30,10 @@ public class ResidenceController {
     public void addEnergyMeterToResidence(@PathVariable Integer idResidence,@PathVariable Integer idEnergyMeter ){
         residenceService.addEnergyMeterToResidence(idResidence,idEnergyMeter);
     }
+
+    @PutMapping("/{idResidence}/tariff/{idTariff}")
+    public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable String idTariff ){
+        residenceService.addTariffToResidence(idResidence,idTariff);
+    }
+
 }

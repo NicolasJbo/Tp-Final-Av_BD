@@ -38,8 +38,8 @@ public class Residence {
     @JoinColumn(name="id_energyMeter")
     private EnergyMeter energyMeter;
 
-    @OneToOne
-    @JoinColumn(name="id_tariff")
+    @ManyToOne
+    @JoinColumn(name = "id_tariff")
     private Tariff tariff;
 
 

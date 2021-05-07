@@ -112,8 +112,7 @@ public class EnergyMeterService {
     }
 //--------------------------- RESIDENCE --------------------------------------------
 
-    public  void addResidenceToMeter(Residence residence,Integer idEnergyMeter){
-        EnergyMeter energyMeter = getEnergyMeterById(idEnergyMeter);
+    public  void addResidenceToMeter(Residence residence,EnergyMeter energyMeter){
         energyMeter.setResidence(residence);
         energyMeterRepository.save(energyMeter);
     }
