@@ -16,10 +16,9 @@ import java.util.List;
 @Entity
 @Table(name ="meter_brands")
 public class MeterBrand {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
 
+
+    @Id
     String name;
 
     @OneToMany(mappedBy = "model")
@@ -29,7 +28,6 @@ public class MeterBrand {
     @Override
     public String toString() {
         return "MeterBrand{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }

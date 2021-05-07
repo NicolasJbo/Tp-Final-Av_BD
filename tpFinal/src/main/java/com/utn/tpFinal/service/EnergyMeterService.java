@@ -44,22 +44,17 @@ public class EnergyMeterService {
         meterBrandRepository.save(brand);
     }
 
-    public List<MeterBrand> getAllMeterBrands(String name) {
-        if(isNull(name))
+    public List<MeterBrand> getAllMeterBrands(){
             return meterBrandRepository.findAll();
-        else
-            return meterBrandRepository.findByName(name);
+
     }
 
     public void addMeterModel(MeterModel model) {
         meterModelRepository.save(model);
     }
 
-    public List<MeterModel> getAllMeterModels(String name) {
-        if(isNull(name))
+    public List<MeterModel> getAllMeterModels() {
             return meterModelRepository.findAll();
-        else
-            return meterModelRepository.findByName(name);
     }
 
     public EnergyMeter getEnergyMeterById(Integer id) {
@@ -67,14 +62,15 @@ public class EnergyMeterService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
-    public MeterBrand getMeterBrandById(Integer id) {
-        return meterBrandRepository.findById(id)
+    public MeterBrand getMeterBrandByName(String name) {
+        return meterBrandRepository.findById(name)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
 
     }
 
-    public MeterModel getMeterModelById(Integer id) {
-        return meterModelRepository.findById(id)
+    public MeterModel getMeterModelById(String name) {
+        return meterModelRepository.findById(name)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
@@ -89,20 +85,20 @@ public class EnergyMeterService {
     }
 
 
-    public void addBrandAndModelToEnergyMeter(Integer id, Integer idBrand, Integer idModel) {
+    public void addBrandAndModelToEnergyMeter(Integer id, String nameBrand, String nameModel) {
 
         EnergyMeter energyMeter = getEnergyMeterById(id);
-        if(!isNull(idBrand)){
-            MeterBrand brand = getMeterBrandById(idBrand);
+        if(!isNull(nameBrand)){
+            MeterBrand brand = getMeterBrandByName(nameBrand);
             addEnergyMeterToBrand(energyMeter,brand);
             energyMeter.setBrand(brand);
         }
-        if(!isNull(idModel)){
-            MeterModel model = getMeterModelById(idModel);
+        if(!isNull(nameModel)){
+            MeterModel model = getMeterModelById(nameModel);
             addEnergyMeterToModel(energyMeter,model);
             energyMeter.setModel(model);
         }
-        if(!isNull(idBrand) || !isNull(idModel)) {
+        if(!isNull(nameBrand) || !isNull(nameModel)) {
             energyMeterRepository.save(energyMeter);
         }
 
@@ -110,8 +106,8 @@ public class EnergyMeterService {
 
 
 
-    public List<EnergyMeter> getEnergyMetersByBrand(Integer idBrand) {
-        MeterBrand brand = getMeterBrandById(idBrand);
+    public List<EnergyMeter> getEnergyMetersByBrand(String nameBrand) {
+        MeterBrand brand = getMeterBrandByName(nameBrand);
         return getAllEnergyMeters(null);
     }
 }

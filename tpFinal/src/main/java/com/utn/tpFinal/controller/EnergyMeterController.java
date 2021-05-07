@@ -33,12 +33,12 @@ public class EnergyMeterController {
     }
 
     @GetMapping("/brands")
-    public List<MeterBrand> getAllMeterBrands(@RequestParam(required = false) String name){
-        return energyMeterService.getAllMeterBrands(name);
+    public List<MeterBrand> getAllMeterBrands(){
+        return energyMeterService.getAllMeterBrands();
     }
-    @GetMapping("/brand/{idBrand}/energyMeters")
-    public List<EnergyMeter> getEnergyMetersByBrand(@PathVariable Integer idBrand){
-        return energyMeterService.getEnergyMetersByBrand(idBrand);
+    @GetMapping("/brand/{nameBrand}/energyMeters")
+    public List<EnergyMeter> getEnergyMetersByBrand(@PathVariable String nameBrand){
+        return energyMeterService.getEnergyMetersByBrand(nameBrand);
     }
 
     @PostMapping("/model")
@@ -47,15 +47,15 @@ public class EnergyMeterController {
     }
 
     @GetMapping("/models")
-    public List<MeterModel> getAllMeterModels(@RequestParam(required = false) String name){
-        return energyMeterService.getAllMeterModels(name);
+    public List<MeterModel> getAllMeterModels(){
+        return energyMeterService.getAllMeterModels();
     }
 
-    @PutMapping("/{id}/brand/{idBrand}/model/{idModel}")
+    @PutMapping("/{id}/brand/{nameBrand}/model/{nameModel}")
     public void addBrandAndModelToEnergyMeter(@PathVariable Integer id,
-                                              @PathVariable Integer idBrand,
-                                              @PathVariable Integer idModel ) {
-        energyMeterService.addBrandAndModelToEnergyMeter(id,idBrand,idModel);
+                                              @PathVariable String nameBrand,
+                                              @PathVariable String nameModel ) {
+        energyMeterService.addBrandAndModelToEnergyMeter(id,nameBrand,nameModel);
     }
     /*
     @PutMapping("/{id}/brand/{idBrand}/model/{idModel}")

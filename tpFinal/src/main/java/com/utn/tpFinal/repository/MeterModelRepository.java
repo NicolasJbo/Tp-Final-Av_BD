@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MeterModelRepository extends JpaRepository<MeterModel, Integer> {
-    List<MeterModel> findByName(String name);
+public interface MeterModelRepository extends JpaRepository<MeterModel, String> {
+
 }
