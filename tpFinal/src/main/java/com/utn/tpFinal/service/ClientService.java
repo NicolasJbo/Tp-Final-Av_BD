@@ -56,7 +56,7 @@ public class ClientService {
 
     public List<Residence> getClientResidences(Integer idClient) {
         Client c = getClientById(idClient);
-        return residenceRepository.findByClient(c);
+        return c.getResidencesList();
     }
 
     public void deleteClientById(Integer idClient) {

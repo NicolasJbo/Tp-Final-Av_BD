@@ -30,8 +30,8 @@ public class Client {
     private String password;
 
     //@OneToMany(fetch = FetchType.EAGER) //EAGER-> trae la lista ya modelada (con objetos) cuando traes el cliente
-
-    @OneToMany(mappedBy = "client")
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
     private List<Residence> residencesList;
 
     //----------------------------------------->> METODOS <<-----------------------------------------

@@ -36,6 +36,7 @@ public class EnergyMeterController {
     public List<EnergyMeter> getAllEnergyMeters(@RequestParam(required = false) String serialNumber){
         return energyMeterService.getAllEnergyMeters(serialNumber);
     }
+
     @PutMapping("/{id}/brand/{nameBrand}/model/{nameModel}")
     public void addBrandAndModelToEnergyMeter(@PathVariable Integer id,
                                               @PathVariable String nameBrand,
