@@ -29,4 +29,9 @@ public class Tariff {
     @JsonIgnore
     List<Residence> residencesList;
 
+    @OneToMany(mappedBy = "tariff")
+    @JsonIgnore
+    List<Bill> billsList;
+
+
 }

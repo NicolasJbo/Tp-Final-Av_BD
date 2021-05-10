@@ -21,17 +21,29 @@ public class Bill {
     private Integer id;
 
     private Boolean isPaid;
-    private String initialMedition;
+    private Float initialMedition;
     private Date initialDate;
-    private String finalMedition;
+    private Float finalMedition;
     private Date finalDate;
     private Float totalEnergy;
     private Float finalAmount;
     private Date expirationDate;
 
     @ManyToOne
+    @JoinColumn(name="idTariff")
+    private Tariff tariff;
+
+    @ManyToOne
+    @JoinColumn(name="idEnergyMeter")
+    private EnergyMeter energyMeter;
+
+    @ManyToOne
     @JoinColumn(name="id_residence")
     private Residence residence;
+
+    //tariff
+    //energymeter
+    //
 
     //----------------------------------------->> METODOS <<-----------------------------------------
 
