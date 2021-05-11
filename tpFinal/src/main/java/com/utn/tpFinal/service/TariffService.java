@@ -1,9 +1,11 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.repository.TariffRepository;
+import com.utn.tpFinal.util.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,20 @@ import static java.util.Objects.isNull;
 
 @Service
 public class TariffService {
+    private static final  String TARIFF_PATH="tariff";
     @Autowired
     private TariffRepository tariffRepository;
 
 //-------------------------------------------->> BRAND <<--------------------------------------------
 
 
-    public void addTariff(Tariff tariff) {
+    public PostResponse addTariff(Tariff tariff) {
         tariffRepository.save(tariff);
+        return PostResponse.builder()
+                .status(HttpStatus.CREATED)
+                .url(EntityURLBuilder.buildUrl(TARIFF_PATH,tariff.getName()))
+                .build();
+
     }
 
     public Tariff getTariffById(String name) {

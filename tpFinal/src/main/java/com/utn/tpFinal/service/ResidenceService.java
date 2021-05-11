@@ -1,11 +1,9 @@
 package com.utn.tpFinal.service;
 
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.EnergyMeter;
-import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.Tariff;
+import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
+import com.utn.tpFinal.util.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +16,7 @@ import static java.util.Objects.isNull;
 @Service
 public class ResidenceService {
 
+    private static final String RESIDENCE_PATH = "residence";
     private ResidenceRepository residenceRepository;
     private EnergyMeterService  energyMeterService;
     private TariffService tariffService;
@@ -31,8 +30,12 @@ public class ResidenceService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public void addResidence(Residence residence) {
+    public PostResponse addResidence(Residence residence) {
         residenceRepository.save(residence);
+        return PostResponse.builder()
+                .status(HttpStatus.CREATED)
+                .url(EntityURLBuilder.buildUrl(RESIDENCE_PATH,residence.getId()))
+                .build();
     }
 
     public List<Residence> getAll(String street) {

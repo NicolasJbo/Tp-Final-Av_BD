@@ -4,6 +4,7 @@ import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.MeterBrandRepository;
 import com.utn.tpFinal.repository.MeterModelRepository;
+import com.utn.tpFinal.util.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import static java.util.Objects.isNull;
 public class EnergyMeterService {
 
 
+    private static final String ENERGYMETER_PATH = "energyMeter";
     private EnergyMeterRepository energyMeterRepository;
     private MeterBrandRepository meterBrandRepository;
     private MeterModelRepository meterModelRepository;
@@ -30,8 +32,12 @@ public class EnergyMeterService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public void addEnergyMeter(EnergyMeter energyMeter) {
+    public PostResponse addEnergyMeter(EnergyMeter energyMeter) {
         energyMeterRepository.save(energyMeter);
+        return PostResponse.builder()
+                .status(HttpStatus.CREATED)
+                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH,energyMeter.getId()))
+                .build();
     }
 
     public EnergyMeter getEnergyMeterById(Integer id) {
@@ -89,8 +95,12 @@ public class EnergyMeterService {
     }
 //-------------------------------------------->> BRAND <<--------------------------------------------
 
-    public void addMeterBrand(MeterBrand brand) {
+    public PostResponse addMeterBrand(MeterBrand brand) {
         meterBrandRepository.save(brand);
+        return PostResponse.builder()
+                .status(HttpStatus.CREATED)
+                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH,brand.getName()))
+                .build();
     }
 
     public void deleteMeterBrandByName(String nameBrand) {
@@ -113,8 +123,12 @@ public class EnergyMeterService {
 
 //-------------------------------------------->> MODEL <<--------------------------------------------
 
-    public void addMeterModel(MeterModel model) {
+    public PostResponse addMeterModel(MeterModel model) {
         meterModelRepository.save(model);
+        return PostResponse.builder()
+                .status(HttpStatus.CREATED)
+                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH,model.getName()))
+                .build();
     }
 
     public void deleteMeterModelByName(String nameModel) {

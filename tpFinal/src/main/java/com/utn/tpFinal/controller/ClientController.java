@@ -1,6 +1,7 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,18 @@ public class ClientController {
     private ClientService clientService;
 
     @PostMapping
-    public void addClient(@RequestBody Client client){
-        clientService.add(client);
+    public PostResponse addClient(@RequestBody Client client){
+
+       return clientService.add(client);
     }
 
     @GetMapping
     public List<Client> getAll(@RequestParam(required = false) String name){
         return clientService.getAll(name);
+    }
+    @GetMapping("/{idClient}")
+    public Client getClientById (@PathVariable Integer idClient){
+        return clientService.getClientById(idClient);
     }
 
     @GetMapping("/{idClient}/residences")
@@ -34,9 +40,9 @@ public class ClientController {
     public void addResidenseToClient(@PathVariable Integer id, @PathVariable Integer idResidence) {
         clientService.addResidenseToClient(id,idResidence);
     }
-    @DeleteMapping("/remove/{idCliente}")
-    public void deleteClientById(@PathVariable Integer idClient){
-        clientService.deleteClientById(idClient);
+    @DeleteMapping("/remove/{idClient}")
+    public PostResponse deleteClientById(@PathVariable Integer idClient){
+       return clientService.deleteClientById(idClient);
     }
 
 

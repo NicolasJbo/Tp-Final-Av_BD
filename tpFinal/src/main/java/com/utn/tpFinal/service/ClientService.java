@@ -1,9 +1,11 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.repository.ClientRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
+import com.utn.tpFinal.util.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import static java.util.Objects.isNull;
 
 @Service
 public class ClientService {
+
+    private static final String CLIENT_PATH ="client";
 
     private ClientRepository clientRepository;
     private ResidenceRepository residenceRepository;
@@ -30,15 +34,21 @@ public class ClientService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public void add(Client client) {
+    public PostResponse add(Client client) {
         clientRepository.save(client);
-    }
+        return PostResponse.builder()
+                .status(HttpStatus.CREATED)
+                .url(EntityURLBuilder.buildUrl(CLIENT_PATH,client.getId()))
+                .build();
+            }
 
     public List<Client> getAll(String name) {
-        if(isNull(name))
+        if(isNull(name)) {
             return clientRepository.findAll();
-        else
+        }
+        else {
             return clientRepository.findByName(name);
+        }
     }
 
     public Client getClientById(Integer id) {
@@ -59,8 +69,13 @@ public class ClientService {
         return c.getResidencesList();
     }
 
-    public void deleteClientById(Integer idClient) {
-        clientRepository.delete( getClientById(idClient) );
+    public PostResponse deleteClientById(Integer idClient) {
+        clientRepository.deleteById(idClient);
+
+        return PostResponse.builder()
+                .status(HttpStatus.OK)
+                .url(EntityURLBuilder.buildUrl(CLIENT_PATH))
+                .build();
     }
 
 }

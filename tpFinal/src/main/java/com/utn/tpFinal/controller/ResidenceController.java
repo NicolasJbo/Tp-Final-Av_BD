@@ -2,6 +2,7 @@ package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.EnergyMeter;
+import com.utn.tpFinal.model.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,9 @@ public class ResidenceController {
     private ResidenceService residenceService;
 
     @PostMapping
-    public void addResidence(@RequestBody Residence residence){
-        residenceService.addResidence(residence);
+    public PostResponse addResidence(@RequestBody Residence residence){
+
+       return residenceService.addResidence(residence);
     }
 
     @GetMapping

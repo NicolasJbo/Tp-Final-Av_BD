@@ -23,8 +23,8 @@ public class EnergyMeterController {
     }
 //--------------------------- ENERGYMETER --------------------------------------------
     @PostMapping
-    public void addEnergyMeter (@RequestBody EnergyMeter energyMeter){
-        energyMeterService.addEnergyMeter(energyMeter);
+    public PostResponse addEnergyMeter (@RequestBody EnergyMeter energyMeter){
+       return energyMeterService.addEnergyMeter(energyMeter);
     }
 
     @GetMapping
@@ -45,8 +45,9 @@ public class EnergyMeterController {
 
 //--------------------------- BRAND --------------------------------------------
     @PostMapping("/brand")
-    public void addMeterBrand (@RequestBody MeterBrand brand){
-        energyMeterService.addMeterBrand(brand);
+    public PostResponse addMeterBrand (@RequestBody MeterBrand brand){
+
+        return energyMeterService.addMeterBrand(brand);
     }
 
     @GetMapping("/brand/{nameBrand}/delete")
@@ -66,8 +67,9 @@ public class EnergyMeterController {
 
 //--------------------------- MODEL --------------------------------------------
     @PostMapping("/model")
-    public void addMeterModel (@RequestBody MeterModel model){
-        energyMeterService.addMeterModel(model);
+    public PostResponse addMeterModel (@RequestBody MeterModel model) {
+
+    return energyMeterService.addMeterModel(model);
     }
 
     @GetMapping("/model/{nameModel}/delete")

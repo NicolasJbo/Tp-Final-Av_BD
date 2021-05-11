@@ -1,6 +1,7 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.service.ClientService;
@@ -18,8 +19,9 @@ public class TariffController {
     private TariffService tariffService;
 
     @PostMapping
-    public void addTariff(@RequestBody Tariff tariff){
-        tariffService.addTariff(tariff);
+    public PostResponse addTariff(@RequestBody Tariff tariff){
+
+       return tariffService.addTariff(tariff);
     }
 
     @GetMapping
