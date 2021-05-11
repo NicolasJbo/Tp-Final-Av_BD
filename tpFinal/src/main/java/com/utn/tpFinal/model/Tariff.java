@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +25,8 @@ public class Tariff {
     @Id
     @Size(min = 1, max = 2 ,message = "The name MUST be at least 2 character.")
     private String name;
+    @NotNull(message = "Amount MUST be completed.")
+    @Positive(message = "Amount Must be positive number")
     private Float amount;
 
     @OneToMany(mappedBy = "tariff")

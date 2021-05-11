@@ -75,4 +75,8 @@ public class ResidenceService {
         residenceRepository.save(residence);
 
     }
+
+    public void removeResidenceById(Integer idResidence) {
+        residenceRepository.deleteById(idResidence);
+    }
 }

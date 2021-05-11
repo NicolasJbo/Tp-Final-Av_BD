@@ -35,5 +35,9 @@ public class ResidenceController {
     public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable String idTariff ){
         residenceService.addTariffToResidence(idResidence,idTariff);
     }
+    @DeleteMapping("/remove/{idResidence}")
+    public void removeResidenceById(@PathVariable Integer idResidence){
+        residenceService.removeResidenceById(idResidence);
+    }
 
 }

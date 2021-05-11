@@ -62,4 +62,5 @@ public class ClientService {
     public void deleteClientById(Integer idClient) {
         clientRepository.delete( getClientById(idClient) );
     }
+
 }

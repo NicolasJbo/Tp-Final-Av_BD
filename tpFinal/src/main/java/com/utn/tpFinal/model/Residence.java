@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,8 +23,12 @@ public class Residence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotNull(message = "Street MUST be completed.")
     private String street;
+    @NotNull(message = "Number MUST be completed.")
+    @PositiveOrZero(message = "Number MUST be a Positive Number.")
     private Integer number;
+
     private String floor;
     private String apartament;
 

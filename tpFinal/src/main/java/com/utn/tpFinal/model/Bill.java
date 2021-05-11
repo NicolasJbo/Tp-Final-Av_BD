@@ -40,11 +40,6 @@ public class Bill {
     @ManyToOne
     @JoinColumn(name="id_residence")
     private Residence residence;
-
-    //tariff
-    //energymeter
-    //
-
     //----------------------------------------->> METODOS <<-----------------------------------------
 
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -22,11 +23,26 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotEmpty(message = "The client MUST have dni.")
     private String dni;
+
+    @NotEmpty(message = "Name MUST be completed.")
     private String name;
+
+    @NotEmpty(message ="LastName MUST be completed.")
     private String lastName;
+
+    @NotNull(message = "Birthday MUST be completed.")
+    @Past(message = "INVALID Date.")
     private Date birthday;
+
+    @NotNull(message = "Mail MUST be completed.")
+    @Email(message = "INVALID type of Email.")
     private String mail;
+
+    @NotEmpty(message = "Password MUST be completed.")
+    @Size(min = 3,message = "Password characters MIN= 3 .")
     private String password;
 
     //@OneToMany(fetch = FetchType.EAGER) //EAGER-> trae la lista ya modelada (con objetos) cuando traes el cliente

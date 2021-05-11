@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -18,6 +19,7 @@ import java.util.List;
 public class MeterBrand {
 
     @Id
+    @NotNull(message = "Name MUST be completedf.")
     String name;
 
     @OneToMany(mappedBy = "model")
