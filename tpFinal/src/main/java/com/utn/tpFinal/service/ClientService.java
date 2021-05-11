@@ -1,7 +1,7 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.PostResponse;
+import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.repository.ClientRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
-import java.util.Properties;
 
 import static java.util.Objects.isNull;
 
@@ -56,12 +55,17 @@ public class ClientService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
-    public void addResidenseToClient(Integer id, Integer idResidence) {
-        Client c = getClientById(id);
+    public PostResponse addResidenseToClient(Integer idClient, Integer idResidence) {
+        Client c = getClientById(idClient);
         Residence r = residenceService.getResidenceById(idResidence);
         residenceService.addClientToResidence(c, r);
         c.getResidencesList().add(r);
         clientRepository.save(c);
+
+        return PostResponse.builder()
+                .status(HttpStatus.OK)
+                .url(EntityURLBuilder.buildUrl(CLIENT_PATH,idClient,"residences"))
+                .build();
     }
 
     public List<Residence> getClientResidences(Integer idClient) {

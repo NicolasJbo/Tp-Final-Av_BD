@@ -1,4 +1,4 @@
-package com.utn.tpFinal.model;
+package com.utn.tpFinal.util;
 
 import lombok.Builder;
 import lombok.Data;

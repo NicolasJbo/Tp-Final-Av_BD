@@ -1,7 +1,6 @@
 package com.utn.tpFinal.service;
 
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.PostResponse;
+import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.repository.TariffRepository;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Service
 public class TariffService {
@@ -52,7 +49,11 @@ public class TariffService {
         return tariff.getResidencesList();
     }
 
-    public void removeTariffById(String idTariff) {
+    public PostResponse removeTariffById(String idTariff) {
         tariffRepository.deleteById(idTariff);
+        return PostResponse.builder()
+                .status(HttpStatus.OK)
+                .url(EntityURLBuilder.buildUrl(TARIFF_PATH))
+                .build();
     }
 }

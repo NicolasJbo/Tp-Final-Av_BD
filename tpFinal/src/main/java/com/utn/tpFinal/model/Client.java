@@ -45,9 +45,8 @@ public class Client {
     @Size(min = 3,message = "Password characters MIN= 3 .")
     private String password;
 
-    //@OneToMany(fetch = FetchType.EAGER) //EAGER-> trae la lista ya modelada (con objetos) cuando traes el cliente
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
+    @OneToMany(mappedBy = "client",cascade = CascadeType.ALL) //si eliminas un cliente, se eliminan sus domicilios
     private List<Residence> residencesList;
 
     //----------------------------------------->> METODOS <<-----------------------------------------

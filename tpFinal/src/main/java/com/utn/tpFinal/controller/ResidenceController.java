@@ -1,8 +1,6 @@
 package com.utn.tpFinal.controller;
 
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.EnergyMeter;
-import com.utn.tpFinal.model.PostResponse;
+import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +35,9 @@ public class ResidenceController {
     public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable String idTariff ){
         residenceService.addTariffToResidence(idResidence,idTariff);
     }
-    @DeleteMapping("/remove/{idResidence}")
-    public void removeResidenceById(@PathVariable Integer idResidence){
-        residenceService.removeResidenceById(idResidence);
+    @DeleteMapping("/{idResidence}/remove")
+    public PostResponse removeResidenceById(@PathVariable Integer idResidence){
+        return residenceService.removeResidenceById(idResidence);
     }
 
 }

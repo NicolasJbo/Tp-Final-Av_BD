@@ -5,6 +5,7 @@ import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.MeterBrandRepository;
 import com.utn.tpFinal.repository.MeterModelRepository;
 import com.utn.tpFinal.util.EntityURLBuilder;
+import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -131,8 +132,12 @@ public class EnergyMeterService {
                 .build();
     }
 
-    public void deleteMeterModelByName(String nameModel) {
+    public PostResponse deleteMeterModelByName(String nameModel) {
         meterModelRepository.delete( getMeterModelByName(nameModel) );
+        return PostResponse.builder()
+                .status(HttpStatus.OK)
+                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH))
+                .build();
     }
 
     public List<MeterModel> getAllMeterModels() {
@@ -150,7 +155,11 @@ public class EnergyMeterService {
     }
 
 
-    public void removeEnergyMeterById(Integer idEnergyMeter) {
+    public PostResponse removeEnergyMeterById(Integer idEnergyMeter) {
         energyMeterRepository.deleteById(idEnergyMeter);
+        return PostResponse.builder()
+                .status(HttpStatus.OK)
+                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH))
+                .build();
     }
 }

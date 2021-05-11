@@ -2,6 +2,7 @@ package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.service.EnergyMeterService;
+import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +15,6 @@ public class EnergyMeterController {
     @Autowired
     private EnergyMeterService energyMeterService;
 
-
-//--------------------------- RESIDENCE --------------------------------------------
-
-    @GetMapping("/{idEnergyMeter}/residence")
-    public Residence getResidenceByEnergyMeterId(@PathVariable Integer idEnergyMeter){
-        return energyMeterService.getResidenceByEnergyMeterId(idEnergyMeter);
-    }
 //--------------------------- ENERGYMETER --------------------------------------------
     @PostMapping
     public PostResponse addEnergyMeter (@RequestBody EnergyMeter energyMeter){
@@ -38,11 +32,17 @@ public class EnergyMeterController {
                                               @PathVariable String nameModel ) {
         energyMeterService.addBrandAndModelToEnergyMeter(id,nameBrand,nameModel);
     }
-    @DeleteMapping("/remove/{idEnergyMeter}")
-    public void removeEnergyMeterById(@PathVariable Integer idEnergyMeter ){
-        energyMeterService.removeEnergyMeterById(idEnergyMeter);
+    @DeleteMapping("/{idEnergyMeter}/remove")
+    public PostResponse removeEnergyMeterById(@PathVariable Integer idEnergyMeter ){
+        return energyMeterService.removeEnergyMeterById(idEnergyMeter);
     }
 
+//--------------------------- RESIDENCE --------------------------------------------
+
+    @GetMapping("/{idEnergyMeter}/residence")
+    public Residence getResidenceByEnergyMeterId(@PathVariable Integer idEnergyMeter){
+        return energyMeterService.getResidenceByEnergyMeterId(idEnergyMeter);
+    }
 //--------------------------- BRAND --------------------------------------------
     @PostMapping("/brand")
     public PostResponse addMeterBrand (@RequestBody MeterBrand brand){
@@ -73,8 +73,8 @@ public class EnergyMeterController {
     }
 
     @GetMapping("/model/{nameModel}/delete")
-    public void deleteMeterModelByName(@PathVariable String nameModel){
-        energyMeterService.deleteMeterModelByName(nameModel);
+    public PostResponse deleteMeterModelByName(@PathVariable String nameModel){
+        return energyMeterService.deleteMeterModelByName(nameModel);
     }
 
     @GetMapping("/models")

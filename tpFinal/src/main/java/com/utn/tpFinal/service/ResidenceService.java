@@ -1,9 +1,9 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.*;
-import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import com.utn.tpFinal.util.EntityURLBuilder;
+import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -79,7 +79,11 @@ public class ResidenceService {
 
     }
 
-    public void removeResidenceById(Integer idResidence) {
+    public PostResponse removeResidenceById(Integer idResidence) {
         residenceRepository.deleteById(idResidence);
+        return PostResponse.builder()
+                .status(HttpStatus.OK)
+                .url(EntityURLBuilder.buildUrl(RESIDENCE_PATH))
+                .build();
     }
 }

@@ -19,12 +19,6 @@ public class EntityURLBuilder {
                 .toUriString();
     }
 
-    /**
-     * Method Use whit String as PK
-     * @param entity
-     * @param string
-     * @return
-     */
     public static String buildUrl(final String entity,final String string){
 
         return ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -37,6 +31,13 @@ public class EntityURLBuilder {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/{entity}")
                 .buildAndExpand(entity)
+                .toUriString();
+    }
+    public static String buildUrl(final String entity, final Integer id, final String list){
+
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/{entity}/{id}/{list}")
+                .buildAndExpand(entity,id,list)
                 .toUriString();
     }
 
