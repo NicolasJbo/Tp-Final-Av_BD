@@ -136,10 +136,7 @@ public class EnergyMeterService {
     }
 
 
-
-
-
-
-
-
+    public void removeEnergyMeterById(Integer idEnergyMeter) {
+        energyMeterRepository.deleteById(idEnergyMeter);
+    }
 }

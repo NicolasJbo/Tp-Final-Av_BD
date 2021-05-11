@@ -27,11 +27,6 @@ public class EnergyMeterController {
         energyMeterService.addEnergyMeter(energyMeter);
     }
 
-    @GetMapping("{idEnergyMeter}/delete")
-    public void deleteEnergyMeterById(@PathVariable Integer idEnergyMeter){
-        energyMeterService.deleteEnergyMeterById(idEnergyMeter);
-    }
-
     @GetMapping
     public List<EnergyMeter> getAllEnergyMeters(@RequestParam(required = false) String serialNumber){
         return energyMeterService.getAllEnergyMeters(serialNumber);
@@ -42,6 +37,10 @@ public class EnergyMeterController {
                                               @PathVariable String nameBrand,
                                               @PathVariable String nameModel ) {
         energyMeterService.addBrandAndModelToEnergyMeter(id,nameBrand,nameModel);
+    }
+    @DeleteMapping("/remove/{idEnergyMeter}")
+    public void removeEnergyMeterById(@PathVariable Integer idEnergyMeter ){
+        energyMeterService.removeEnergyMeterById(idEnergyMeter);
     }
 
 //--------------------------- BRAND --------------------------------------------

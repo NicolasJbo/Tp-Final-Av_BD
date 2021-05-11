@@ -43,4 +43,8 @@ public class TariffService {
         Tariff tariff = getTariffById(nameTariff);
         return tariff.getResidencesList();
     }
+
+    public void removeTariffById(String idTariff) {
+        tariffRepository.deleteById(idTariff);
+    }
 }

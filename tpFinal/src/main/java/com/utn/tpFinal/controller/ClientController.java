@@ -20,11 +20,6 @@ public class ClientController {
         clientService.add(client);
     }
 
-    @GetMapping("{idClient}/delete")
-    public void deleteClientById(@PathVariable Integer idClient){
-        clientService.deleteClientById(idClient);
-    }
-
     @GetMapping
     public List<Client> getAll(@RequestParam(required = false) String name){
         return clientService.getAll(name);
@@ -39,7 +34,10 @@ public class ClientController {
     public void addResidenseToClient(@PathVariable Integer id, @PathVariable Integer idResidence) {
         clientService.addResidenseToClient(id,idResidence);
     }
-
+    @DeleteMapping("/remove/{idCliente}")
+    public void deleteClientById(@PathVariable Integer idClient){
+        clientService.deleteClientById(idClient);
+    }
 
 
 
