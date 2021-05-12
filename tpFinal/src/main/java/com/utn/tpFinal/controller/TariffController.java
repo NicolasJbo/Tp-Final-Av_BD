@@ -31,7 +31,7 @@ public class TariffController {
     public List<Residence> getResidencesByTariff(@PathVariable String nameTariff) {
         return tariffService.getResidencesByTariff(nameTariff);
     }
-    @DeleteMapping("/{idTariff}/remove")
+    @DeleteMapping("/{idTariff}")
     public PostResponse removeTariffById(@PathVariable String idTariff ){
         return tariffService.removeTariffById(idTariff);
     }

@@ -32,7 +32,7 @@ public class EnergyMeterController {
                                               @PathVariable String nameModel ) {
         energyMeterService.addBrandAndModelToEnergyMeter(id,nameBrand,nameModel);
     }
-    @DeleteMapping("/{idEnergyMeter}/remove")
+    @DeleteMapping("/{idEnergyMeter}")
     public PostResponse removeEnergyMeterById(@PathVariable Integer idEnergyMeter ){
         return energyMeterService.removeEnergyMeterById(idEnergyMeter);
     }

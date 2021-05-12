@@ -41,7 +41,7 @@ public class ClientController {
         return clientService.addResidenseToClient(idClient,idResidence);
     }
 
-    @DeleteMapping("{idClient}/remove")
+    @DeleteMapping("{idClient}")
     public PostResponse deleteClientById(@PathVariable Integer idClient){
        return clientService.deleteClientById(idClient);
     }
