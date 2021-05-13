@@ -7,9 +7,14 @@ import com.utn.tpFinal.repository.ClientRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import com.utn.tpFinal.util.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
 
 import java.util.List;
 
@@ -33,39 +38,35 @@ public class ClientService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public PostResponse add(Client client) {
-        clientRepository.save(client);
-        return PostResponse.builder()
-                .status(HttpStatus.CREATED)
-                .url(EntityURLBuilder.buildUrl(CLIENT_PATH,client.getId()))
-                .build();
-            }
+    public Client add(Client client) {
+        return clientRepository.save(client);
+    }
 
-    public List<Client> getAll(String name) {
+    public Page<Client> getAll(String name, Integer pageNumber, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<Client> pagedResult;
+
         if(isNull(name)) {
-            return clientRepository.findAll();
+            pagedResult = clientRepository.findAll(pageable);
         }
         else {
-            return clientRepository.findByName(name);
+            pagedResult = clientRepository.findByName(name,pageable);
         }
+        return pagedResult;
     }
+
 
     public Client getClientById(Integer id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
-    public PostResponse addResidenseToClient(Integer idClient, Integer idResidence) {
+    public void addResidenceToClient(Integer idClient, Integer idResidence) {
         Client c = getClientById(idClient);
         Residence r = residenceService.getResidenceById(idResidence);
         residenceService.addClientToResidence(c, r);
         c.getResidencesList().add(r);
         clientRepository.save(c);
-
-        return PostResponse.builder()
-                .status(HttpStatus.OK)
-                .url(EntityURLBuilder.buildUrl(CLIENT_PATH,idClient,"residences"))
-                .build();
     }
 
     public List<Residence> getClientResidences(Integer idClient) {
@@ -73,13 +74,8 @@ public class ClientService {
         return c.getResidencesList();
     }
 
-    public PostResponse deleteClientById(Integer idClient) {
+    public void deleteClientById(Integer idClient) {
         clientRepository.deleteById(idClient);
-
-        return PostResponse.builder()
-                .status(HttpStatus.OK)
-                .url(EntityURLBuilder.buildUrl(CLIENT_PATH))
-                .build();
     }
 
 }

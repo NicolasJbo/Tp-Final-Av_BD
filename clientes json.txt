@@ -1,0 +1,41 @@
+>>CLIENTES<<
+{
+    "dni": "43317286",
+    "name": "lautaro",
+    "lastName": "fullone",
+    "birthday": "2001-03-09",
+    "mail": "lautaro.fullone@gmail.com",
+    "password": "1234"
+}
+{
+    "dni": "41744533",
+    "name": "kevin",
+    "lastName": "reyna",
+    "birthday": "2000-11-08",
+    "mail": "kevin.basquet@gmail.com",
+    "password": "1234"
+}
+{
+    "dni": "46654885",
+    "name": "valentina",
+    "lastName": "roldan",
+    "birthday": "2002-06-10",
+    "mail": "valentina.roldan@gmial.com",
+    "password": "1234"
+}
+{
+    "dni": "40123585",
+    "name": "nicolas",
+    "lastName": "bertuccio",
+    "birthday": "1999-02-07",
+    "mail": "nico.accenturel@gmail.com",
+    "password": "1234"
+}
+{
+    "dni": "5896254",
+    "name": "mabel",
+    "lastName": "diaz",
+    "birthday": "1950-06-25",
+    "mail": "tia.mabel@gmail.com",
+    "password": "1234"
+}
