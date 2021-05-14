@@ -9,7 +9,7 @@ public class ExceptionDiferentId extends Exception {
 
     @Override
     public String getMessage() {
-        return "The Id Is Different.";
+        return "The Id are Different.";
     }
 
     public String getRoute() {
