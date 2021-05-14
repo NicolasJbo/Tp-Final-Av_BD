@@ -5,6 +5,10 @@ import com.utn.tpFinal.repository.ResidenceRepository;
 import com.utn.tpFinal.util.EntityURLBuilder;
 import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -30,19 +34,23 @@ public class ResidenceService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public PostResponse addResidence(Residence residence) {
-        residenceRepository.save(residence);
-        return PostResponse.builder()
-                .status(HttpStatus.CREATED)
-                .url(EntityURLBuilder.buildUrl(RESIDENCE_PATH,residence.getId()))
-                .build();
+    public Residence addResidence(Residence residence) {
+        return  residenceRepository.save(residence);
     }
 
-    public List<Residence> getAll(String street) {
+    public Page<Residence> getAll( String street, Integer pageNumber,Integer pageSize,String sortBy) {
+
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+            Page<Residence> pagedResult;
+
+
         if(isNull(street))
-            return residenceRepository.findAll();
+          pagedResult= residenceRepository.findAll(pageable);
         else
-            return residenceRepository.findByStreet(street);
+           pagedResult= residenceRepository.findByStreet(street,pageable);
+
+        return pagedResult;
+
     }
 
     public Residence getResidenceById(Integer id) {

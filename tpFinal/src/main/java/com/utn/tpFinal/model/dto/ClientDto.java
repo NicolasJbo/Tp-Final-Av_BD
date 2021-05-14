@@ -23,7 +23,6 @@ public class ClientDto {
     private String fullName;
     private String dni;
     private Date birthday;
-    private String mail;
     private List<Residence> residencesList;
 
     public static ClientDto from (Client client){
@@ -31,7 +30,6 @@ public class ClientDto {
                 .fullName(client.getLastName()+' '+client.getName())
                 .dni(client.getDni())
                 .birthday(client.getBirthday())
-                .mail(client.getMail())
                 .residencesList(client.getResidencesList())
                 .build();
     }

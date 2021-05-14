@@ -1,6 +1,7 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.User;
 import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.util.EntityURLBuilder;
 import com.utn.tpFinal.util.PostResponse;
@@ -68,6 +69,7 @@ public class ClientController {
     @GetMapping("/{idClient}/residences")
     public ResponseEntity<List<Residence>>getClientResidences(@PathVariable Integer idClient){
         List<Residence> residences = clientService.getClientResidences(idClient);
+
         if(residences.isEmpty())
             return ResponseEntity.noContent().build();
         else
@@ -77,7 +79,7 @@ public class ClientController {
     @PutMapping("/{idClient}/residence/{idResidence}")
     public ResponseEntity addResidenceToClient(@PathVariable Integer idClient, @PathVariable Integer idResidence) {
         clientService.addResidenceToClient(idClient,idResidence);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.accepted().build();
     }
 
     @DeleteMapping("{idClient}")

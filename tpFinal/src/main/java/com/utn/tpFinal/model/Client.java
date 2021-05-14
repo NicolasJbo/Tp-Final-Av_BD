@@ -37,13 +37,10 @@ public class Client {
     @Past(message = "INVALID Date.")
     private Date birthday;
 
-    @NotNull(message = "Mail MUST be completed.")
-    @Email(message = "INVALID type of Email.")
-    private String mail;
-
-    @NotEmpty(message = "Password MUST be completed.")
-    @Size(min = 3,message = "Password characters MIN= 3 .")
-    private String password;
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_user")
+    private User user;
 
     @JsonIgnore
     @OneToMany(mappedBy = "client",cascade = CascadeType.ALL) //si eliminas un cliente, se eliminan sus domicilios
@@ -56,12 +53,12 @@ public class Client {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
-        return Objects.equals(id, client.id) && Objects.equals(dni, client.dni) && Objects.equals(name, client.name) && Objects.equals(lastName, client.lastName) && Objects.equals(birthday, client.birthday) && Objects.equals(mail, client.mail) && Objects.equals(password, client.password);
+        return Objects.equals(id, client.id) && Objects.equals(dni, client.dni) && Objects.equals(name, client.name) && Objects.equals(lastName, client.lastName) && Objects.equals(birthday, client.birthday);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dni, name, lastName, birthday, mail, password);
+        return Objects.hash(id, dni, name, lastName, birthday);
     }
 
     @Override
@@ -72,8 +69,6 @@ public class Client {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthday=" + birthday +
-                ", mail='" + mail + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

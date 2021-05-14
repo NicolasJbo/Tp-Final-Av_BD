@@ -1,6 +1,7 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.User;
 import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.repository.ClientRepository;
