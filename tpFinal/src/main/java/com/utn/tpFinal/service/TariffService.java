@@ -62,8 +62,9 @@ public class TariffService {
         Tariff tar= getTariffById(idTariff);
         //si la Id no coinciden no hace el cambio del precio
         if(!tar.getName().equals(tariff.getName())){
-            throw new ExceptionDiferentId(this.getClass().getName());
+            throw  ExceptionDiferentId.builder().route(this.getClass().getName()).method("modifyTariff").build();
         }
+
         tar=tariff;
         return tariffRepository.save(tar);
 

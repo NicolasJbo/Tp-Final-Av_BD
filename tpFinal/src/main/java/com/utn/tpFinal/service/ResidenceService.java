@@ -100,7 +100,7 @@ public class ResidenceService {
         Residence res= getResidenceById(idResidence);
 
         if(res.getId() != residence.getId()){
-            throw new ExceptionDiferentId(this.getClass().getName());
+            throw  ExceptionDiferentId.builder().route(this.getClass().getName()).method("modifyResidence").build();
         }
         res=residence;
         return  residenceRepository.save(res);
