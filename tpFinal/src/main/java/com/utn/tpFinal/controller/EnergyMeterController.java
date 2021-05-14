@@ -26,11 +26,11 @@ public class EnergyMeterController {
         return energyMeterService.getAllEnergyMeters(serialNumber);
     }
 
-    @PutMapping("/{id}/brand/{nameBrand}/model/{nameModel}")
+    @PutMapping("/{id}/brand/{idBrand}/model/{idModel}")
     public void addBrandAndModelToEnergyMeter(@PathVariable Integer id,
-                                              @PathVariable String nameBrand,
-                                              @PathVariable String nameModel ) {
-        energyMeterService.addBrandAndModelToEnergyMeter(id,nameBrand,nameModel);
+                                              @PathVariable Integer idBrand,
+                                              @PathVariable Integer idModel ) {
+        energyMeterService.addBrandAndModelToEnergyMeter(id,idBrand,idModel);
     }
     @DeleteMapping("/{idEnergyMeter}")
     public PostResponse removeEnergyMeterById(@PathVariable Integer idEnergyMeter ){
@@ -50,9 +50,9 @@ public class EnergyMeterController {
         return energyMeterService.addMeterBrand(brand);
     }
 
-    @GetMapping("/brand/{nameBrand}/delete")
-    public void deleteMeterBrandByName(@PathVariable String nameBrand){
-        energyMeterService.deleteMeterBrandByName(nameBrand);
+    @GetMapping("/brand/{idBrand}/delete")
+    public void deleteMeterBrandById(@PathVariable Integer idBrand){
+        energyMeterService.deleteMeterBrandById(idBrand);
     }
 
     @GetMapping("/brands")
@@ -60,21 +60,20 @@ public class EnergyMeterController {
         return energyMeterService.getAllMeterBrands();
     }
 
-    @GetMapping("/brand/{nameBrand}/energyMeters")
-    public List<EnergyMeter> getEnergyMetersByBrand(@PathVariable String nameBrand){
-        return energyMeterService.getEnergyMetersByBrand(nameBrand);
+    @GetMapping("/brand/{idBrand}/energyMeters")
+    public List<EnergyMeter> getEnergyMetersByBrand(@PathVariable Integer idBrand){
+        return energyMeterService.getEnergyMetersByBrand(idBrand);
     }
 
 //--------------------------- MODEL --------------------------------------------
     @PostMapping("/model")
     public PostResponse addMeterModel (@RequestBody MeterModel model) {
-
-    return energyMeterService.addMeterModel(model);
+        return energyMeterService.addMeterModel(model);
     }
 
-    @GetMapping("/model/{nameModel}/delete")
-    public PostResponse deleteMeterModelByName(@PathVariable String nameModel){
-        return energyMeterService.deleteMeterModelByName(nameModel);
+    @GetMapping("/model/{idModel}/delete")
+    public PostResponse deleteMeterModelById(@PathVariable Integer idModel){
+        return energyMeterService.deleteMeterModelById(idModel);
     }
 
     @GetMapping("/models")
@@ -82,9 +81,9 @@ public class EnergyMeterController {
         return energyMeterService.getAllMeterModels();
     }
 
-    @GetMapping("/model/{nameModel}/energyMeters")
-    public List<EnergyMeter> getEnergyMetersByModel(@PathVariable String nameModel){
-        return energyMeterService.getEnergyMetersByModel(nameModel);
+    @GetMapping("/model/{idModel}/energyMeters")
+    public List<EnergyMeter> getEnergyMetersByModel(@PathVariable Integer idModel){
+        return energyMeterService.getEnergyMetersByModel(idModel);
     }
 
 

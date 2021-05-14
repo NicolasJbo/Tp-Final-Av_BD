@@ -19,6 +19,10 @@ import java.util.List;
 public class MeterBrand {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
     @NotNull(message = "Name MUST be completedf.")
     String name;
 

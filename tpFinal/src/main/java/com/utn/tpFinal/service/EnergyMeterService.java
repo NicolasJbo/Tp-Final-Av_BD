@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -57,29 +58,29 @@ public class EnergyMeterService {
             return energyMeterRepository.findBySerialNumber(serialNumber);
     }
 
-    public List<EnergyMeter> getEnergyMetersByBrand(String nameBrand) {
-        MeterBrand brand = getMeterBrandByName(nameBrand);
+    public List<EnergyMeter> getEnergyMetersByBrand(Integer idBrand) {
+        MeterBrand brand = getMeterBrandById(idBrand);
         return energyMeterRepository.findByBrand(brand);
     }
 
-    public List<EnergyMeter> getEnergyMetersByModel(String nameModel) {
-        MeterModel model= getMeterModelByName(nameModel);
+    public List<EnergyMeter> getEnergyMetersByModel(Integer idModel) {
+        MeterModel model= getMeterModelById(idModel);
         return energyMeterRepository.findByModel(model);
     }
 
-    public void addBrandAndModelToEnergyMeter(Integer id, String nameBrand, String nameModel) {
+    public void addBrandAndModelToEnergyMeter(Integer id, Integer idBrand, Integer idModel) {
         EnergyMeter energyMeter = getEnergyMeterById(id);
-        if(!isNull(nameBrand)){
-            MeterBrand brand = getMeterBrandByName(nameBrand);
+        if(!isNull(idBrand)){
+            MeterBrand brand = getMeterBrandById(idBrand);
             addEnergyMeterToBrand(energyMeter,brand);
             energyMeter.setBrand(brand);
         }
-        if(!isNull(nameModel)){
-            MeterModel model = getMeterModelByName(nameModel);
+        if(!isNull(idModel)){
+            MeterModel model = getMeterModelById(idModel);
             addEnergyMeterToModel(energyMeter,model);
             energyMeter.setModel(model);
         }
-        if(!isNull(nameBrand) || !isNull(nameModel)) {
+        if(!isNull(idBrand) || !isNull(idModel)) {
             energyMeterRepository.save(energyMeter);
         }
     }
@@ -104,16 +105,16 @@ public class EnergyMeterService {
                 .build();
     }
 
-    public void deleteMeterBrandByName(String nameBrand) {
-        meterBrandRepository.delete( getMeterBrandByName(nameBrand) );
+    public void deleteMeterBrandById(Integer idBrand) {
+        meterBrandRepository.delete( getMeterBrandById(idBrand) );
     }
 
     public List<MeterBrand> getAllMeterBrands(){
         return meterBrandRepository.findAll();
     }
 
-    public MeterBrand getMeterBrandByName(String name) {
-        return meterBrandRepository.findById(name)
+    public MeterBrand getMeterBrandById(Integer id) {
+        return meterBrandRepository.findById(id)
             .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
@@ -132,8 +133,8 @@ public class EnergyMeterService {
                 .build();
     }
 
-    public PostResponse deleteMeterModelByName(String nameModel) {
-        meterModelRepository.delete( getMeterModelByName(nameModel) );
+    public PostResponse deleteMeterModelById(Integer idModel) {
+        meterModelRepository.delete( getMeterModelById(idModel) );
         return PostResponse.builder()
                 .status(HttpStatus.OK)
                 .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH))
@@ -144,8 +145,8 @@ public class EnergyMeterService {
         return meterModelRepository.findAll();
     }
 
-    public MeterModel getMeterModelByName(String name) {
-        return meterModelRepository.findById(name)
+    public MeterModel getMeterModelById(Integer id) {
+        return meterModelRepository.findById(id)
             .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 

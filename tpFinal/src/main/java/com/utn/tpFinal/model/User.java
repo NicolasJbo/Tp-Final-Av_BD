@@ -24,7 +24,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-
+    @Column(unique = true)
     @Email(message = "INVALID type of Email.")
     private String mail;
 

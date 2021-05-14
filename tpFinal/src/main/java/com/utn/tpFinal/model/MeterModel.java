@@ -20,7 +20,11 @@ import java.util.List;
 public class MeterModel {
 
     @Id
-    @NotNull(message = "Name MUST be completedf.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
+    @NotNull(message = "Name MUST be completed.")
     private String name;
 
     @OneToMany(mappedBy = "model")

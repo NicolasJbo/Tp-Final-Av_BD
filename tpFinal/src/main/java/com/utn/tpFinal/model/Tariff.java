@@ -23,8 +23,13 @@ import java.util.List;
 public class Tariff {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
     @Size(min = 1, max = 2 ,message = "The name MUST be at least 2 character.")
     private String name;
+
     @NotNull(message = "Amount MUST be completed.")
     @Positive(message = "Amount Must be positive number")
     private Float amount;

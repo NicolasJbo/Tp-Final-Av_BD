@@ -56,18 +56,24 @@ public class ResidenceController {
     }
 
     @PutMapping("/{idResidence}/tariff/{idTariff}")
-    public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable String idTariff ){
+    public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ){
         residenceService.addTariffToResidence(idResidence,idTariff);
     }
+
     @PutMapping("/{idResidence}")
     public ResponseEntity modifyResidence(@PathVariable Integer idResidence,@RequestBody Residence residence) throws ExceptionDiferentId {
         Residence res= residenceService.modifyResidence(idResidence,residence);
         //todo ¿PUEDO CAMBIAR EL MEDIDOR ? o solo se cambia cuando el medidor es modificado
-        return ResponseEntity.status(HttpStatus.OK).header("Class Modify",res.getClass().getSimpleName()).build();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Class Modify",res.getClass().getSimpleName())
+                .build();
     }
+
     @DeleteMapping("/{idResidence}")
-    public PostResponse removeResidenceById(@PathVariable Integer idResidence){
-        return residenceService.removeResidenceById(idResidence);
+    public ResponseEntity removeResidenceById(@PathVariable Integer idResidence){
+        residenceService.removeResidenceById(idResidence);
+        return ResponseEntity.ok().build();
     }
 
 }

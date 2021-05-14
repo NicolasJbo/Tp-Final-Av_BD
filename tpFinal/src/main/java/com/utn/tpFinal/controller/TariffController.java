@@ -30,16 +30,16 @@ public class TariffController {
         return tariffService.getAll();
     }
 
-    @GetMapping("/{nameTariff}/residences")
-    public List<Residence> getResidencesByTariff(@PathVariable String nameTariff) {
-        return tariffService.getResidencesByTariff(nameTariff);
+    @GetMapping("/{idTariff}/residences")
+    public List<Residence> getResidencesByTariff(@PathVariable Integer idTariff) {
+        return tariffService.getResidencesByTariff(idTariff);
     }
     @DeleteMapping("/{idTariff}")
-    public PostResponse removeTariffById(@PathVariable String idTariff ){
+    public PostResponse removeTariffById(@PathVariable Integer idTariff ){
         return tariffService.removeTariffById(idTariff);
     }
     @PutMapping("/{idTariff}")
-    public ResponseEntity modifyTariff(@PathVariable String idTariff,@RequestBody Tariff tariff) throws ExceptionDiferentId {
+    public ResponseEntity modifyTariff(@PathVariable Integer idTariff,@RequestBody Tariff tariff) throws ExceptionDiferentId {
         Tariff tar= tariffService.modifyTariff(idTariff,tariff);
         //todo Agregar bien el header
         return ResponseEntity.status(HttpStatus.OK)

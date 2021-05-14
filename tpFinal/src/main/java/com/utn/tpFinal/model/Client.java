@@ -24,6 +24,7 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(unique = true)
     @NotEmpty(message = "The client MUST have dni.")
     private String dni;
 

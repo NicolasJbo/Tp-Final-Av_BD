@@ -27,8 +27,6 @@ import java.util.List;
 @RequestMapping("/client")
 public class ClientController {
 
-    private static final String CLIENT_PATH ="client";
-
     @Autowired
     private ClientService clientService;
 

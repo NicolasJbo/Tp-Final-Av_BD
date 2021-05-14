@@ -31,8 +31,8 @@ public class TariffService {
 
     }
 
-    public Tariff getTariffById(String name) {
-        return tariffRepository.findById(name)
+    public Tariff getTariffById(Integer id) {
+        return tariffRepository.findById(id)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
@@ -45,12 +45,12 @@ public class TariffService {
         tariffRepository.save(tariff);
     }
 
-    public List<Residence> getResidencesByTariff(String nameTariff) {
-        Tariff tariff = getTariffById(nameTariff);
+    public List<Residence> getResidencesByTariff(Integer idTariff) {
+        Tariff tariff = getTariffById(idTariff);
         return tariff.getResidencesList();
     }
 
-    public PostResponse removeTariffById(String idTariff) {
+    public PostResponse removeTariffById(Integer idTariff) {
         tariffRepository.deleteById(idTariff);
         return PostResponse.builder()
                 .status(HttpStatus.OK)
@@ -58,15 +58,13 @@ public class TariffService {
                 .build();
     }
 
-    public Tariff modifyTariff(String idTariff,Tariff tariff) throws ExceptionDiferentId {
+    public Tariff modifyTariff(Integer idTariff,Tariff tariff) throws ExceptionDiferentId {
         Tariff tar= getTariffById(idTariff);
         //si la Id no coinciden no hace el cambio del precio
         if(!tar.getName().equals(tariff.getName())){
             throw  ExceptionDiferentId.builder().route(this.getClass().getName()).method("modifyTariff").build();
         }
-
         tar=tariff;
         return tariffRepository.save(tar);
-
     }
 }

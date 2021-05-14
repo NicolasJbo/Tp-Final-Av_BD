@@ -23,6 +23,7 @@ public class Residence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @NotNull(message = "Street MUST be completed.")
     private String street;
     @NotNull(message = "Number MUST be completed.")

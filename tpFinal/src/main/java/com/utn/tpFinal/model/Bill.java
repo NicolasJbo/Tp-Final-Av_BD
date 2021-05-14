@@ -30,11 +30,11 @@ public class Bill {
     private Date expirationDate;
 
     @ManyToOne
-    @JoinColumn(name="idTariff")
+    @JoinColumn(name="id_tariff")
     private Tariff tariff;
 
     @ManyToOne
-    @JoinColumn(name="idEnergyMeter")
+    @JoinColumn(name="id_energyMeter")
     private EnergyMeter energyMeter;
 
     @ManyToOne

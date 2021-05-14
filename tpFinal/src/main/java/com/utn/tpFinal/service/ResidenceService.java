@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -76,7 +77,7 @@ public class ResidenceService {
         residenceRepository.save(residence);
     }
 
-    public void addTariffToResidence(Integer idResidence, String idTariff) {
+    public void addTariffToResidence(Integer idResidence, Integer idTariff) {
         Residence residence = getResidenceById(idResidence);
         //retrive the Tariff to add at the residence
         Tariff tariff= tariffService.getTariffById(idTariff);
@@ -88,12 +89,8 @@ public class ResidenceService {
 
     }
 
-    public PostResponse removeResidenceById(Integer idResidence) {
+    public void removeResidenceById(Integer idResidence) {
         residenceRepository.deleteById(idResidence);
-        return PostResponse.builder()
-                .status(HttpStatus.OK)
-                .url(EntityURLBuilder.buildUrl(RESIDENCE_PATH))
-                .build();
     }
 
     public Residence modifyResidence(Integer idResidence, Residence residence) throws ExceptionDiferentId {
