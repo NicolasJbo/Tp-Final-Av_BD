@@ -1,5 +1,6 @@
 package com.utn.tpFinal.service;
 
+import com.utn.tpFinal.exception.ExceptionDiferentId;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import com.utn.tpFinal.util.EntityURLBuilder;
@@ -93,5 +94,15 @@ public class ResidenceService {
                 .status(HttpStatus.OK)
                 .url(EntityURLBuilder.buildUrl(RESIDENCE_PATH))
                 .build();
+    }
+
+    public Residence modifyResidence(Integer idResidence, Residence residence) throws ExceptionDiferentId {
+        Residence res= getResidenceById(idResidence);
+
+        if(res.getId() != residence.getId()){
+            throw new ExceptionDiferentId(this.getClass().getName());
+        }
+        res=residence;
+        return  residenceRepository.save(res);
     }
 }

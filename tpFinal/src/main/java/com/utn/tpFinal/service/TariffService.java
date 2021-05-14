@@ -1,5 +1,6 @@
 package com.utn.tpFinal.service;
 
+import com.utn.tpFinal.exception.ExceptionDiferentId;
 import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
@@ -55,5 +56,16 @@ public class TariffService {
                 .status(HttpStatus.OK)
                 .url(EntityURLBuilder.buildUrl(TARIFF_PATH))
                 .build();
+    }
+
+    public Tariff modifyTariff(String idTariff,Tariff tariff) throws ExceptionDiferentId {
+        Tariff tar= getTariffById(idTariff);
+        //si la Id no coinciden no hace el cambio del precio
+        if(!tar.getName().equals(tariff.getName())){
+            throw new ExceptionDiferentId(this.getClass().getName());
+        }
+        tar=tariff;
+        return tariffRepository.save(tar);
+
     }
 }

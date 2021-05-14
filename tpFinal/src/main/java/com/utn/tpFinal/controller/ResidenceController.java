@@ -1,5 +1,6 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.exception.ExceptionDiferentId;
 import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
@@ -57,6 +58,12 @@ public class ResidenceController {
     @PutMapping("/{idResidence}/tariff/{idTariff}")
     public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable String idTariff ){
         residenceService.addTariffToResidence(idResidence,idTariff);
+    }
+    @PutMapping("/{idResidence}")
+    public ResponseEntity modifyResidence(@PathVariable Integer idResidence,@RequestBody Residence residence) throws ExceptionDiferentId {
+        Residence res= residenceService.modifyResidence(idResidence,residence);
+        //todo ¿PUEDO CAMBIAR EL MEDIDOR ? o solo se cambia cuando el medidor es modificado
+        return ResponseEntity.status(HttpStatus.OK).header("Class Modify",res.getClass().getSimpleName()).build();
     }
     @DeleteMapping("/{idResidence}")
     public PostResponse removeResidenceById(@PathVariable Integer idResidence){

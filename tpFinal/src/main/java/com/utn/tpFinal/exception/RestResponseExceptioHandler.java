@@ -31,6 +31,15 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<Object>(apiError ,new HttpHeaders(),apiError.getHttpStatus());
 
     }
+    @ExceptionHandler({ExceptionDiferentId.class})
+    public ResponseEntity<Object> handlerContraintViolation(ExceptionDiferentId ex , WebRequest request){
+        List<String> errors = new ArrayList<>();
+        errors.add("Route: "+ ex.getRoute());
+        ApiError apiError= new ApiError(HttpStatus.BAD_REQUEST,ex.getLocalizedMessage() ,errors);
+
+        return new ResponseEntity<Object>(apiError ,new HttpHeaders(),apiError.getHttpStatus());
+
+    }
 
 
 }
