@@ -7,6 +7,10 @@ import com.utn.tpFinal.repository.MeterModelRepository;
 import com.utn.tpFinal.util.EntityURLBuilder;
 import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -53,9 +57,19 @@ public class EnergyMeterService {
 
     public List<EnergyMeter> getAllEnergyMeters(String serialNumber) {
         if(isNull(serialNumber))
-            return energyMeterRepository.findAll();
+            return  energyMeterRepository.findAll();
         else
             return energyMeterRepository.findBySerialNumber(serialNumber);
+    }
+
+    public Page<EnergyMeter> getAllEnergyMeters(String serialNumber, Integer pageNumber, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<EnergyMeter> pagedResult;
+        if(isNull(serialNumber))
+            pagedResult =  energyMeterRepository.findAll(pageable);
+        else
+            pagedResult =  energyMeterRepository.findBySerialNumber(serialNumber,pageable);
+        return pagedResult;
     }
 
     public List<EnergyMeter> getEnergyMetersByBrand(Integer idBrand) {

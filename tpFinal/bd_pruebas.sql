@@ -52,7 +52,7 @@ WHERE b.initial_date BETWEEN "2021-01-01" AND "2021-05-01"
 DELIMITER //
 CREATE PROCEDURE getBillsByDates(IN first_date DATETIME, IN last_date DATETIME)
 BEGIN 
-    IF( last_date > first_date) THEN
+    IF( first_date > last_date ) THEN
 		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The entered dates are invalid';
 	ELSE 
 		SELECT b.id, b.is_paid, b.initial_medition, b.initial_date, b.final_medition, 
@@ -61,4 +61,5 @@ BEGIN
 		FROM bills AS b
 		WHERE b.initial_date BETWEEN first_date AND last_date
 	END IF;
-END //
+END;
+//

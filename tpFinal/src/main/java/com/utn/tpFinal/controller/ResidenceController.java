@@ -1,6 +1,7 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.exception.ExceptionDiferentId;
+import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
@@ -33,8 +34,9 @@ public class ResidenceController {
         return ResponseEntity.created(location).build();
     }
 
+
     @GetMapping
-    public ResponseEntity <List<Residence>> getAll(@RequestParam(required = false) String street,
+    public ResponseEntity<List<Residence>> getAll(@RequestParam(required = false) String street,
                                                    @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
                                                    @RequestParam(defaultValue = "5", required = false) Integer pageSize,
                                                    @RequestParam(defaultValue = "id", required = false) String sortBy) {

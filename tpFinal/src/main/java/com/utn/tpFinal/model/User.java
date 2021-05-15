@@ -28,7 +28,6 @@ public class User {
     @Email(message = "INVALID type of Email.")
     private String mail;
 
-
     @Size(min = 3,message = "Password characters MIN= 3 .")
     private String password;
 
