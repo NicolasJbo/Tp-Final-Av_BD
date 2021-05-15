@@ -47,12 +47,11 @@ public class ClientService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         Page<Client> pagedResult;
 
-        if(isNull(name)) {
+        if(isNull(name))
             pagedResult = clientRepository.findAll(pageable);
-        }
-        else {
+        else
             pagedResult = clientRepository.findByName(name,pageable);
-        }
+
         return pagedResult;
     }
 
