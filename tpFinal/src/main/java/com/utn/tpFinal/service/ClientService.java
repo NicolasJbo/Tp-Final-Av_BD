@@ -1,12 +1,8 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.User;
-import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.repository.ClientRepository;
-import com.utn.tpFinal.repository.ResidenceRepository;
-import com.utn.tpFinal.util.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,14 +23,14 @@ public class ClientService {
     private static final String CLIENT_PATH ="client";
 
     private ClientRepository clientRepository;
-    private ResidenceRepository residenceRepository;
     private ResidenceService residenceService;
+    private BillService billService;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, ResidenceService residenceService,ResidenceRepository residenceRepository) {
+    public ClientService(ClientRepository clientRepository, ResidenceService residenceService) {
         this.clientRepository = clientRepository;
         this.residenceService = residenceService;
-        this.residenceRepository = residenceRepository;
+
     }
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------

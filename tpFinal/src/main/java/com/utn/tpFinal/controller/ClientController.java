@@ -1,5 +1,6 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.User;
 import com.utn.tpFinal.model.dto.ClientDto;
@@ -82,7 +83,7 @@ public class ClientController {
 
     @DeleteMapping("{idClient}")
     public ResponseEntity deleteClientById(@PathVariable Integer idClient){
-       clientService.deleteClientById(idClient);
+        clientService.deleteClientById(idClient);
        return ResponseEntity.ok().build();
     }
 

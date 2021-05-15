@@ -1,5 +1,6 @@
 package com.utn.tpFinal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,14 +30,17 @@ public class Bill {
     private Float finalAmount;
     private Date expirationDate;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="id_tariff")
     private Tariff tariff;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="id_energyMeter")
     private EnergyMeter energyMeter;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="id_residence")
     private Residence residence;
