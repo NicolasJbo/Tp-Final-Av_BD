@@ -57,6 +57,10 @@ public class ClientService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
+    public Boolean clientExists(Integer id) {
+        return clientRepository.existsById(id);
+    }
+
     public void addResidenceToClient(Integer idClient, Integer idResidence) {
         Client c = getClientById(idClient);
         Residence r = residenceService.getResidenceById(idResidence);

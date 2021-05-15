@@ -39,7 +39,7 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
 
         ApiError apiError= new ApiError(HttpStatus.BAD_REQUEST,ex.getLocalizedMessage() ,errors);
 
-        return new ResponseEntity<Object>(apiError ,new HttpHeaders(),apiError.getHttpStatus());
+        return new ResponseEntity(apiError ,new HttpHeaders(),apiError.getHttpStatus());
 
     }
 
