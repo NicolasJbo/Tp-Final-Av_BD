@@ -38,6 +38,7 @@ public class Residence {
     @JoinColumn(name="id_client")
     private Client client;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "residence")
     private List<Bill> bill;
 

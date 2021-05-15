@@ -19,8 +19,8 @@ public class BillService {
     @Autowired
     BillRepository billRepository;
 
-    public List<Bill> getBillsByDates(Date from, Date to) {
-        return billRepository.getBillsByDate(from,to);
+    public List<Bill> getClientBillsByDates(Integer idClient, Date from, Date to) {
+        return billRepository.getClientBillsByDate(idClient,from,to);
 
     }
 }

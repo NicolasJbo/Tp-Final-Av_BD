@@ -26,10 +26,11 @@ public class BillController {
 
 //  [PROG - PUNTO 2] Consulta de facturas con rango de fechas
     @GetMapping
-    List<Bill> getBillsByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
+    List<Bill> getClientBillsByDates(@RequestParam Integer idClient,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
 
-        return billService.getBillsByDates(from, to);
+        return billService.getClientBillsByDates(idClient,from, to);
         /*return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
                 .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
