@@ -41,10 +41,8 @@ public class ResidenceService {
     }
 
     public Page<Residence> getAll( String street, Integer pageNumber,Integer pageSize,String sortBy) {
-
-            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-            Page<Residence> pagedResult;
-
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<Residence> pagedResult;
 
         if(isNull(street))
           pagedResult= residenceRepository.findAll(pageable);

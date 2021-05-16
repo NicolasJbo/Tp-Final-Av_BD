@@ -21,6 +21,7 @@ public class EnergyMeterDto {
     private String brandName;
     private String modelName;
 
+
     public static EnergyMeterDto from (EnergyMeter energyMeter){
         return EnergyMeterDto.builder()
                 .serialNumber(energyMeter.getSerialNumber())
@@ -29,10 +30,10 @@ public class EnergyMeterDto {
                 .build();
     }
 
-    public static List<EnergyMeterDto> from (List<EnergyMeter> listenergyMeter){
+    public static List<EnergyMeterDto> from (List<EnergyMeter> listEnergyMeter){
         List<EnergyMeterDto> listDto = new ArrayList<EnergyMeterDto>();
 
-        for(EnergyMeter e : listenergyMeter)
+        for(EnergyMeter e : listEnergyMeter)
             listDto.add(EnergyMeterDto.from(e));
 
         return listDto;

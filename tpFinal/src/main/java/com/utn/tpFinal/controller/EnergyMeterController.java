@@ -27,17 +27,17 @@ public class EnergyMeterController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EnergyMeter>>getAllEnergyMeters(@RequestParam(required = false) String serialNumber,
+    public ResponseEntity<List<EnergyMeterDto>>getAllEnergyMeters(@RequestParam(required = false) String serialNumber,
                                                               @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
                                                               @RequestParam(defaultValue = "5", required = false) Integer pageSize,
                                                               @RequestParam(defaultValue = "id", required = false) String sortBy){
         Page<EnergyMeter> meters = energyMeterService.getAllEnergyMeters(serialNumber, pageNumber, pageSize, sortBy);
-
+        Page<EnergyMeterDto>dtoMeters = meters.map(m-> EnergyMeterDto.from(m));
         return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(meters.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(meters.getTotalPages()))
+                .header("X-Total-Elements", Long.toString(dtoMeters.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(dtoMeters.getTotalPages()))
                 .header("X-Actual-Page", Integer.toString(pageNumber))
-                .body(meters.getContent());
+                .body(dtoMeters.getContent());
     }
 
     @PutMapping("/{id}/brand/{idBrand}/model/{idModel}")

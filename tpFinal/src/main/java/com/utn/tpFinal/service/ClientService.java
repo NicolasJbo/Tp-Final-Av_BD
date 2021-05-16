@@ -2,6 +2,7 @@ package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
+import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,7 @@ public class ClientService {
 
         return pagedResult;
     }
+
 
 
     public Client getClientById(Integer id) {

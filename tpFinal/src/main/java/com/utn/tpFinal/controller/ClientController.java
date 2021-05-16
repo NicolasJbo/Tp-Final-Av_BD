@@ -43,7 +43,7 @@ public class ClientController {
        return ResponseEntity.created(location).build();
     }
 
-    @GetMapping
+   /* @GetMapping
     public ResponseEntity<List<Client>> getAllClients(@RequestParam(required = false) String name,
                                                       @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
                                                       @RequestParam(defaultValue = "5", required = false) Integer pageSize,
@@ -56,8 +56,22 @@ public class ClientController {
                 .header("X-Total-Pages", Long.toString(clients.getTotalPages()))
                 .header("X-Actual-Page", Integer.toString(pageNumber))
                 .body(clients.getContent());
-    }
+    }*/
 
+    @GetMapping
+    public ResponseEntity<List<ClientDto>> getAllClients(@RequestParam(required = false) String name,
+                                                      @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
+                                                      @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+                                                      @RequestParam(defaultValue = "id", required = false) String sortBy){
+
+        Page<Client> clients = clientService.getAll(name, pageNumber, pageSize, sortBy);
+        Page<ClientDto> dtoClients = clients.map(c -> ClientDto.fromWithOutResidences(c));
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(dtoClients.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(dtoClients.getTotalPages()))
+                .header("X-Actual-Page", Integer.toString(pageNumber))
+                .body(dtoClients.getContent());
+    }
 
     @GetMapping("/{idClient}")
     public ResponseEntity<ClientDto> getClientById (@PathVariable Integer idClient){
