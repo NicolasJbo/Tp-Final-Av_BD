@@ -65,9 +65,8 @@ public class ResidenceController {
     }
 
     @PutMapping("/{idResidence}")
-    public ResponseEntity modifyResidence(@PathVariable Integer idResidence,@RequestBody Residence residence) throws ExceptionDiferentId {
-        Residence res= residenceService.modifyResidence(idResidence,residence);
-        //todo ¿PUEDO CAMBIAR EL MEDIDOR ? o solo se cambia cuando el medidor es modificado
+    public ResponseEntity modifyResidence(@RequestBody Residence residence)  {
+        Residence res= residenceService.modifyResidence(residence);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Class Modify",res.getClass().getSimpleName())

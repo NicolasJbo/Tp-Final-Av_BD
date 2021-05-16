@@ -1,5 +1,6 @@
 package com.utn.tpFinal.service;
 
+import com.utn.tpFinal.exception.IncorrectDatesException;
 import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.proyection.Consumption;
 import com.utn.tpFinal.repository.BillRepository;
@@ -17,10 +18,9 @@ public class BillService {
     @Autowired
     ClientService clientService;
 
-    public List<Bill> getClientBillsByDates(Integer idClient, Date from, Date to) {
+    public List<Bill> getClientBillsByDates(Integer idClient, Date from, Date to) throws IncorrectDatesException {
         if(from.after(to)){
-            //todo exception
-            //throws IncorrectDatesException.builder().method(this.getClass().getEnclosingMethod().getName()).route();
+            throw IncorrectDatesException.builder().route(this.getClass().getSimpleName()).method("getClientBillByDates").build();
         }
         return billRepository.getClientBillsByDate(idClient,from,to);
     }
@@ -32,10 +32,9 @@ public class BillService {
             //404
     }
 
-    public Consumption getClientTotalEnergyAndAmountByDates(Integer idClient, Date from, Date to) {
+    public Consumption getClientTotalEnergyAndAmountByDates(Integer idClient, Date from, Date to) throws IncorrectDatesException {
         if(from.after(to)){
-            //todo exception
-            //throws IncorrectDatesException.builder().method(this.getClass().getEnclosingMethod().getName()).route();
+            throw IncorrectDatesException.builder().route(this.getClass().getSimpleName()).method("getClientBillByDates").build();
         }
         return billRepository.getClientTotalEnergyAndAmountByDates(idClient,from,to);
     }

@@ -2,7 +2,7 @@ package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.dto.ClientDto;
+import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 
+import java.util.Date;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -78,6 +79,10 @@ public class ClientService {
 
     public void deleteClientById(Integer idClient) {
         clientRepository.deleteById(idClient);
+    }
+
+    public Top10Clients getTop10(Date from, Date to) {
+        return clientRepository.getTop10Clients(from,to);
     }
 
 }

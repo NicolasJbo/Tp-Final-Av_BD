@@ -1,27 +1,21 @@
 package com.utn.tpFinal.controller;
 
-import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.User;
 import com.utn.tpFinal.model.dto.ClientDto;
-import com.utn.tpFinal.util.EntityURLBuilder;
-import com.utn.tpFinal.util.PostResponse;
+import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ClientService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
-import javax.swing.text.html.parser.Entity;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -100,6 +94,13 @@ public class ClientController {
         clientService.deleteClientById(idClient);
        return ResponseEntity.ok().build();
     }
+    @GetMapping("/top10")
+    public Top10Clients getTop10(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                 @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
+      return clientService.getTop10(from,to);
+    }
+
+
 
 
 

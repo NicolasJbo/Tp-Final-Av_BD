@@ -38,13 +38,11 @@ public class TariffController {
     public PostResponse removeTariffById(@PathVariable Integer idTariff ){
         return tariffService.removeTariffById(idTariff);
     }
-    @PutMapping("/{idTariff}")
-    public ResponseEntity modifyTariff(@PathVariable Integer idTariff,@RequestBody Tariff tariff) throws ExceptionDiferentId {
-        Tariff tar= tariffService.modifyTariff(idTariff,tariff);
-        //todo Agregar bien el header
+    @PutMapping("")
+    public ResponseEntity modifyTariff(@RequestBody Tariff tariff)  {
+        Tariff tar= tariffService.modifyTariff(tariff);
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Class modify",tar.getClass().getSimpleName())
-                //.header("Amount",String.valueOf(tar.getAmount()))
                 .build();
     }
 

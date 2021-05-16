@@ -91,12 +91,8 @@ public class ResidenceService {
         residenceRepository.deleteById(idResidence);
     }
 
-    public Residence modifyResidence(Integer idResidence, Residence residence) throws ExceptionDiferentId {
-        Residence res= getResidenceById(idResidence);
-
-        if(res.getId() != residence.getId()){
-            throw  ExceptionDiferentId.builder().route(this.getClass().getName()).method("modifyResidence").build();
-        }
+    public Residence modifyResidence(Residence residence)  {
+        Residence res= getResidenceById(residence.getId());
         res=residence;
         return  residenceRepository.save(res);
     }

@@ -1,5 +1,6 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.exception.IncorrectDatesException;
 import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.proyection.Consumption;
 import com.utn.tpFinal.service.BillService;
@@ -24,7 +25,7 @@ public class BillController {
     @GetMapping
     List<Bill> getClientBillsByDates(@RequestParam Integer idClient,
                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
 
         return billService.getClientBillsByDates(idClient,from, to);
         /*return ResponseEntity.status(HttpStatus.OK)
@@ -42,7 +43,7 @@ public class BillController {
     @GetMapping("/{idClient}/consumption/")
     public Consumption getClientTotalEnergyByAndAmountDates(@PathVariable Integer idClient,
                                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
+                                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
         Consumption c = billService.getClientTotalEnergyAndAmountByDates(idClient, from, to);
         return c;
     }

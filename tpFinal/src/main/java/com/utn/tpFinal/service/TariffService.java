@@ -58,12 +58,8 @@ public class TariffService {
                 .build();
     }
 
-    public Tariff modifyTariff(Integer idTariff,Tariff tariff) throws ExceptionDiferentId {
-        Tariff tar= getTariffById(idTariff);
-        //si la Id no coinciden no hace el cambio del precio
-        if(!tar.getName().equals(tariff.getName())){
-            throw  ExceptionDiferentId.builder().route(this.getClass().getName()).method("modifyTariff").build();
-        }
+    public Tariff modifyTariff(Tariff tariff)  {
+        Tariff tar= getTariffById(tariff.getId());
         tar=tariff;
         return tariffRepository.save(tar);
     }
