@@ -5,8 +5,8 @@ BEGIN
     IF( first_date > last_date ) THEN
 		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The entered dates are invalid';
 ELSE
-SELECT c.name,c.last_name,
-       SUM(p.Final)AS TotalConsumo
+SELECT c.name as Name,c.last_name as LastName,
+       SUM(p.Final)AS Total
 FROM clients c
          JOIN(
     SELECT m.total,m.id_residence ,r.id_client,
