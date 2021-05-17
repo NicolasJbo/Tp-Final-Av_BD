@@ -95,8 +95,8 @@ public class ClientController {
        return ResponseEntity.ok().build();
     }
     @GetMapping("/top10")
-    public Top10Clients getTop10(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                 @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
+    public List<Top10Clients> getTop10(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
       return clientService.getTop10(from,to);
     }
 

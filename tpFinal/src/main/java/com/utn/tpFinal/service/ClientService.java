@@ -81,7 +81,7 @@ public class ClientService {
         clientRepository.deleteById(idClient);
     }
 
-    public Top10Clients getTop10(Date from, Date to) {
+    public List<Top10Clients> getTop10(Date from, Date to) {
         return clientRepository.getTop10Clients(from,to);
     }
 

@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 public interface Top10Clients {
 
 
-    String getClientName();
-    String getClientLastName();
+    String getName();
+    String getLastName();
     Float getTotal();
 
 }

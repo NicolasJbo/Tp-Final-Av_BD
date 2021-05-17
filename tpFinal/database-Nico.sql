@@ -5,7 +5,7 @@ BEGIN
     IF( first_date > last_date ) THEN
 		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The entered dates are invalid';
 ELSE
-SELECT c.name as Name,c.last_name as LastName,
+SELECT c.name AS NAME,c.last_name AS LastName,
        SUM(p.Final)AS Total
 FROM clients c
          JOIN(
@@ -20,7 +20,9 @@ FROM clients c
     ORDER BY m.id_residence ASC)p
              ON c.id=p.id_client
 GROUP BY c.name,c.last_name
+ORDER BY Total DESC
     LIMIT 0,10;
 END IF;
 END;
 //
+

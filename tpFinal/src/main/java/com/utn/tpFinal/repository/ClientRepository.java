@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer>
@@ -18,7 +19,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer>
     Page<Client> findByName(String name, Pageable pageable);
 
     @Query(value = "CALL getTop10Clients(:from,:to)", nativeQuery = true)
-    Top10Clients getTop10Clients(Date from, Date to);
+   List<Top10Clients> getTop10Clients(Date from, Date to);
 
 
 }
