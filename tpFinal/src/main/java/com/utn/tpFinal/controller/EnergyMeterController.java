@@ -5,8 +5,13 @@ import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.service.EnergyMeterService;
 import com.utn.tpFinal.util.PostResponse;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +30,20 @@ public class EnergyMeterController {
     public PostResponse addEnergyMeter (@RequestBody EnergyMeter energyMeter){
        return energyMeterService.addEnergyMeter(energyMeter);
     }
-
     @GetMapping
-    public ResponseEntity<List<EnergyMeterDto>>getAllEnergyMeters(@RequestParam(required = false) String serialNumber,
-                                                              @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
-                                                              @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-                                                              @RequestParam(defaultValue = "id", required = false) String sortBy){
-        Page<EnergyMeter> meters = energyMeterService.getAllEnergyMeters(serialNumber, pageNumber, pageSize, sortBy);
-        Page<EnergyMeterDto>dtoMeters = meters.map(m-> EnergyMeterDto.from(m));
+    public ResponseEntity<List<EnergyMeterDto>> getAll(
+            @And({
+                    @Spec(path = "serialNumber", spec = Equal.class),
+                    @Spec(path = "id", spec = Equal.class)
+            }) Specification<EnergyMeter> meterSpecification, Pageable pageable){
+
+        Page<EnergyMeterDto> dtoEnergyMeter = energyMeterService.getAll(meterSpecification, pageable);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(dtoMeters.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(dtoMeters.getTotalPages()))
-                .header("X-Actual-Page", Integer.toString(pageNumber))
-                .body(dtoMeters.getContent());
+                .header("X-Total-Elements", Long.toString(dtoEnergyMeter.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(dtoEnergyMeter.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(pageable.getPageNumber()))
+                .body(dtoEnergyMeter.getContent());
     }
 
     @PutMapping("/{id}/brand/{idBrand}/model/{idModel}")

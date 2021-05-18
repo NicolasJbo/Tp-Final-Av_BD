@@ -2,6 +2,7 @@ package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
+import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -81,8 +84,14 @@ public class ClientService {
         clientRepository.deleteById(idClient);
     }
 
-    public List<Top10Clients> getTop10(Date from, Date to) {
+    public List<Top10Clients> getTop10ConsumerByDates(Date from, Date to) {
         return clientRepository.getTop10Clients(from,to);
     }
 
+    public Page<ClientDto> getAll(Specification<Client> pesonaSpecification, Pageable pageable) {
+           Page<Client>clients = clientRepository.findAll(pesonaSpecification, pageable);
+        Page<ClientDto> dtoClients = clients.map(c -> ClientDto.fromWithOutResidences(c));
+          return dtoClients;
+
+    }
 }

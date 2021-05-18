@@ -1,6 +1,8 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.model.*;
+import com.utn.tpFinal.model.dto.ClientDto;
+import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.MeterBrandRepository;
 import com.utn.tpFinal.repository.MeterModelRepository;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -51,25 +54,10 @@ public class EnergyMeterService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
     }
 
-    public void deleteEnergyMeterById(Integer idEnergyMeter) {
-        energyMeterRepository.delete( getEnergyMeterById(idEnergyMeter) );
-    }
-
-    public List<EnergyMeter> getAllEnergyMeters(String serialNumber) {
-        if(isNull(serialNumber))
-            return  energyMeterRepository.findAll();
-        else
-            return energyMeterRepository.findBySerialNumber(serialNumber);
-    }
-
-    public Page<EnergyMeter> getAllEnergyMeters(String serialNumber, Integer pageNumber, Integer pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        Page<EnergyMeter> pagedResult;
-        if(isNull(serialNumber))
-            pagedResult =  energyMeterRepository.findAll(pageable);
-        else
-            pagedResult =  energyMeterRepository.findBySerialNumber(serialNumber,pageable);
-        return pagedResult;
+    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Pageable pageable) {
+        Page<EnergyMeter>page =energyMeterRepository.findAll(meterSpecification,pageable);
+        Page<EnergyMeterDto>dtoMeters = page.map(m-> EnergyMeterDto.from(m));
+        return  dtoMeters;
     }
 
     public List<EnergyMeter> getEnergyMetersByBrand(Integer idBrand) {
@@ -177,4 +165,6 @@ public class EnergyMeterService {
                 .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH))
                 .build();
     }
+
+
 }

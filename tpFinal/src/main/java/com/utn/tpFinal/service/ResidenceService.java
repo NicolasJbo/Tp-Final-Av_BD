@@ -64,15 +64,16 @@ public class ResidenceService {
     }
 
     public void addEnergyMeterToResidence(Integer idResidence, Integer idEnergyMeter) {
-        Residence residence = getResidenceById(idResidence);
 
-        //retrive the energymeter to add at the residence
         EnergyMeter energyMeter = energyMeterService.getEnergyMeterById(idEnergyMeter);
-        //Add residence to energymeter
-        energyMeterService.addResidenceToMeter(residence,energyMeter);
-        //add the meter to the residence
-        residence.setEnergyMeter(energyMeter);
-        residenceRepository.save(residence);
+        if(energyMeter.getResidence() == null) {
+            Residence residence = getResidenceById(idResidence);
+            energyMeterService.addResidenceToMeter(residence, energyMeter);
+            residence.setEnergyMeter(energyMeter);
+            residenceRepository.save(residence);
+        }
+        //todo hacer Excepcion -Nico
+
     }
 
     public void addTariffToResidence(Integer idResidence, Integer idTariff) {
