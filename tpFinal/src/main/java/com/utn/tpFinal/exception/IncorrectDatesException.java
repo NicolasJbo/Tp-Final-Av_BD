@@ -1,15 +1,19 @@
 package com.utn.tpFinal.exception;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.http.HttpStatus;
 
-@Builder
-public class IncorrectDatesException extends Exception{
-    private String route;
-    private  String method;
 
-    public IncorrectDatesException(String route,String method) {
-        this.route = route;
+
+public class IncorrectDatesException extends CustomGenericException {
+
+    public IncorrectDatesException(String route, String method) {
         this.method=method;
+        this.route=route;
+        this.httpStatus = HttpStatus.BAD_REQUEST;
+
     }
 
     @Override
@@ -17,11 +21,4 @@ public class IncorrectDatesException extends Exception{
         return "The entered dates are invalid.";
     }
 
-    public String getMethod() {
-        return method;
-    }
-
-    public String getRoute() {
-        return this.route;
-    }
 }

@@ -20,7 +20,7 @@ public class BillService {
 
     public List<Bill> getClientBillsByDates(Integer idClient, Date from, Date to) throws IncorrectDatesException {
         if(from.after(to)){
-            throw IncorrectDatesException.builder().route(this.getClass().getSimpleName()).method("getClientBillByDates").build();
+            throw new IncorrectDatesException((String)this.getClass().getSimpleName(),"getClientBillsByDates");
         }
         return billRepository.getClientBillsByDate(idClient,from,to);
     }
@@ -34,7 +34,7 @@ public class BillService {
 
     public Consumption getClientTotalEnergyAndAmountByDates(Integer idClient, Date from, Date to) throws IncorrectDatesException {
         if(from.after(to)){
-            throw IncorrectDatesException.builder().route(this.getClass().getSimpleName()).method("getClientBillByDates").build();
+            throw new IncorrectDatesException(this.getClass().getSimpleName(),"getClientTotalEnergyAndAmountByDates");
         }
         return billRepository.getClientTotalEnergyAndAmountByDates(idClient,from,to);
     }

@@ -1,21 +1,15 @@
 package com.utn.tpFinal.service;
 
-import com.utn.tpFinal.exception.ExceptionDiferentId;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.ResidenceRepository;
-import com.utn.tpFinal.util.EntityURLBuilder;
-import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.List;
 
 import static java.util.Objects.isNull;
 

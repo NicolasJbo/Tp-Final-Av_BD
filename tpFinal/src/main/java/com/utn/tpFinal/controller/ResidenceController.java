@@ -1,10 +1,6 @@
 package com.utn.tpFinal.controller;
 
-import com.utn.tpFinal.exception.ExceptionDiferentId;
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
-import com.utn.tpFinal.util.PostResponse;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
