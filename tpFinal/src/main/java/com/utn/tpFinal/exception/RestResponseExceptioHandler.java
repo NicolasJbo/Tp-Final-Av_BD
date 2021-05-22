@@ -55,12 +55,13 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
     //Genericas
     @ExceptionHandler({CustomGenericException.class})
     public ResponseEntity<Object> handlerContraintViolation(CustomGenericException ex , WebRequest request){
-        List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<String>();
         errors.add("Route: "+ ex.getRoute());
         errors.add("Method: "+ ex.getMethod());
         ApiError apiError= new ApiError(ex.getHttpStatus(),ex.getLocalizedMessage() ,errors);
         return new ResponseEntity(apiError ,new HttpHeaders(),apiError.getHttpStatus());
     }
+
 
 
 

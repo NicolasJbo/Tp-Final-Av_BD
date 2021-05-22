@@ -1,9 +1,16 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.exception.IncorrectDatesException;
+import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.Measure;
+import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
+import com.utn.tpFinal.model.proyection.Consumption;
+import com.utn.tpFinal.model.proyection.MeasureProyection;
 import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.model.Residence;
+import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -27,8 +34,14 @@ import java.util.List;
 @RequestMapping("/client")
 public class ClientController {
 
-    @Autowired
     private ClientService clientService;
+    private BillService billService;
+
+    @Autowired
+    public ClientController(ClientService clientService, BillService billService) {
+        this.clientService = clientService;
+        this.billService = billService;
+    }
 
     @PostMapping
     public ResponseEntity addClient(@RequestBody Client client){
@@ -49,9 +62,9 @@ public class ClientController {
                     @Spec(path = "lastName", spec = Equal.class),
                     @Spec(path="dni", spec = Equal.class),
                     @Spec(path = "birthday", spec = Equal.class)
-            }) Specification<Client> pesonaSpecification, Pageable pageable){
+            }) Specification<Client> clientSpecification, Pageable pageable){
 
-        Page<ClientDto> dtoClients = clientService.getAll(pesonaSpecification, pageable);
+        Page<ClientDto> dtoClients = clientService.getAll(clientSpecification, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Elements", Long.toString(dtoClients.getTotalElements()))
@@ -89,8 +102,51 @@ public class ClientController {
     }
 
 
+//--------------------------- BILLS --------------------------------------------
 
+    //  [PROG - PUNTO 2] Consulta de facturas con rango de fechas
+    @GetMapping("/{idClient}/bills")
+    public ResponseEntity<List<BillDto>> getClientBillsByDates(@PathVariable Integer idClient,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
 
+        List<BillDto> bills = billService.getClientBillsByDates(idClient,from, to);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.stream().count()))
+                //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                //.header("X-Actual-Page", Integer.toString(pageNumber))
+                .body(bills);
+    }
+
+    @GetMapping("/{idClient}/bills/unpaid")
+    public ResponseEntity<List<BillDto>> getClientUnpaidBills(@PathVariable Integer idClient){
+        List<BillDto> bills = billService.getClientUnpaidBills(idClient);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.stream().count()))
+                //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                //.header("X-Actual-Page", Integer.toString(pageNumber))
+                .body(bills);
+    }
+
+    @GetMapping("/{idClient}/consumption")
+    public ResponseEntity<Consumption> getClientTotalEnergyByAndAmountDates(@PathVariable Integer idClient,
+                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
+        Consumption consumption = billService.getClientTotalEnergyAndAmountByDates(idClient, from, to);
+        return ResponseEntity.status(HttpStatus.OK).body(consumption);
+    }
+
+    @GetMapping("/{idClient}/measures")
+    public ResponseEntity<List<MeasureProyection>> getClientMeasuresByDates(@PathVariable Integer idClient,
+                                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
+        List<MeasureProyection> measures = billService.getClientMeasuresByDates(idClient, from, to);
+        return ResponseEntity.status(HttpStatus.OK)
+                //.header("X-Total-Elements", Long.toString(measures.stream().count()))
+                //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                //.header("X-Actual-Page", Integer.toString(pageNumber))
+                .body(measures);
+    }
 
 
 }

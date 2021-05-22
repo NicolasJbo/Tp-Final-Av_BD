@@ -87,7 +87,7 @@ public class EnergyMeterService {
         }
     }
 
-    public  void addResidenceToMeter(Residence residence,EnergyMeter energyMeter){
+    public void addResidenceToMeter(Residence residence,EnergyMeter energyMeter){
         energyMeter.setResidence(residence);
         energyMeterRepository.save(energyMeter);
     }
@@ -98,18 +98,6 @@ public class EnergyMeterService {
         return energyMeter.getResidence();
     }
 //-------------------------------------------->> BRAND <<--------------------------------------------
-
-    public PostResponse addMeterBrand(MeterBrand brand) {
-        meterBrandRepository.save(brand);
-        return PostResponse.builder()
-                .status(HttpStatus.CREATED)
-                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH,brand.getName()))
-                .build();
-    }
-
-    public void deleteMeterBrandById(Integer idBrand) {
-        meterBrandRepository.delete( getMeterBrandById(idBrand) );
-    }
 
     public List<MeterBrand> getAllMeterBrands(){
         return meterBrandRepository.findAll();
@@ -126,22 +114,6 @@ public class EnergyMeterService {
     }
 
 //-------------------------------------------->> MODEL <<--------------------------------------------
-
-    public PostResponse addMeterModel(MeterModel model) {
-        meterModelRepository.save(model);
-        return PostResponse.builder()
-                .status(HttpStatus.CREATED)
-                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH,model.getName()))
-                .build();
-    }
-
-    public PostResponse deleteMeterModelById(Integer idModel) {
-        meterModelRepository.delete( getMeterModelById(idModel) );
-        return PostResponse.builder()
-                .status(HttpStatus.OK)
-                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH))
-                .build();
-    }
 
     public List<MeterModel> getAllMeterModels() {
         return meterModelRepository.findAll();

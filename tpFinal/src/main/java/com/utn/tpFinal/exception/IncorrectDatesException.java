@@ -1,8 +1,6 @@
 package com.utn.tpFinal.exception;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
 import org.springframework.http.HttpStatus;
 
 

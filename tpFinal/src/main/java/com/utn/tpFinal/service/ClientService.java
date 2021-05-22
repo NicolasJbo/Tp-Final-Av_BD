@@ -88,10 +88,11 @@ public class ClientService {
         return clientRepository.getTop10Clients(from,to);
     }
 
-    public Page<ClientDto> getAll(Specification<Client> pesonaSpecification, Pageable pageable) {
-           Page<Client>clients = clientRepository.findAll(pesonaSpecification, pageable);
+    public Page<ClientDto> getAll(Specification<Client> clientSpecification, Pageable pageable) {
+        Page<Client>clients = clientRepository.findAll(clientSpecification, pageable);
         Page<ClientDto> dtoClients = clients.map(c -> ClientDto.fromWithOutResidences(c));
-          return dtoClients;
-
+        return dtoClients;
     }
+
+
 }

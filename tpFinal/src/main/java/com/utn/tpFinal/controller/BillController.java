@@ -20,10 +20,10 @@ public class BillController {
     BillService billService;
 
 
-
+/*
 //  [PROG - PUNTO 2] Consulta de facturas con rango de fechas
     @GetMapping
-    List<Bill> getClientBillsByDates(@RequestParam Integer idClient,
+    List<Bill> getClientBillsByDates(@PathVariable Integer idClient,
                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
 
@@ -32,7 +32,7 @@ public class BillController {
                 .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
                 .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
                 .header("X-Actual-Page", Integer.toString(pageNumber))
-                .body(bills.getContent());*/
+                .body(bills.getContent());
     }
 
     @GetMapping("/unpaids/{idClient}")
@@ -47,6 +47,6 @@ public class BillController {
         Consumption c = billService.getClientTotalEnergyAndAmountByDates(idClient, from, to);
         return c;
     }
-
+*/
 
 }

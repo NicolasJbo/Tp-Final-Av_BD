@@ -30,7 +30,7 @@ public class ClientDto {
     private List<ResidenceDto> residencesList;
 
 
-    static SimpleDateFormat objSDF = new SimpleDateFormat("dd-MMM-aaaa"); // La cadena de formato de fecha se pasa como un argumento al objeto
+    //static SimpleDateFormat objSDF = new SimpleDateFormat("dd-MMM-aaaa"); // La cadena de formato de fecha se pasa como un argumento al objeto
 
     public static ClientDto from (Client client){
         return ClientDto.builder()
