@@ -1,15 +1,15 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.exception.ClientNotExists;
 import com.utn.tpFinal.exception.IncorrectDatesException;
-import com.utn.tpFinal.model.Bill;
+import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.Measure;
 import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
+import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.proyection.Consumption;
 import com.utn.tpFinal.model.proyection.MeasureProyection;
 import com.utn.tpFinal.model.proyection.Top10Clients;
-import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
@@ -18,15 +18,18 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.data.domain.Sort.Order;
 
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +49,6 @@ public class ClientController {
     @PostMapping
     public ResponseEntity addClient(@RequestBody Client client){
        Client c = clientService.add(client);
-
        URI location = ServletUriComponentsBuilder
                      .fromCurrentRequest()
                      .path("/{idClient}")
@@ -55,56 +57,68 @@ public class ClientController {
        return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<ClientDto>> getAll(
-            @And({
-                    @Spec(path = "name", spec = Equal.class),
-                    @Spec(path = "lastName", spec = Equal.class),
-                    @Spec(path="dni", spec = Equal.class),
-                    @Spec(path = "birthday", spec = Equal.class)
-            }) Specification<Client> clientSpecification, Pageable pageable){
+    @GetMapping
+    public ResponseEntity<List<ClientDto>> getAll( @RequestParam(defaultValue = "0") Integer page,
+                                                   @RequestParam(defaultValue = "5") Integer size,
+                                                   @RequestParam(defaultValue = "id") String sortField1,
+                                                   @RequestParam(defaultValue = "name") String sortField2,
+                                                   @And({ @Spec(path = "id", spec = Equal.class),
+                                                            @Spec(path = "name", spec = Equal.class),
+                                                            @Spec(path = "lastName", spec = Equal.class),
+                                                            @Spec(path="dni", spec = Equal.class),
+                                                            @Spec(path = "birthday", spec = Equal.class)
+                                                   }) Specification<Client> clientSpecification) throws Exception {
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Order(Sort.Direction.ASC, sortField2));
 
-        Page<ClientDto> dtoClients = clientService.getAll(clientSpecification, pageable);
+        Page<ClientDto> dtoClients = clientService.getAll(clientSpecification, page, size, orders);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Elements", Long.toString(dtoClients.getTotalElements()))
                 .header("X-Total-Pages", Long.toString(dtoClients.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(pageable.getPageNumber()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
                 .body(dtoClients.getContent());
     }
 
     @GetMapping("/{idClient}/residences")
-    public ResponseEntity<List<Residence>>getClientResidences(@PathVariable Integer idClient){
-        List<Residence> residences = clientService.getClientResidences(idClient);
-        if(residences.isEmpty())
-            return ResponseEntity.noContent().build();
-        else
-            return ResponseEntity.ok(residences);
+    public ResponseEntity<List<ResidenceDto>>getClientResidences(@PathVariable Integer idClient,
+                                                                 @RequestParam(defaultValue = "0") Integer page,
+                                                                 @RequestParam(defaultValue = "5") Integer size,
+                                                                 @RequestParam(defaultValue = "street") String sortField1,
+                                                                 @RequestParam(defaultValue = "number") String sortField2) throws Exception {
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Order(Sort.Direction.ASC, sortField2));
+
+        Page<ResidenceDto> residences = clientService.getClientResidences(idClient, page, size, orders);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(residences.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(residences.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(residences.getContent());
     }
 
     @PutMapping("/{idClient}/residence/{idResidence}")
-    public ResponseEntity addResidenceToClient(@PathVariable Integer idClient, @PathVariable Integer idResidence) {
+    public ResponseEntity addResidenceToClient(@PathVariable Integer idClient, @PathVariable Integer idResidence) throws Exception {
         clientService.addResidenceToClient(idClient,idResidence);
         return ResponseEntity.accepted().build();
     }
 
     @DeleteMapping("{idClient}")
-    public ResponseEntity deleteClientById(@PathVariable Integer idClient){
+    public ResponseEntity deleteClientById(@PathVariable Integer idClient) throws Exception {
         clientService.deleteClientById(idClient);
-       return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
-    @GetMapping("/topConsumers")
-    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to){
-      List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from,to);
-
-        return ResponseEntity.status(HttpStatus.OK).body(rta);
-    }
-
 
 //--------------------------- BILLS --------------------------------------------
 
-    //  [PROG - PUNTO 2] Consulta de facturas con rango de fechas
+    //  [PROG - PUNTO 2] USUARIOS -> Consulta de facturas con rango de fechas
     @GetMapping("/{idClient}/bills")
     public ResponseEntity<List<BillDto>> getClientBillsByDates(@PathVariable Integer idClient,
                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
@@ -118,6 +132,7 @@ public class ClientController {
                 .body(bills);
     }
 
+    //  [PROG - PUNTO 3] Consulta de deuda (facturas impagas)
     @GetMapping("/{idClient}/bills/unpaid")
     public ResponseEntity<List<BillDto>> getClientUnpaidBills(@PathVariable Integer idClient){
         List<BillDto> bills = billService.getClientUnpaidBills(idClient);
@@ -128,6 +143,7 @@ public class ClientController {
                 .body(bills);
     }
 
+    //  [PROG - PUNTO 4] USUARIOS -> Consulta de consumo por rango de fechas
     @GetMapping("/{idClient}/consumption")
     public ResponseEntity<Consumption> getClientTotalEnergyByAndAmountDates(@PathVariable Integer idClient,
                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
@@ -136,6 +152,7 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(consumption);
     }
 
+    //  [PROG - PUNTO 5] USUARIOS -> Consulta de mediciones por rango de fechas
     @GetMapping("/{idClient}/measures")
     public ResponseEntity<List<MeasureProyection>> getClientMeasuresByDates(@PathVariable Integer idClient,
                                                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
@@ -146,6 +163,17 @@ public class ClientController {
                 //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
                 //.header("X-Actual-Page", Integer.toString(pageNumber))
                 .body(measures);
+    }
+
+//--------------------------- BACKOFFICE --------------------------------------------
+
+    //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
+    @GetMapping("/topConsumers")  //TODO reutilizar clientDto en vez de proyection
+    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
+        List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from,to);
+
+        return ResponseEntity.status(HttpStatus.OK).body(rta);
     }
 
 

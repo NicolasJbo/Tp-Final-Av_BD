@@ -1,5 +1,7 @@
 package com.utn.tpFinal.service;
 
+import com.utn.tpFinal.exception.ClientNotExists;
+import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -47,9 +51,14 @@ public class ResidenceService {
 
     }
 
-    public Residence getResidenceById(Integer id) {
+    public Residence getResidenceById(Integer id) throws ResidenceNotExists {
         return residenceRepository.findById(id)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResidenceNotExists(this.getClass().getSimpleName(), "getResidenceById"));
+    }
+
+    public Page<Residence> getResidenceByClientId(Integer idClient, Pageable pageable) {
+        return residenceRepository.findByClientId(idClient, pageable);
+
     }
 
     public void addClientToResidence(Client client, Residence residence) {
@@ -57,7 +66,7 @@ public class ResidenceService {
         residenceRepository.save(residence);
     }
 
-    public void addEnergyMeterToResidence(Integer idResidence, Integer idEnergyMeter) {
+    public void addEnergyMeterToResidence(Integer idResidence, Integer idEnergyMeter) throws ResidenceNotExists {
 
         EnergyMeter energyMeter = energyMeterService.getEnergyMeterById(idEnergyMeter);
         if(energyMeter.getResidence() == null) {
@@ -70,7 +79,7 @@ public class ResidenceService {
 
     }
 
-    public void addTariffToResidence(Integer idResidence, Integer idTariff) {
+    public void addTariffToResidence(Integer idResidence, Integer idTariff) throws ResidenceNotExists {
         Residence residence = getResidenceById(idResidence);
         //retrive the Tariff to add at the residence
         Tariff tariff= tariffService.getTariffById(idTariff);
@@ -86,9 +95,11 @@ public class ResidenceService {
         residenceRepository.deleteById(idResidence);
     }
 
-    public Residence modifyResidence(Residence residence)  {
+    public Residence modifyResidence(Residence residence) throws ResidenceNotExists {
         Residence res= getResidenceById(residence.getId());
-        res=residence;
+        res=residence;  //TODO este metodo esta para el culo, hay q arreglarlo
         return  residenceRepository.save(res);
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
@@ -35,9 +36,9 @@ public class ResidenceController {
 
     @GetMapping //HACE MUCHAS QUERYS
     public ResponseEntity<List<ResidenceDto>> getAll(@RequestParam(required = false) String street,
-                                                   @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
-                                                   @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-                                                   @RequestParam(defaultValue = "id", required = false) String sortBy) {
+                                                     @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
+                                                     @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+                                                     @RequestParam(defaultValue = "id", required = false) String sortBy) {
 
        Page<Residence> residences = residenceService.getAll(street,pageNumber,pageSize,sortBy);
        Page<ResidenceDto> dtoResidences = residences.map(r -> ResidenceDto.from(r));
@@ -47,21 +48,20 @@ public class ResidenceController {
                 .header("X-Actual-Page", Integer.toString(pageNumber))
                 .header("X-Sort-Method", sortBy)
                 .body(dtoResidences.getContent());
-
     }
 
     @PutMapping("/{idResidence}/energyMeter/{idEnergyMeter}")
-    public void addEnergyMeterToResidence(@PathVariable Integer idResidence,@PathVariable Integer idEnergyMeter ){
+    public void addEnergyMeterToResidence(@PathVariable Integer idResidence,@PathVariable Integer idEnergyMeter ) throws Exception {
         residenceService.addEnergyMeterToResidence(idResidence,idEnergyMeter);
     }
 
     @PutMapping("/{idResidence}/tariff/{idTariff}")
-    public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ){
+    public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ) throws Exception{
         residenceService.addTariffToResidence(idResidence,idTariff);
     }
 
     @PutMapping("/{idResidence}")
-    public ResponseEntity modifyResidence(@RequestBody Residence residence)  {
+    public ResponseEntity modifyResidence(@RequestBody Residence residence) throws Exception {
         Residence res= residenceService.modifyResidence(residence);
         return ResponseEntity
                 .status(HttpStatus.OK)

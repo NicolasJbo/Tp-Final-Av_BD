@@ -1,4 +1,5 @@
 SELECT * FROM clients;
+SELECT * FROM users;
 SELECT * FROM residences;
 SELECT * FROM energy_meters;
 
@@ -15,6 +16,13 @@ VALUES(FALSE, 0.5, "2021-01-12 17:35:20.111111", 13.5, "2021-01-27 17:35:20.1111
 SELECT id,is_paid, id_residence, initial_medition, initial_date, final_medition, final_date, total_energy, final_amount, expiration_date
 FROM bills;
 
+INSERT INTO measures(total, id_residence, DATE) 
+VALUES(12, 1, "2021-05-20 17:00:00.111111"), (85, 1, "2021-05-20 17:10:00.111111"), (22, 1, "2021-05-20 17:05:00.111111"),(100, 1, "2021-05-30 17:30:00.111111") #lau(1)
+      (49, 3, "2021-05-20 17:00:00.111111"), (50, 3, "2021-05-20 17:03:00.111111"), (11, 3, "2021-05-20 17:10:00.111111"), #lau(3)
+      (36, 5, "2021-05-20 17:00:00.111111"), (67, 5, "2021-05-20 17:03:00.111111"), (30, 5, "2021-05-20 17:15:00.111111")  #valen(5)
+			
+INSERT INTO measures(total, id_residence, DATE) 
+VALUES(
 #------------------------------------------------------------------------------------------
 #PROGRAMACION PUNTO 2 -> Consulta de facturas por rango de fechas, falta unir con cliente
 
@@ -49,10 +57,12 @@ END;
 
 CALL getClientBillsByDates(6,"2021-02-01" , "2021-03-01");
 
+
+
 #------------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------------------
-#PROGRAMACION PUNTO 2 -> Consulta de facturas por rango de fechas, falta unir con cliente
+#PROGRAMACION PUNTO 3 -> Consulta de facturas por rango de fechas, falta unir con cliente
 
 SELECT b.id, b.is_paid, b.initial_medition, b.initial_date, b.final_medition, 
        b.final_date, b.total_energy, b.final_amount, b.expiration_date,
@@ -80,8 +90,66 @@ BEGIN
 END;
 //
 
+SELECT * FROM residences;
+SELECT * FROM bills;
 
 CALL getClientUnpaidBills(6);
 
 #------------------------------------------------------------------------------------------
+#PROGRAMACION PUNTO 4 -> Consulta consumo pr rango de fechas
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getClientTotalEnergyAndAmountByDates
+CREATE PROCEDURE getClientTotalEnergyAndAmountByDates(IN client_id INT,IN first_date DATETIME, IN last_date DATETIME)
+BEGIN 
+	SELECT c.name AS nameClient, c.last_name AS lastnameClient,
+		SUM(b.total_energy)AS totalEnergy,SUM(b.final_amount) AS totalAmount
+	       
+	FROM bills AS b
+	INNER JOIN residences AS r
+	ON b.id_residence = r.id
+	INNER JOIN clients AS c
+	ON c.id = r.id_client
+	WHERE c.id = client_id AND b.initial_date BETWEEN first_date AND last_date;
+END;
+DELIMITER //
+
+CALL getClientTotalEnergyAndAmountByDates(5, "2021-01-01", "2021-03-01")
+
+#------------------------------------------------------------------------------------------
+#PROGRAMACION PUNTO 5 -> Consulta de mediciones por rango de fechas
+
+SELECT * FROM measures
+SELECT * FROM residences
+SELECT * FROM clients
+
+SELECT * 
+FROM measures AS m
+INNER JOIN residences AS r
+ON r.id = m.id_residence
+INNER JOIN clients AS c
+ON c.id = r.id_client
+WHERE c.id = 6 AND m.date BETWEEN "2021-05-20 17:00:00.111111" AND "2021-05-20 17:05:00.111111";
+
+DROP PROCEDURE IF EXISTS getClientMeasuresByDates;
+DELIMITER//
+CREATE PROCEDURE getClientMeasuresByDates(IN client_id INT,IN first_date DATETIME, IN last_date DATETIME)
+BEGIN 
+	SELECT m.date AS measureDate, m.total AS measureTotal, r.street AS residenceStreet , r.number AS residenceNumber
+	FROM measures AS m
+	INNER JOIN residences AS r
+	ON r.id = m.id_residence
+	INNER JOIN clients AS c
+	ON c.id = r.id_client
+	WHERE c.id = 6 AND m.date BETWEEN first_date AND last_date;
+END;
+//
+
+CALL getClientMeasuresByDates(6,"2021-05-20 17:00:00.111111" , "2021-05-25 17:00:00.111111");
+
+SELECT * FROM `residences`
+
+SELECT * FROM `clients`
+
+
 
