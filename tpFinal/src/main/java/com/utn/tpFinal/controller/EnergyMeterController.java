@@ -3,13 +3,10 @@ package com.utn.tpFinal.controller;
 import com.utn.tpFinal.exception.EnergyMeterNotExists;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotDefined;
-import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.*;
-import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.service.EnergyMeterService;
-import com.utn.tpFinal.util.PostResponse;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -59,7 +56,7 @@ public class EnergyMeterController {
                                                         @And({
                                                                 @Spec(path = "serialNumber", spec = Equal.class),
                                                                 @Spec(path = "id", spec = Equal.class)
-                                                        }) Specification<EnergyMeter> meterSpecification, Pageable pageable) throws NoContentException {
+                                                        }) Specification<EnergyMeter> meterSpecification) throws NoContentException {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
@@ -99,22 +96,23 @@ public class EnergyMeterController {
 
     @GetMapping("/brands")
     public ResponseEntity<List<MeterBrand>> getAllMeterBrands(@RequestParam(defaultValue = "0") Integer page,
-                                              @RequestParam(defaultValue = "5") Integer size,
-                                              @RequestParam(defaultValue = "id") String sortField1,
-                                              @RequestParam(defaultValue = "name") String sortField2,
-                                              @And({  @Spec(path = "id", spec = Equal.class),
-                                                      @Spec(path = "name", spec = Equal.class),
-                                              }) Specification<MeterBrand> meterBrandSpecification) throws Exception {{
+                                                              @RequestParam(defaultValue = "5") Integer size,
+                                                              @RequestParam(defaultValue = "id") String sortField1,
+                                                              @RequestParam(defaultValue = "name") String sortField2,
+                                                              @And({  @Spec(path = "id", spec = Equal.class),
+                                                                      @Spec(path = "name", spec = Equal.class),
+                                                              }) Specification<MeterBrand> meterBrandSpecification) throws Exception {
+
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
         Page<MeterBrand> meterBrands = energyMeterService.getAllMeterBrands(meterBrandSpecification, page, size, orders);
 
-         ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Elements", Long.toString(meterBrands.getTotalElements()))
                 .header("X-Total-Pages", Long.toString(meterBrands.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-Actual-Page", Integer.toString(page))
                 .header("X-First-Sort-By", sortField1)
                 .header("X-Second-Sort-By", sortField2)
                 .body(meterBrands.getContent());
@@ -122,15 +120,28 @@ public class EnergyMeterController {
 
 //--------------------------- MODEL --------------------------------------------
     @GetMapping("/models")
-    public List<MeterModel> getAllMeterModels(){
-        return energyMeterService.getAllMeterModels();
+    public ResponseEntity<List<MeterModel>> getAllMeterModels(@RequestParam(defaultValue = "0") Integer page,
+                                                              @RequestParam(defaultValue = "5") Integer size,
+                                                              @RequestParam(defaultValue = "id") String sortField1,
+                                                              @RequestParam(defaultValue = "name") String sortField2,
+                                                              @And({ @Spec(path = "id", spec = Equal.class),
+                                                                     @Spec(path = "name", spec = Equal.class),
+                                                               }) Specification<MeterModel>meterModelSpecification) throws Exception {
+
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
+
+        Page<MeterModel> meterModels = energyMeterService.getAllMeterModels(meterModelSpecification, page, size, orders);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(meterModels.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(meterModels.getTotalPages()))
+                .header("X-Actual-Page", Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(meterModels.getContent());
     }
-
-
-
-
-
-
 
 
 }

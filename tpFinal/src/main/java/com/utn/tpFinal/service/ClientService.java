@@ -26,7 +26,6 @@ public class ClientService {
 
     private ClientRepository clientRepository;
     private ResidenceService residenceService;
-    private BillService billService;
 
     @Autowired
     public ClientService(ClientRepository clientRepository, ResidenceService residenceService) {

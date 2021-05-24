@@ -12,10 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
 
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class EnergyMeterService {
         return energyMeterRepository.save(energyMeter);
     }
 
-    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Sort.Order>orders) throws NoContentException {
+    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Order>orders) throws NoContentException {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<EnergyMeter>meters =energyMeterRepository.findAll(meterSpecification,pageable);
 
@@ -116,9 +118,16 @@ public class EnergyMeterService {
 
 //-------------------------------------------->> MODEL <<--------------------------------------------
 
-    public List<MeterModel> getAllMeterModels() {
-        return meterModelRepository.findAll();
+    public Page<MeterModel> getAllMeterModels(Specification<MeterModel> meterModelSpecification, Integer page, Integer size, List<Sort.Order>orders) throws NoContentException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+        Page<MeterModel>meterModels = meterModelRepository.findAll(meterModelSpecification, pageable);
+
+        if(meterModels.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(), "getAllMeterModels");
+
+        return meterModels;
     }
+
 
     public MeterModel getMeterModelById(Integer id) {
         return meterModelRepository.findById(id)
@@ -136,7 +145,6 @@ public class EnergyMeterService {
             throw new EnergyMeterNotExists(this.getClass().getSimpleName(), "deleteEnergyMeterById");
 
         energyMeterRepository.deleteById(idEnergyMeter);
-
     }
 
 

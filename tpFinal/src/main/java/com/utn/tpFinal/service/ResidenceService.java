@@ -1,9 +1,6 @@
 package com.utn.tpFinal.service;
 
-import com.utn.tpFinal.exception.ClientNotExists;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.ResidenceDefined;
-import com.utn.tpFinal.exception.ResidenceNotExists;
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,6 @@ import static java.util.Objects.isNull;
 @Service
 public class ResidenceService {
 
-    private static final String RESIDENCE_PATH = "residence";
     private ResidenceRepository residenceRepository;
     private EnergyMeterService  energyMeterService;
     private TariffService tariffService;
@@ -60,7 +56,10 @@ public class ResidenceService {
 
     public Page<Residence> getResidenceByClientId(Integer idClient, Pageable pageable) {
         return residenceRepository.findByClientId(idClient, pageable);
+    }
 
+    public Page<Residence> getResidenceByTariffId(Integer idTariff, Pageable pageable) {
+        return residenceRepository.findByTariffId(idTariff, pageable);
     }
 
     public void addClientToResidence(Client client, Residence residence) {
@@ -83,7 +82,7 @@ public class ResidenceService {
 
     }
 
-    public void addTariffToResidence(Integer idResidence, Integer idTariff) throws ResidenceNotExists {
+    public void addTariffToResidence(Integer idResidence, Integer idTariff) throws ResidenceNotExists, TariffNotExists {
         Residence residence = getResidenceById(idResidence);
         //retrive the Tariff to add at the residence
         Tariff tariff= tariffService.getTariffById(idTariff);
@@ -92,7 +91,6 @@ public class ResidenceService {
         //add the meter to the residence
         residence.setTariff(tariff);
         residenceRepository.save(residence);
-
     }
 
     public void removeResidenceById(Integer idResidence) {
@@ -104,6 +102,7 @@ public class ResidenceService {
         res=residence;  //TODO este metodo esta para el culo, hay q arreglarlo
         return  residenceRepository.save(res);
     }
+
 
 
 }
