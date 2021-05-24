@@ -1,6 +1,8 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.exception.ClientNotExists;
+import com.utn.tpFinal.exception.EnergyMeterNotExists;
+import com.utn.tpFinal.exception.ResidenceDefined;
 import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.repository.ResidenceRepository;
@@ -66,15 +68,17 @@ public class ResidenceService {
         residenceRepository.save(residence);
     }
 
-    public void addEnergyMeterToResidence(Integer idResidence, Integer idEnergyMeter) throws ResidenceNotExists {
+    public void addEnergyMeterToResidence(Integer idResidence, Integer idEnergyMeter) throws ResidenceNotExists, EnergyMeterNotExists, ResidenceDefined {
 
         EnergyMeter energyMeter = energyMeterService.getEnergyMeterById(idEnergyMeter);
-        if(energyMeter.getResidence() == null) {
-            Residence residence = getResidenceById(idResidence);
-            energyMeterService.addResidenceToMeter(residence, energyMeter);
-            residence.setEnergyMeter(energyMeter);
-            residenceRepository.save(residence);
+        if(energyMeter.getResidence() != null) { //si el medidor ya tiene un domicilio
+            throw new ResidenceDefined(this.getClass().getSimpleName(), "getClientResidences");
         }
+        Residence residence = getResidenceById(idResidence);
+        energyMeterService.addResidenceToMeter(residence, energyMeter);
+        residence.setEnergyMeter(energyMeter);
+        residenceRepository.save(residence);
+
         //todo hacer Excepcion -Nico
 
     }

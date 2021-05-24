@@ -46,6 +46,8 @@ public class ClientController {
         this.billService = billService;
     }
 
+//--------------------------- CLIENT --------------------------------------------
+
     @PostMapping
     public ResponseEntity addClient(@RequestBody Client client){
        Client c = clientService.add(client);
@@ -62,11 +64,11 @@ public class ClientController {
                                                    @RequestParam(defaultValue = "5") Integer size,
                                                    @RequestParam(defaultValue = "id") String sortField1,
                                                    @RequestParam(defaultValue = "name") String sortField2,
-                                                   @And({ @Spec(path = "id", spec = Equal.class),
-                                                            @Spec(path = "name", spec = Equal.class),
-                                                            @Spec(path = "lastName", spec = Equal.class),
-                                                            @Spec(path="dni", spec = Equal.class),
-                                                            @Spec(path = "birthday", spec = Equal.class)
+                                                   @And({  @Spec(path = "id", spec = Equal.class),
+                                                           @Spec(path = "name", spec = Equal.class),
+                                                           @Spec(path = "lastName", spec = Equal.class),
+                                                           @Spec(path="dni", spec = Equal.class),
+                                                           @Spec(path = "birthday", spec = Equal.class)
                                                    }) Specification<Client> clientSpecification) throws Exception {
         List<Order> orders = new ArrayList<>();
         orders.add(new Order(Sort.Direction.ASC, sortField1));

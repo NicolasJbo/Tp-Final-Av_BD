@@ -17,10 +17,9 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Integer>, JpaSpecificationExecutor<Client>
 {
     Page<Client> findAll(Pageable pageable);
-    Page<Client> findByName(String name, Pageable pageable);
 
     @Query(value = "CALL getTop10Clients(:from,:to)", nativeQuery = true)
-   List<Top10Clients> getTop10Clients(Date from, Date to);
+    List<Top10Clients> getTop10Clients(Date from, Date to);
 
 
 }

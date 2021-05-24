@@ -23,15 +23,14 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
     public ResponseEntity<Object> handlerContraintViolation(ConstraintViolationException ex , WebRequest request){
         List<String> errors = new ArrayList<>();
 
-        for (ConstraintViolation violation : ex.getConstraintViolations()){
+        for (ConstraintViolation violation : ex.getConstraintViolations())
             errors.add( "Route:  "+violation.getRootBeanClass()+"   || Message:  "+violation.getMessage()  );
 
-        }
         ApiError apiError= new ApiError(HttpStatus.BAD_REQUEST,ex.getLocalizedMessage() ,errors);
 
         return new ResponseEntity<Object>(apiError ,new HttpHeaders(),apiError.getHttpStatus());
-
     }
+
     //Sql
     @ExceptionHandler({java.sql.SQLException.class})
     public ResponseEntity<Object> handlerContraintViolation(java.sql.SQLException ex , WebRequest request){
@@ -41,17 +40,19 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
 
         ApiError apiError= new ApiError(HttpStatus.BAD_REQUEST,ex.getLocalizedMessage() ,errors);
 
-
         return  ResponseEntity.status(apiError.getHttpStatus()).header("Constraint","UNIQUE Name").body(apiError);
     }
+
     //HTTP
     @ExceptionHandler({HttpClientErrorException.class})
     public ResponseEntity<Object> handlerContraintViolation(HttpClientErrorException ex , WebRequest request){
         List<String> errors = new ArrayList<>();
         errors.add("Message:  "+ex.getMessage());
         ApiError apiError= new ApiError(ex.getStatusCode(),ex.getLocalizedMessage() ,errors);
+
         return  ResponseEntity.status(apiError.getHttpStatus()).header("Status",ex.getMessage()).body(apiError);
     }
+
     //Genericas
     @ExceptionHandler({CustomGenericException.class})
     public ResponseEntity<Object> handlerContraintViolation(CustomGenericException ex , WebRequest request){
@@ -59,6 +60,7 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
         errors.add("Class: "+ ex.getRoute());
         errors.add("Method: "+ ex.getMethod());
         ApiError apiError= new ApiError(ex.getHttpStatus(),ex.getLocalizedMessage() ,errors);
+
         return new ResponseEntity(apiError ,new HttpHeaders(),apiError.getHttpStatus());
     }
 

@@ -1,13 +1,12 @@
 package com.utn.tpFinal.service;
 
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
-import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
+import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.MeterBrandRepository;
 import com.utn.tpFinal.repository.MeterModelRepository;
-import com.utn.tpFinal.util.EntityURLBuilder;
-import com.utn.tpFinal.util.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -39,38 +37,30 @@ public class EnergyMeterService {
         this.meterModelRepository = meterModelRepository;
     }
 
+    public EnergyMeter getEnergyMeterById(Integer id) throws EnergyMeterNotExists {
+        return energyMeterRepository.findById(id)
+                .orElseThrow(() -> new EnergyMeterNotExists(this.getClass().getSimpleName(), "getEnergyMeterById"));
+    }
+
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public PostResponse addEnergyMeter(EnergyMeter energyMeter) {
-        energyMeterRepository.save(energyMeter);
-        return PostResponse.builder()
-                .status(HttpStatus.CREATED)
-                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH,energyMeter.getId()))
-                .build();
+    public EnergyMeter add(EnergyMeter energyMeter) {
+        return energyMeterRepository.save(energyMeter);
     }
 
-    public EnergyMeter getEnergyMeterById(Integer id) {
-        return energyMeterRepository.findById(id)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
-    }
+    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Sort.Order>orders) throws NoContentException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+        Page<EnergyMeter>meters =energyMeterRepository.findAll(meterSpecification,pageable);
 
-    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Pageable pageable) {
-        Page<EnergyMeter>page =energyMeterRepository.findAll(meterSpecification,pageable);
-        Page<EnergyMeterDto>dtoMeters = page.map(m-> EnergyMeterDto.from(m));
+        if(meters.isEmpty()) //todo no muestra mensaje (proba buscar por id de uno q no existe)
+            throw new NoContentException(this.getClass().getSimpleName(), "getAll");
+
+        Page<EnergyMeterDto> dtoMeters = meters.map(m-> EnergyMeterDto.from(m));
+
         return  dtoMeters;
     }
 
-    public List<EnergyMeter> getEnergyMetersByBrand(Integer idBrand) {
-        MeterBrand brand = getMeterBrandById(idBrand);
-        return energyMeterRepository.findByBrand(brand);
-    }
-
-    public List<EnergyMeter> getEnergyMetersByModel(Integer idModel) {
-        MeterModel model= getMeterModelById(idModel);
-        return energyMeterRepository.findByModel(model);
-    }
-
-    public void addBrandAndModelToEnergyMeter(Integer id, Integer idBrand, Integer idModel) {
+    public void addBrandAndModelToEnergyMeter(Integer id, Integer idBrand, Integer idModel) throws EnergyMeterNotExists {
         EnergyMeter energyMeter = getEnergyMeterById(id);
         if(!isNull(idBrand)){
             MeterBrand brand = getMeterBrandById(idBrand);
@@ -93,14 +83,25 @@ public class EnergyMeterService {
     }
 //------------------------------------------>> RESIDENCE <<------------------------------------------
 
-    public Residence getResidenceByEnergyMeterId(Integer idEnergyMeter) {
+    public ResidenceDto getResidenceByEnergyMeterId(Integer idEnergyMeter) throws EnergyMeterNotExists, ResidenceNotDefined {
         EnergyMeter energyMeter =getEnergyMeterById(idEnergyMeter);
-        return energyMeter.getResidence();
+        Residence residence = energyMeter.getResidence();
+
+        if(isNull(residence))
+            throw new ResidenceNotDefined(this.getClass().getSimpleName(), "getResidenceByEnergyMeterId");
+
+        return ResidenceDto.from(residence);
     }
 //-------------------------------------------->> BRAND <<--------------------------------------------
 
-    public List<MeterBrand> getAllMeterBrands(){
-        return meterBrandRepository.findAll();
+    public Page<MeterBrand> getAllMeterBrands(Specification<MeterBrand> meterBrandSpecification, Integer page, Integer size, List<Sort.Order>orders) throws NoContentException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+        Page<MeterBrand>meterBrands = meterBrandRepository.findAll(meterBrandSpecification, pageable);
+
+        if(meterBrands.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(), "getAllMeterBrands");
+
+        return meterBrands;
     }
 
     public MeterBrand getMeterBrandById(Integer id) {
@@ -130,12 +131,12 @@ public class EnergyMeterService {
     }
 
 
-    public PostResponse removeEnergyMeterById(Integer idEnergyMeter) {
+    public void deleteEnergyMeterById(Integer idEnergyMeter) throws EnergyMeterNotExists {
+        if(!energyMeterRepository.existsById(idEnergyMeter))
+            throw new EnergyMeterNotExists(this.getClass().getSimpleName(), "deleteEnergyMeterById");
+
         energyMeterRepository.deleteById(idEnergyMeter);
-        return PostResponse.builder()
-                .status(HttpStatus.OK)
-                .url(EntityURLBuilder.buildUrl(ENERGYMETER_PATH))
-                .build();
+
     }
 
 

@@ -27,10 +27,12 @@ public class EnergyMeter {
     private String serialNumber;
 
     @ManyToOne
+    @NotEmpty(message = "Model MUST be completed.")
     @JoinColumn(name="id_model")
     private MeterModel model;
 
     @ManyToOne
+    @NotEmpty(message = "Brand MUST be completed.")
     @JoinColumn(name="id_brand")
     private MeterBrand brand;
 
