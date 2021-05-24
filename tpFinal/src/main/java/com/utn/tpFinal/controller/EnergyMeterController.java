@@ -8,6 +8,7 @@ import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.service.EnergyMeterService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class EnergyMeterController {
                                                         @RequestParam(defaultValue = "id") String sortField1,
                                                         @RequestParam(defaultValue = "serialNumber") String sortField2,
                                                         @And({
-                                                                @Spec(path = "serialNumber", spec = Equal.class),
+                                                                @Spec(path = "serialNumber", spec = LikeIgnoreCase.class),
                                                                 @Spec(path = "id", spec = Equal.class)
                                                         }) Specification<EnergyMeter> meterSpecification) throws NoContentException {
         List<Sort.Order> orders = new ArrayList<>();

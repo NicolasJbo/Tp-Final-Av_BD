@@ -18,17 +18,19 @@ import static java.util.Objects.isNull;
 
 @Service
 public class ResidenceService {
-
+    @Autowired
     private ResidenceRepository residenceRepository;
+    @Autowired
     private EnergyMeterService  energyMeterService;
+    @Autowired
     private TariffService tariffService;
 
-    @Autowired
+   /* @Autowired
     public ResidenceService(ResidenceRepository residenceRepository, EnergyMeterService energyMeterService, TariffService tariffService) {
         this.residenceRepository = residenceRepository;
         this.energyMeterService = energyMeterService;
         this.tariffService = tariffService;
-    }
+    }*/
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
