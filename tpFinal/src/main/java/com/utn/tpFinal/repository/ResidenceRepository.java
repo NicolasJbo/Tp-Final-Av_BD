@@ -19,6 +19,6 @@ public interface ResidenceRepository extends JpaRepository<Residence, Integer>, 
 
     Page<Residence> findByStreet(String street, Pageable pageable);
     Page<Residence> findByClientId(Integer idClient, Pageable pageable);
-
+    Residence findByEnergyMeterId(Integer idEnergyMeter);
     Page<Residence> findByTariffId(Integer idTariff, Pageable pageable);
 }

@@ -25,7 +25,7 @@ public class TariffService {
     private TariffRepository tariffRepository;
     @Autowired
     private ResidenceService residenceService;
-    
+
 
     public Tariff getTariffById(Integer id) throws TariffNotExists {
         return tariffRepository.findById(id)
