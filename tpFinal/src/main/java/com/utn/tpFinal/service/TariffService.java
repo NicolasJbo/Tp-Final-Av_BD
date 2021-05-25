@@ -25,8 +25,7 @@ public class TariffService {
     private TariffRepository tariffRepository;
     @Autowired
     private ResidenceService residenceService;
-
-
+    
 
     public Tariff getTariffById(Integer id) throws TariffNotExists {
         return tariffRepository.findById(id)
@@ -77,6 +76,7 @@ public class TariffService {
 
         tariffRepository.deleteById(idTariff);
     }
+
 
     public Tariff modifyTariff(Tariff tariff) throws TariffNotExists { //todo arreglar esto --> param( id, DTO )
         Tariff tar= getTariffById(tariff.getId());

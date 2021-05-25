@@ -22,11 +22,14 @@ public class BillService {
     @Autowired
     ClientService clientService;
 
-    public List<BillDto> getClientBillsByDates(Integer idClient, Date from, Date to) throws IncorrectDatesException {
-        if(from.after(to)){
-            throw new IncorrectDatesException((String)this.getClass().getSimpleName(),"getClientBillsByDates");
-        }
+    public List<BillDto> getClientBillsByDates(Integer idClient, Date from, Date to) throws IncorrectDatesException, NoContentException {
+        if(from.after(to))
+            throw new IncorrectDatesException(this.getClass().getSimpleName(),"getClientBillsByDates");
+        //todo lista vacia exception
         List<Bill> billsList = billRepository.getClientBillsByDate(idClient,from,to);
+        if(billsList.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(),"getClientBillsByDates");
+
         List<BillDto>billsDtoList = BillDto.from(billsList) ;
         return billsDtoList;
     }

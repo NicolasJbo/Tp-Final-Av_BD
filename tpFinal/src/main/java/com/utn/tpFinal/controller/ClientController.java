@@ -125,7 +125,7 @@ public class ClientController {
     @GetMapping("/{idClient}/bills")
     public ResponseEntity<List<BillDto>> getClientBillsByDates(@PathVariable Integer idClient,
                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
 
         List<BillDto> bills = billService.getClientBillsByDates(idClient,from, to);
         return ResponseEntity.status(HttpStatus.OK)

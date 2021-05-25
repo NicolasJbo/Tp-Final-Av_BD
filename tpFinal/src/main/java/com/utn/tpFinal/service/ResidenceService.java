@@ -30,6 +30,16 @@ public class ResidenceService {
 
 
 
+
+
+   /* @Autowired
+    public ResidenceService(ResidenceRepository residenceRepository, EnergyMeterService energyMeterService, TariffService tariffService) {
+        this.residenceRepository = residenceRepository;
+        this.energyMeterService = energyMeterService;
+        this.tariffService = tariffService;
+    }*/
+
+
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
     public Residence addResidence(Residence residence) {
