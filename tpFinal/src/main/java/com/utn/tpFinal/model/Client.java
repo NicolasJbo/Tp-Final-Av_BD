@@ -47,7 +47,17 @@ public class Client {
     @OneToMany(mappedBy = "client",cascade = CascadeType.ALL) //si eliminas un cliente, se eliminan sus domicilios
     private List<Residence> residencesList;
 
-    //----------------------------------------->> METODOS <<-----------------------------------------
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", dni='" + dni + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthday=" + birthday +
+                '}';
+    }
+//----------------------------------------->> METODOS <<-----------------------------------------
 
     @Override
     public boolean equals(Object o) {
@@ -62,14 +72,4 @@ public class Client {
         return Objects.hash(id, dni, name, lastName, birthday);
     }
 
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", dni='" + dni + '\'' +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthday=" + birthday +
-                '}';
-    }
 }

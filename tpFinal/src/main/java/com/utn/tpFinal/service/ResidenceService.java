@@ -108,6 +108,9 @@ public class ResidenceService {
         return  residenceRepository.save(res);
     }
 
+    public Residence getResidenceByEnergyMeterId(Integer id){
+       return residenceRepository.findByEnergyMeterId(id);
+    }
 
 
 }

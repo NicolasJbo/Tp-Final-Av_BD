@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -20,7 +24,12 @@ public class MeasureDto {
     String password;
     String serialNumber;
 
+
+
     public static Measure from(MeasureDto measureDto){
+
+
+
         return Measure.builder()
                 .total(measureDto.getValue())
                 .date(Date.valueOf(measureDto.getDate()))

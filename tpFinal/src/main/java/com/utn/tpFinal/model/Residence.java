@@ -65,4 +65,15 @@ public class Residence {
     public int hashCode() {
         return Objects.hash(id, street, number, floor, apartament);
     }
+
+    @Override
+    public String toString() {
+        return "Residence{" +
+                "id=" + id +
+                ", street='" + street + '\'' +
+                ", number=" + number +
+                ", floor='" + floor + '\'' +
+                ", apartament='" + apartament + '\'' +
+                '}';
+    }
 }

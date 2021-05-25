@@ -23,11 +23,13 @@ public class ResidenceDto {
     private String apartament;
     private String client;
     private EnergyMeterDto energyMeter;
+    private Integer id;
 
 
     public static ResidenceDto from(Residence residence){
         return ResidenceDto.builder()
                 .street(residence.getStreet())
+                .id(residence.getId())
                 .number(residence.getNumber())
                 .apartament(residence.getApartament())
                 .floor(residence.getFloor())

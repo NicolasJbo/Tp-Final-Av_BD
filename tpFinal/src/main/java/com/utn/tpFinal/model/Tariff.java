@@ -42,5 +42,12 @@ public class Tariff {
     @JsonIgnore
     List<Bill> billsList;
 
-
+    @Override
+    public String toString() {
+        return "Tariff{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
 }

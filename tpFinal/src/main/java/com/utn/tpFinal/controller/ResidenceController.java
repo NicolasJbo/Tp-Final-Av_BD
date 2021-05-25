@@ -92,4 +92,5 @@ public class ResidenceController {
         return ResponseEntity.ok().build();
     }
 
+
 }
