@@ -8,6 +8,7 @@ import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.service.EnergyMeterService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,12 @@ public class EnergyMeterController {
     //--------------------------- ENERGYMETER --------------------------------------------
 
     @PostMapping
-    public ResponseEntity addEnergyMeter (@RequestBody EnergyMeter energyMeter){
-        EnergyMeter e = energyMeterService.add(energyMeter);
+    public ResponseEntity addEnergyMeter (@RequestBody EnergyMeter energyMeter,@RequestParam Integer idModel,@RequestParam Integer idBrand){
+        EnergyMeter e = energyMeterService.add(energyMeter,idModel,idBrand);
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{idClient}")
+                .path("/{idEnergyMeter}")
                 .buildAndExpand(e.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
@@ -54,7 +56,7 @@ public class EnergyMeterController {
                                                         @RequestParam(defaultValue = "id") String sortField1,
                                                         @RequestParam(defaultValue = "serialNumber") String sortField2,
                                                         @And({
-                                                                @Spec(path = "serialNumber", spec = Equal.class),
+                                                                @Spec(path = "serialNumber", spec = LikeIgnoreCase.class),
                                                                 @Spec(path = "id", spec = Equal.class)
                                                         }) Specification<EnergyMeter> meterSpecification) throws NoContentException {
         List<Sort.Order> orders = new ArrayList<>();
@@ -72,13 +74,7 @@ public class EnergyMeterController {
                 .body(meters.getContent());
     }
 
-    @PutMapping("/{idEnergyMeter}")
-    public ResponseEntity addBrandAndModelToEnergyMeter(@PathVariable Integer idEnergyMeter,
-                                                                @RequestParam Integer idBrand,
-                                                                @RequestParam Integer idModel ) throws EnergyMeterNotExists {
-        energyMeterService.addBrandAndModelToEnergyMeter(idEnergyMeter,idBrand,idModel);
-        return ResponseEntity.accepted().build();
-    }
+
     @DeleteMapping("/{idEnergyMeter}")
     public ResponseEntity deleteEnergyMeterById(@PathVariable Integer idEnergyMeter ) throws EnergyMeterNotExists {
         energyMeterService.deleteEnergyMeterById(idEnergyMeter);
@@ -100,7 +96,7 @@ public class EnergyMeterController {
                                                               @RequestParam(defaultValue = "id") String sortField1,
                                                               @RequestParam(defaultValue = "name") String sortField2,
                                                               @And({  @Spec(path = "id", spec = Equal.class),
-                                                                      @Spec(path = "name", spec = Equal.class),
+                                                                      @Spec(path = "name", spec = LikeIgnoreCase.class),
                                                               }) Specification<MeterBrand> meterBrandSpecification) throws Exception {
 
         List<Sort.Order> orders = new ArrayList<>();
@@ -125,7 +121,7 @@ public class EnergyMeterController {
                                                               @RequestParam(defaultValue = "id") String sortField1,
                                                               @RequestParam(defaultValue = "name") String sortField2,
                                                               @And({ @Spec(path = "id", spec = Equal.class),
-                                                                     @Spec(path = "name", spec = Equal.class),
+                                                                     @Spec(path = "name", spec = LikeIgnoreCase.class),
                                                                }) Specification<MeterModel>meterModelSpecification) throws Exception {
 
         List<Sort.Order> orders = new ArrayList<>();

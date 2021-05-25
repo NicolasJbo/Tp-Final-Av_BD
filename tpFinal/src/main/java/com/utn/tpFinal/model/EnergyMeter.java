@@ -25,14 +25,15 @@ public class EnergyMeter {
     @Column(unique = true)
     @NotEmpty(message = "Serial Number MUST be completed.")
     private String serialNumber;
+    @NotEmpty(message = "Password MUST be completed.")
+    private String passWord;
+
 
     @ManyToOne
-    @NotEmpty(message = "Model MUST be completed.")
     @JoinColumn(name="id_model")
     private MeterModel model;
 
     @ManyToOne
-    @NotEmpty(message = "Brand MUST be completed.")
     @JoinColumn(name="id_brand")
     private MeterBrand brand;
 

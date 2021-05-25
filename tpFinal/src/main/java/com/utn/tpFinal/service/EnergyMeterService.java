@@ -43,11 +43,27 @@ public class EnergyMeterService {
         return energyMeterRepository.findById(id)
                 .orElseThrow(() -> new EnergyMeterNotExists(this.getClass().getSimpleName(), "getEnergyMeterById"));
     }
+    public EnergyMeter getEnergyMeterBySerialNumber(String serial) throws EnergyMeterNotExists {
+        return energyMeterRepository.findBySerialNumber(serial)
+                .orElseThrow(() -> new EnergyMeterNotExists(this.getClass().getSimpleName(), "getEnergyMeterBySerialNumber"));
+    }
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public EnergyMeter add(EnergyMeter energyMeter) {
-        return energyMeterRepository.save(energyMeter);
+    public EnergyMeter add(EnergyMeter energyMeter,Integer idmodel,Integer idBrand) {
+
+        if(!isNull(idBrand)){
+            MeterBrand brand = getMeterBrandById(idBrand);
+            addEnergyMeterToBrand(energyMeter,brand);
+            energyMeter.setBrand(brand);
+        }
+        if(!isNull(idmodel)){
+            MeterModel model = getMeterModelById(idmodel);
+            addEnergyMeterToModel(energyMeter,model);
+            energyMeter.setModel(model);
+        }
+
+        return   energyMeterRepository.save(energyMeter);
     }
 
     public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Order>orders) throws NoContentException {
@@ -60,23 +76,6 @@ public class EnergyMeterService {
         Page<EnergyMeterDto> dtoMeters = meters.map(m-> EnergyMeterDto.from(m));
 
         return  dtoMeters;
-    }
-
-    public void addBrandAndModelToEnergyMeter(Integer id, Integer idBrand, Integer idModel) throws EnergyMeterNotExists {
-        EnergyMeter energyMeter = getEnergyMeterById(id);
-        if(!isNull(idBrand)){
-            MeterBrand brand = getMeterBrandById(idBrand);
-            addEnergyMeterToBrand(energyMeter,brand);
-            energyMeter.setBrand(brand);
-        }
-        if(!isNull(idModel)){
-            MeterModel model = getMeterModelById(idModel);
-            addEnergyMeterToModel(energyMeter,model);
-            energyMeter.setModel(model);
-        }
-        if(!isNull(idBrand) || !isNull(idModel)) {
-            energyMeterRepository.save(energyMeter);
-        }
     }
 
     public void addResidenceToMeter(Residence residence,EnergyMeter energyMeter){

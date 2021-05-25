@@ -1,17 +1,26 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.exception.ResidenceNotExists;
+import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.service.ResidenceService;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,20 +43,28 @@ public class ResidenceController {
     }
 
 
-    @GetMapping //HACE MUCHAS QUERYS
-    public ResponseEntity<List<ResidenceDto>> getAll(@RequestParam(required = false) String street,
-                                                     @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
-                                                     @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-                                                     @RequestParam(defaultValue = "id", required = false) String sortBy) {
+    @GetMapping
+    public ResponseEntity<List<ResidenceDto>> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                                  @RequestParam(defaultValue = "5") Integer size,
+                                                  @RequestParam(defaultValue = "id") String sortField1,
+                                                  @RequestParam(defaultValue = "street") String sortField2,
+                                                  @And({  @Spec(path = "id", spec = Equal.class),
+                                                          @Spec(path = "street", spec = LikeIgnoreCase.class),
+                                                          @Spec(path = "number", spec = LikeIgnoreCase.class)
+                                                  }) Specification<Residence> residenceSpecification) throws Exception {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-       Page<Residence> residences = residenceService.getAll(street,pageNumber,pageSize,sortBy);
-       Page<ResidenceDto> dtoResidences = residences.map(r -> ResidenceDto.from(r));
+        Page<ResidenceDto> dtoResidence = residenceService.getAll(residenceSpecification, page, size, orders);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(dtoResidences.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(dtoResidences.getTotalPages()))
-                .header("X-Actual-Page", Integer.toString(pageNumber))
-                .header("X-Sort-Method", sortBy)
-                .body(dtoResidences.getContent());
+                .header("X-Total-Elements", Long.toString(dtoResidence.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(dtoResidence.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(dtoResidence.getContent());
     }
 
     @PutMapping("/{idResidence}/energyMeter/{idEnergyMeter}")

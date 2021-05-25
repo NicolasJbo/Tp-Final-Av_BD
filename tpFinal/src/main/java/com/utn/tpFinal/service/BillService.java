@@ -31,8 +31,10 @@ public class BillService {
         return billsDtoList;
     }
 
-    public List<BillDto> getClientUnpaidBills(Integer idClient) { //todo verificar si la lista tiene contenido
+    public List<BillDto> getClientUnpaidBills(Integer idClient) throws NoContentException { 
         List<Bill> billsList = billRepository.getClientUnpaidBills(idClient);
+        if(billsList.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBills");
         List<BillDto>billsDtoList = BillDto.from(billsList) ;
         return billsDtoList;
     }

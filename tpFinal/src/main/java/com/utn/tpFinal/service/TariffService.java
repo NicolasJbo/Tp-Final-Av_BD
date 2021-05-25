@@ -21,15 +21,12 @@ import java.util.List;
 
 @Service
 public class TariffService {
-
+    @Autowired
     private TariffRepository tariffRepository;
+    @Autowired
     private ResidenceService residenceService;
 
-    @Autowired
-    public TariffService(TariffRepository tariffRepository, ResidenceService residenceService) {
-        this.tariffRepository = tariffRepository;
-        this.residenceService = residenceService;
-    }
+
 
     public Tariff getTariffById(Integer id) throws TariffNotExists {
         return tariffRepository.findById(id)
@@ -81,7 +78,7 @@ public class TariffService {
         tariffRepository.deleteById(idTariff);
     }
 
-    public Tariff modifyTariff(Tariff tariff) throws TariffNotExists { //todo arreglar esto
+    public Tariff modifyTariff(Tariff tariff) throws TariffNotExists { //todo arreglar esto --> param( id, DTO )
         Tariff tar= getTariffById(tariff.getId());
         tar=tariff;
         return tariffRepository.save(tar);

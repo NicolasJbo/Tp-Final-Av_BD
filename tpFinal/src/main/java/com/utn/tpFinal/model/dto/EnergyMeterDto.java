@@ -25,6 +25,7 @@ public class EnergyMeterDto {
     private String serialNumber;
     private String brandName;
     private String modelName;
+    private String passWord;
 
 
     public static EnergyMeterDto from (EnergyMeter energyMeter){
@@ -32,6 +33,7 @@ public class EnergyMeterDto {
                 .serialNumber(energyMeter.getSerialNumber())
                 .brandName(energyMeter.getBrand().getName())
                 .modelName(energyMeter.getModel().getName())
+                   .passWord(energyMeter.getPassWord())
                 .build();
     }
 

@@ -11,12 +11,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EnergyMeterRepository extends JpaRepository<EnergyMeter, Integer>, JpaSpecificationExecutor<EnergyMeter> {
-    Page<EnergyMeter> findBySerialNumber(String serialNumber,Pageable pageable);
-    List<EnergyMeter> findBySerialNumber(String serialNumber);
-    List<EnergyMeter> findByBrand(MeterBrand brand);
+
+    Optional<EnergyMeter> findBySerialNumber(String serialNumber);
+
     Page<EnergyMeter> findAll(Pageable pageable);
-    List<EnergyMeter> findByModel(MeterModel model);
+
 }

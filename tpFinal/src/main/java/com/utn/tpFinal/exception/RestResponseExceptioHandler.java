@@ -59,6 +59,7 @@ public class RestResponseExceptioHandler extends ResponseEntityExceptionHandler 
         List<String> errors = new ArrayList<String>();
         errors.add("Class: "+ ex.getRoute());
         errors.add("Method: "+ ex.getMethod());
+        errors.add("Message: "+ex.getMessage());
         ApiError apiError= new ApiError(ex.getHttpStatus(),ex.getLocalizedMessage() ,errors);
 
         return new ResponseEntity(apiError ,new HttpHeaders(),apiError.getHttpStatus());

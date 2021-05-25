@@ -13,6 +13,7 @@ import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +66,10 @@ public class ClientController {
                                                    @RequestParam(defaultValue = "id") String sortField1,
                                                    @RequestParam(defaultValue = "name") String sortField2,
                                                    @And({  @Spec(path = "id", spec = Equal.class),
-                                                           @Spec(path = "name", spec = Equal.class),
-                                                           @Spec(path = "lastName", spec = Equal.class),
-                                                           @Spec(path="dni", spec = Equal.class),
-                                                           @Spec(path = "birthday", spec = Equal.class)
+                                                           @Spec(path = "name", spec = LikeIgnoreCase.class),
+                                                           @Spec(path = "lastName", spec = LikeIgnoreCase.class),
+                                                           @Spec(path="dni", spec = LikeIgnoreCase.class),
+                                                           @Spec(path = "birthday", spec = LikeIgnoreCase.class)
                                                    }) Specification<Client> clientSpecification) throws Exception {
         List<Order> orders = new ArrayList<>();
         orders.add(new Order(Sort.Direction.ASC, sortField1));
@@ -136,7 +137,7 @@ public class ClientController {
 
     //  [PROG - PUNTO 3] Consulta de deuda (facturas impagas)
     @GetMapping("/{idClient}/bills/unpaid")
-    public ResponseEntity<List<BillDto>> getClientUnpaidBills(@PathVariable Integer idClient){
+    public ResponseEntity<List<BillDto>> getClientUnpaidBills(@PathVariable Integer idClient) throws NoContentException {
         List<BillDto> bills = billService.getClientUnpaidBills(idClient);
         return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Elements", Long.toString(bills.stream().count()))
@@ -170,7 +171,7 @@ public class ClientController {
 //--------------------------- BACKOFFICE --------------------------------------------
 
     //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
-    @GetMapping("/topConsumers")  //TODO reutilizar clientDto en vez de proyection
+    @GetMapping("/topConsumers")
     public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
         List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from,to);

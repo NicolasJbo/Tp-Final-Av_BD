@@ -9,6 +9,7 @@ import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.service.TariffService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class TariffController {
                                                   @RequestParam(defaultValue = "5") Integer size,
                                                   @RequestParam(defaultValue = "id") String sortField1,
                                                   @RequestParam(defaultValue = "name") String sortField2,
-                                                  @And({ @Spec(path = "name", spec = Equal.class),
+                                                  @And({ @Spec(path = "name", spec = LikeIgnoreCase.class),
                                                          @Spec(path = "id", spec = Equal.class)
                                                   }) Specification<Tariff> tariffSpecification) throws NoContentException {
         List<Order> orders = new ArrayList<>();
@@ -97,7 +98,7 @@ public class TariffController {
          return ResponseEntity.ok().build();
     }
 
-    @PutMapping //todo arreglar esto
+    @PutMapping //todo arreglar esto --> param( id, DTO )
     public ResponseEntity modifyTariff(@RequestBody Tariff tariff) throws TariffNotExists {
         Tariff tar= tariffService.modifyTariff(tariff);
         return ResponseEntity.status(HttpStatus.OK)
