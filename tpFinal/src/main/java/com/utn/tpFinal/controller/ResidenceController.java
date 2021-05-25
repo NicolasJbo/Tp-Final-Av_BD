@@ -11,6 +11,7 @@ import com.utn.tpFinal.model.proyection.MeasuresById;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ResidenceService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.In;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -86,8 +87,8 @@ public class ResidenceController {
     }
 
     @PutMapping("/{idResidence}")
-    public ResponseEntity modifyResidence(@RequestBody Residence residence) throws Exception {
-        Residence res= residenceService.modifyResidence(residence);
+    public ResponseEntity modifyResidence(@PathVariable Integer idResidence, @RequestBody ResidenceDto residence) throws Exception {
+        Residence res= residenceService.modifyResidence(idResidence,residence);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Class Modify",res.getClass().getSimpleName())

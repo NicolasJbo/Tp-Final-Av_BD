@@ -105,9 +105,14 @@ public class ResidenceService {
         residenceRepository.deleteById(idResidence);
     }
 
-    public Residence modifyResidence(Residence residence) throws ResidenceNotExists {
-        Residence res= getResidenceById(residence.getId());
-        res=residence;  //TODO este metodo esta para el culo, hay q arreglarlo --> parama(id , DTO)
+    public Residence modifyResidence(Integer idResidence, ResidenceDto residence) throws ResidenceNotExists {
+        Residence res= getResidenceById(idResidence);
+        Residence residence2= ResidenceDto.to(residence);
+        residence2.setClient(res.getClient());
+        residence2.setTariff(res.getTariff());
+        residence2.setEnergyMeter(res.getEnergyMeter());
+        residence2.setId(idResidence);
+        res=residence2;  //TODO este metodo esta para el culo, hay q arreglarlo --> parama(id , DTO)
         return  residenceRepository.save(res);
     }
 

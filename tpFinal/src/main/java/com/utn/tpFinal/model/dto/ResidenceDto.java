@@ -25,7 +25,14 @@ public class ResidenceDto {
     private EnergyMeterDto energyMeter;
     private Integer id;
 
-
+    public static  Residence to(ResidenceDto residenceDto){
+        return Residence.builder()
+                .street(residenceDto.getStreet())
+                .number(residenceDto.getNumber())
+                .floor(residenceDto.getFloor())
+                .apartament(residenceDto.getApartament())
+                .build();
+    }
     public static ResidenceDto from(Residence residence){
         return ResidenceDto.builder()
                 .street(residence.getStreet())
