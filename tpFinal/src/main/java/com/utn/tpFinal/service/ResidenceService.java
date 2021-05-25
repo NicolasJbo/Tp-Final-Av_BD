@@ -2,7 +2,9 @@ package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
+import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
+import com.utn.tpFinal.model.proyection.MeasuresById;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Date;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -113,4 +116,7 @@ public class ResidenceService {
     }
 
 
+    public List<MeasuresById> getClientUnpaidBillsByResidence(Integer idResidence, Date from, Date to) {
+        return residenceRepository.getMeasuresBetweenDaysByIdResidences(idResidence,from,to);
+    }
 }

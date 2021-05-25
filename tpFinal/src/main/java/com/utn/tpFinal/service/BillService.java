@@ -59,6 +59,14 @@ public class BillService {
 
         return measures;
     }
+    public List<BillDto> getClientUnpaidBillsByResidence(Integer idResidence) throws NoContentException {
+        List<Bill> billsList = billRepository.getClientUnpaidBillsByResidence(idResidence);
+        if(billsList.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBillsByResidence");
+        List<BillDto>billsDtoList = BillDto.from(billsList) ;
+        return billsDtoList;
+    }
+
 
 
 }

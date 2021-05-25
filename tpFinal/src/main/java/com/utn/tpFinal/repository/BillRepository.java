@@ -25,4 +25,8 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
     @Query(value = "CALL getClientMeasuresByDates(:idClient, :from, :to)", nativeQuery = true)
     List<MeasureProyection> getClientMeasuresByDates(Integer idClient, Date from, Date to);
 
+    @Query(value = "CALL getClientUnpaidBillsByResidence(:idResidence)", nativeQuery = true)
+    List<Bill> getClientUnpaidBillsByResidence(Integer idResidence);
+
+
 }
