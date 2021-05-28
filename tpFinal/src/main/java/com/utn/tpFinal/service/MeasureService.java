@@ -4,6 +4,7 @@ import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.EnergyMeter;
 import com.utn.tpFinal.model.Measure;
 import com.utn.tpFinal.model.Residence;
+import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.repository.MeasureRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
@@ -30,6 +31,7 @@ public class MeasureService {
     public void add(Measure measure, String serialNumber, String password) throws EnergyMeterNotExists, IncorrectPasswordException, ResidenceNotDefined {
         EnergyMeter energyMeter= energyMeterService.getEnergyMeterBySerialNumber(serialNumber);
         Residence residence=residenceService.getResidenceByEnergyMeterId(energyMeter.getId());
+
         if(!energyMeter.getPassWord().equalsIgnoreCase(password))
             throw new IncorrectPasswordException(this.getClass().getSimpleName(), "add");
         if(isNull(residence))
@@ -37,13 +39,13 @@ public class MeasureService {
 
         measure.setResidence(residence);
 
-        /*prueba de fecha
-        String fecha= measure.getDate().toString();
-        StringBuilder st= new StringBuilder();
-        st.append(fecha+" ");
-        st.append(LocalTime.now().toString());
-        System.out.println(st.toString());*/
-       measureRepository.save(measure);
+        Float tariffAmount = residence.getTariff().getAmount(); //traigo la tarifa
+        System.out.println("RESIDENCE TARIFF -> "+tariffAmount);
+        measure.setPrice(  measure.getKw()* tariffAmount); // hago que el precio de la medicion es de tarifa * total
+
+
+        System.out.println("MEASURE UPDATED -> "+measure.toString());
+        measureRepository.save(measure);
 
 
     }
