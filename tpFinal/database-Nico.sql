@@ -43,10 +43,10 @@ BEGIN
 END;
 //
 #--------------------------------------------------------------------------------------------------------------------
-#Punto 6 --BACKOFICCE--> Consulta de mediciones de un domicilio por rango de fechas
+#Punto 6 --BACKOFICCE--> Consulta de mediciones de un domicilio por rango de fechas  YA ESTA HECHO CON JPA
  CALL getMeasuresBetweenDaysByIdResidences(3,'2021-05-01','2021-01-30');
 DELIMITER //
-CREATE PROCEDURE getMeasuresBetweenDaysByIdResidences(IN id_residence INT ,IN first_date DATETIME, IN last_date DATETIME)
+CREATE PROCEDURE getMeasuresBetweenD`measures`aysByIdResidences(IN id_residence INT ,IN first_date DATETIME, IN last_date DATETIME)
 BEGIN
 	 IF( first_date > last_date ) THEN
 		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The entered dates are invalid';

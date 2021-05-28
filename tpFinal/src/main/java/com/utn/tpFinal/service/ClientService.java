@@ -3,11 +3,14 @@ package com.utn.tpFinal.service;
 import com.utn.tpFinal.exception.ClientNotExists;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotExists;
+import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
+import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.proyection.Top10Clients;
+import com.utn.tpFinal.repository.BillRepository;
 import com.utn.tpFinal.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,20 +21,19 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class ClientService {
-
-    private ClientRepository clientRepository;
-    private ResidenceService residenceService;
-
     @Autowired
-    public ClientService(ClientRepository clientRepository, ResidenceService residenceService) {
-        this.clientRepository = clientRepository;
-        this.residenceService = residenceService;
-    }
+    private ClientRepository clientRepository;
+    @Autowired
+    private ResidenceService residenceService;
+    @Autowired
+    private BillRepository billRepository;
+
 
     public Client getClientById(Integer id) throws ClientNotExists {
         return clientRepository.findById(id)
@@ -94,6 +96,26 @@ public class ClientService {
     }
 
 
+    public Page<BillDto> getClientUnpaidBills(Integer idClient, Integer page, Integer size, List<Order> orders) throws ClientNotExists, NoContentException {
+        if(!clientRepository.existsById(idClient))
+            throw new ClientNotExists(this.getClass().getSimpleName(), "getClientUnpaidBills");
+
+        Client c = getClientById(idClient);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+
+        List<Integer>residencesIds = new ArrayList<Integer>();
+        for(Residence r: c.getResidencesList())
+            residencesIds.add(r.getId());
+
+        Page<Bill> bills = billRepository.findByIsPaidFalseAndResidenceIdIn(residencesIds,pageable);
+
+        if(bills.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBills");
+
+        Page<BillDto> billsDto = bills.map(b-> BillDto.from(b));
+
+        return billsDto;
+    }
 
 
 }

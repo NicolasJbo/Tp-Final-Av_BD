@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
+
 @RestController
 @RequestMapping("/measurements")
 public class MeasureController {
@@ -18,10 +20,14 @@ public class MeasureController {
     @Autowired
     MeasureService measureService;
 
-    @PostMapping()
+    /*@PostMapping()
     public void  addMeasure(@RequestBody MeasureDto dto) throws Exception {
+        System.out.println(dto);
+        /*ate a = Date.valueOf(dto.getDate());//todo aca se rompe y devuelve null
+        System.out.println("Date -> "+a);
+
         Measure measure= MeasureDto.from(dto);
         measureService.add(measure,dto.getSerialNumber(),dto.getPassword());
 
-    }
+    }*/
 }

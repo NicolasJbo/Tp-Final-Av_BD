@@ -1,10 +1,13 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.exception.ClientNotExists;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.Measure;
 import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
+import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.proyection.MeasuresById;
@@ -96,15 +99,54 @@ public class ResidenceController {
     }
 
     @DeleteMapping("/{idResidence}")
-    public ResponseEntity removeResidenceById(@PathVariable Integer idResidence){
+    public ResponseEntity removeResidenceById(@PathVariable Integer idResidence) throws ResidenceNotExists {
         residenceService.removeResidenceById(idResidence);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{idResidence}/measures")
+    public ResponseEntity<List<MeasureDto>>getResidenceMeasuresByDates(@PathVariable Integer idResidence,
+                                                                             @RequestParam(defaultValue = "0") Integer page,
+                                                                             @RequestParam(defaultValue = "5") Integer size,
+                                                                             @RequestParam(defaultValue = "id") String sortField1,
+                                                                             @RequestParam(defaultValue = "date") String sortField2,
+                                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException, ResidenceNotExists {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
+
+        Page<MeasureDto> measures = residenceService.getResidenceMeasuresByDates(idResidence,from,to,page, size, orders);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(measures.getContent());
+    }
+
+    //  [PROG - 4]  BACKOFFICE -> Consulta de facturas impagas por  domicilio
     @GetMapping("/{idResidence}/bills/unpaid")
-    public List<MeasuresById>getClientUnpaidBillsByResidence(@PathVariable Integer idResidence,
-                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
-        return residenceService.getClientUnpaidBillsByResidence(idResidence,from,to);
+    public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(@PathVariable Integer idResidence,
+                                                             @RequestParam(defaultValue = "0") Integer page,
+                                                             @RequestParam(defaultValue = "5") Integer size,
+                                                             @RequestParam(defaultValue = "id") String sortField1,
+                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists, ResidenceNotExists {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
+
+        Page<BillDto> bills = residenceService.getResidenceUnpaidBills(idResidence, page, size, orders);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(bills.getContent());
     }
 
 

@@ -1,6 +1,7 @@
 package com.utn.tpFinal.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -30,8 +33,13 @@ public class Measure {
 
     @NotNull(message = "Total MUST be completed.")
     @Positive(message = "Total Must be positive number")
-    private Float total;
+    private Float kw;
 
+
+    @Positive(message = "Total Must be positive number")
+    private Float price;
+
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name="id_residence")
     private Residence residence;

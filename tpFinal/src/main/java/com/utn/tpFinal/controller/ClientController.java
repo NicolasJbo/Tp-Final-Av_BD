@@ -4,6 +4,7 @@ import com.utn.tpFinal.exception.ClientNotExists;
 import com.utn.tpFinal.exception.IncorrectDatesException;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
@@ -54,7 +55,7 @@ public class ClientController {
        Client c = clientService.add(client);
        URI location = ServletUriComponentsBuilder
                      .fromCurrentRequest()
-                     .path("/{idClient}")
+                     .path("/?id={idClient}") //todo arreglar esto
                      .buildAndExpand(c.getId())
                      .toUri();
        return ResponseEntity.created(location).build();
@@ -124,8 +125,8 @@ public class ClientController {
     //  [PROG - PUNTO 2] USUARIOS -> Consulta de facturas con rango de fechas
     @GetMapping("/{idClient}/bills")
     public ResponseEntity<List<BillDto>> getClientBillsByDates(@PathVariable Integer idClient,
-                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
+                                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
 
         List<BillDto> bills = billService.getClientBillsByDates(idClient,from, to);
         return ResponseEntity.status(HttpStatus.OK)
@@ -135,16 +136,6 @@ public class ClientController {
                 .body(bills);
     }
 
-    //  [PROG - PUNTO 3] Consulta de deuda (facturas impagas)
-    @GetMapping("/{idClient}/bills/unpaid")
-    public ResponseEntity<List<BillDto>> getClientUnpaidBills(@PathVariable Integer idClient) throws NoContentException {
-        List<BillDto> bills = billService.getClientUnpaidBills(idClient);
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(bills.stream().count()))
-                //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                //.header("X-Actual-Page", Integer.toString(pageNumber))
-                .body(bills);
-    }
 
     //  [PROG - PUNTO 4] USUARIOS -> Consulta de consumo por rango de fechas
     @GetMapping("/{idClient}/consumption")
@@ -178,6 +169,32 @@ public class ClientController {
 
         return ResponseEntity.status(HttpStatus.OK).body(rta);
     }
+
+
+    //  [PROG - PUNTO 3-4] USUARIOS - BACKOFFICE -> Consulta de facturas impagas por cliente y domicilio
+    @GetMapping("/{idClient}/bills/unpaid")
+    public ResponseEntity<List<BillDto>>getClientUnpaidBills(@PathVariable Integer idClient,
+                                                             @RequestParam(defaultValue = "0") Integer page,
+                                                             @RequestParam(defaultValue = "5") Integer size,
+                                                             @RequestParam(defaultValue = "id") String sortField1,
+                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists {
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Order(Sort.Direction.ASC, sortField2));
+
+        Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(bills.getContent());
+    }
+
+
+
 
 
 }

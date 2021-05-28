@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -28,5 +29,8 @@ public interface ResidenceRepository extends JpaRepository<Residence, Integer>, 
     @Query(value = "CALL getMeasuresBetweenDaysByIdResidences(:idResidence,:from,:to)", nativeQuery = true)
     List<MeasuresById> getMeasuresBetweenDaysByIdResidences(Integer idResidence, Date from, Date to);
 
-
+/*
+    @Procedure(procedureName = "getMeasuresBetweenDaysByIdResidences(:idResidence,:from,:to)")
+    List<MeasuresById> getMeasuresBetweenDaysByIdResidences(Integer idResidence, Date from, Date to);
+*/
 }

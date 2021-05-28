@@ -37,13 +37,13 @@ public class MeasureService {
 
         measure.setResidence(residence);
 
-        //prueba de fecha
+        /*prueba de fecha
         String fecha= measure.getDate().toString();
         StringBuilder st= new StringBuilder();
         st.append(fecha+" ");
         st.append(LocalTime.now().toString());
-        System.out.println(st.toString());
-       // measureRepository.save(measure);
+        System.out.println(st.toString());*/
+       measureRepository.save(measure);
 
 
     }

@@ -3,8 +3,11 @@ package com.utn.tpFinal.service;
 import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.BillDto;
+import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.proyection.MeasuresById;
+import com.utn.tpFinal.repository.BillRepository;
+import com.utn.tpFinal.repository.MeasureRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +34,10 @@ public class ResidenceService {
     private EnergyMeterService  energyMeterService;
     @Autowired
     private TariffService tariffService;
+    @Autowired
+    private MeasureRepository measureRepository;
+    @Autowired
+    private BillRepository billRepository;
 
 
 
@@ -101,7 +109,10 @@ public class ResidenceService {
         residenceRepository.save(residence);
     }
 
-    public void removeResidenceById(Integer idResidence) {
+    public void removeResidenceById(Integer idResidence) throws ResidenceNotExists {
+        if(!residenceRepository.existsById(idResidence))
+            throw new ResidenceNotExists(this.getClass().getSimpleName(),"removeResidenceById" );
+
         residenceRepository.deleteById(idResidence);
     }
 
@@ -112,7 +123,7 @@ public class ResidenceService {
         residence2.setTariff(res.getTariff());
         residence2.setEnergyMeter(res.getEnergyMeter());
         residence2.setId(idResidence);
-        res=residence2;  //TODO este metodo esta para el culo, hay q arreglarlo --> parama(id , DTO)
+        res=residence2;  //TODO cambiar metodo como antes
         return  residenceRepository.save(res);
     }
 
@@ -120,8 +131,31 @@ public class ResidenceService {
        return residenceRepository.findByEnergyMeterId(id);
     }
 
+    public Page<MeasureDto> getResidenceMeasuresByDates(Integer idResidence, Date from, Date to, Integer page,Integer size,List<Order> orders) throws NoContentException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+        Page<Measure> measures = measureRepository.findByResidenceIdAndDateBetween(idResidence, from, to, pageable);
 
-    public List<MeasuresById> getClientUnpaidBillsByResidence(Integer idResidence, Date from, Date to) {
-        return residenceRepository.getMeasuresBetweenDaysByIdResidences(idResidence,from,to);
+        if(measures.isEmpty())//TODO muestra mal
+            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBillsByResidence");
+
+        Page<MeasureDto> measuresdto = measures.map(m -> MeasureDto.from(m));
+        return measuresdto;
+    }
+
+
+    public Page<BillDto> getResidenceUnpaidBills(Integer idResidence, Integer page, Integer size, List<Order> orders) throws ResidenceNotExists, NoContentException {
+
+        if(!residenceRepository.existsById(idResidence))
+            throw new ResidenceNotExists(this.getClass().getSimpleName(), "getResidenceUnpaidBills");
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+        Page<Bill> bills = billRepository.findByIsPaidFalseAndResidenceId(idResidence, pageable);
+
+        if(bills.isEmpty())
+            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBills");
+
+        Page<BillDto> billsDto = bills.map(b-> BillDto.from(b));
+
+        return billsDto;
     }
 }

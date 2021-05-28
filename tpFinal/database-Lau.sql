@@ -148,8 +148,10 @@ END;
 CALL getClientMeasuresByDates(6,"2021-05-20 17:00:00.111111" , "2021-05-25 17:00:00.111111");
 
 SELECT * FROM `residences`
-
+SELECT * FROM measures
 SELECT * FROM `clients`
+`bills`
+SELECT * FROM energy_meters
 
 
 
