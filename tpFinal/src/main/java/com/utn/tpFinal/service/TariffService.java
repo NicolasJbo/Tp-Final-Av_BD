@@ -1,8 +1,6 @@
 package com.utn.tpFinal.service;
 
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.TariffNotExists;
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
@@ -78,9 +76,13 @@ public class TariffService {
     }
 
 
-    public Tariff modifyTariff(Tariff tariff) throws TariffNotExists { //todo arreglar esto --> param( id, DTO )
-        Tariff tar= getTariffById(tariff.getId());
+    public Tariff modifyTariff(Integer idTariff,Tariff tariff) throws TariffNotExists, TariffsDoNotMatch {
+        Tariff tar= getTariffById(idTariff);
+
+        if(tar.getId() != tariff.getId())
+            throw new TariffsDoNotMatch(this.getClass().getSimpleName(),"modifyTariff" );
         tar=tariff;
-        return tariffRepository.save(tar);
+        return  tariffRepository.save(tar);
+
     }
 }

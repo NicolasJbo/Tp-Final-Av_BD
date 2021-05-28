@@ -160,7 +160,8 @@ public class ClientController {
     }
 
 //--------------------------- BACKOFFICE --------------------------------------------
-
+//todo sacar
+    /*
     //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
     @GetMapping("/topConsumers")
     public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
@@ -192,7 +193,7 @@ public class ClientController {
                 .header("X-Second-Sort-By", sortField2)
                 .body(bills.getContent());
     }
-
+     */
 
 
 

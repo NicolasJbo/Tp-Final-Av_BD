@@ -116,15 +116,13 @@ public class ResidenceService {
         residenceRepository.deleteById(idResidence);
     }
 
-    public Residence modifyResidence(Integer idResidence, ResidenceDto residence) throws ResidenceNotExists {
-        Residence res= getResidenceById(idResidence);
-        Residence residence2= ResidenceDto.to(residence);
-        residence2.setClient(res.getClient());
-        residence2.setTariff(res.getTariff());
-        residence2.setEnergyMeter(res.getEnergyMeter());
-        residence2.setId(idResidence);
-        res=residence2;  //TODO cambiar metodo como antes
-        return  residenceRepository.save(res);
+    public Residence modifyResidence(Integer idResidence, Residence residence) throws ResidencesDoNotMatch, ResidenceNotExists {
+        Residence r=getResidenceById(idResidence);
+
+        if(r.getId() != residence.getId())
+            throw new ResidencesDoNotMatch(this.getClass().getSimpleName(),"modifyResidence" );
+        r=residence;
+        return  residenceRepository.save(r);
     }
 
     public Residence getResidenceByEnergyMeterId(Integer id){

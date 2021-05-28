@@ -41,7 +41,8 @@ public class ResidenceController {
     private ResidenceService residenceService;
     @Autowired
     BillService billService;
-
+    //Todo borrar este endpoint si funciona el de backoffice
+    /*
     @PostMapping
     public ResponseEntity addResidence(@RequestBody Residence residence){
         Residence res= residenceService.addResidence(residence);
@@ -53,6 +54,7 @@ public class ResidenceController {
                 .toUri();
         return ResponseEntity.created(location).build();
     }
+     */
 
 
     @GetMapping
@@ -88,22 +90,28 @@ public class ResidenceController {
     public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ) throws Exception{
         residenceService.addTariffToResidence(idResidence,idTariff);
     }
-
+    //Todo borrar este endpoint si funciona el de backoffice
+    /*
     @PutMapping("/{idResidence}")
-    public ResponseEntity modifyResidence(@PathVariable Integer idResidence, @RequestBody ResidenceDto residence) throws Exception {
+    public ResponseEntity modifyResidence(@PathVariable Integer idResidence, @RequestBody Residence residence) throws Exception {
         Residence res= residenceService.modifyResidence(idResidence,residence);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Class Modify",res.getClass().getSimpleName())
                 .build();
     }
+    */
 
-    @DeleteMapping("/{idResidence}")
+    //Todo borrar este endpoint si funciona el de backoffice
+   /* @DeleteMapping("/{idResidence}")
     public ResponseEntity removeResidenceById(@PathVariable Integer idResidence) throws ResidenceNotExists {
         residenceService.removeResidenceById(idResidence);
         return ResponseEntity.ok().build();
     }
+    */
 
+    //todo sacar
+    /*
     @GetMapping("/{idResidence}/measures")
     public ResponseEntity<List<MeasureDto>>getResidenceMeasuresByDates(@PathVariable Integer idResidence,
                                                                              @RequestParam(defaultValue = "0") Integer page,
@@ -127,7 +135,6 @@ public class ResidenceController {
                 .body(measures.getContent());
     }
 
-    //  [PROG - 4]  BACKOFFICE -> Consulta de facturas impagas por  domicilio
     @GetMapping("/{idResidence}/bills/unpaid")
     public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(@PathVariable Integer idResidence,
                                                              @RequestParam(defaultValue = "0") Integer page,
@@ -148,6 +155,8 @@ public class ResidenceController {
                 .header("X-Second-Sort-By", sortField2)
                 .body(bills.getContent());
     }
+
+     */
 
 
 }

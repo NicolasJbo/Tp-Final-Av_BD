@@ -37,16 +37,7 @@ public class TariffController {
         this.tariffService = tariffService;
     }
 
-    @PostMapping
-    public ResponseEntity addTariff(@RequestBody Tariff tariff){
-       Tariff t = tariffService.add(tariff);
-       URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{idClient}")
-                .buildAndExpand(t.getId())
-                .toUri();
-       return ResponseEntity.created(location).build();
-    }
+
 
     @GetMapping
     public ResponseEntity<List<TariffDto>> getAll(@RequestParam(defaultValue = "0") Integer page,
@@ -91,20 +82,33 @@ public class TariffController {
                 .header("X-Second-Sort-By", sortField2)
                 .body(residences.getContent());
     }
-
+//todo sacar
+    /*
     @DeleteMapping("/{idTariff}")
     public ResponseEntity deleteTariffById(@PathVariable Integer idTariff) throws TariffNotExists{
          tariffService.deleteTariffById(idTariff);
          return ResponseEntity.ok().build();
     }
 
-    @PutMapping //todo arreglar esto --> param( id, DTO )
+    @PutMapping
     public ResponseEntity modifyTariff(@RequestBody Tariff tariff) throws TariffNotExists {
         Tariff tar= tariffService.modifyTariff(tariff);
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Class modify",tar.getClass().getSimpleName())
                 .build();
     }
+    @PostMapping
+    public ResponseEntity addTariff(@RequestBody Tariff tariff){
+        Tariff t = tariffService.add(tariff);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{idClient}")
+                .buildAndExpand(t.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+     */
 
 
 }
