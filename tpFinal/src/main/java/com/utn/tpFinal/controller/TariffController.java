@@ -1,11 +1,8 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.TariffNotExists;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
-import com.utn.tpFinal.util.PostResponse;
-import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.service.TariffService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
@@ -20,9 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
