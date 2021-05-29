@@ -52,6 +52,7 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity addClient(@RequestBody Client client){
+        //todo hacer RegisterDTO
        Client c = clientService.add(client);
        URI location = ServletUriComponentsBuilder
                      .fromCurrentRequest()

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -30,6 +31,14 @@ public class User {
 
     @Size(min = 3,message = "Password characters MIN= 3 .")
     private String password;
+
+    @Column(columnDefinition = "boolean default true")
+    private Boolean isClient;
+
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private Client client;
+
 
 
 }

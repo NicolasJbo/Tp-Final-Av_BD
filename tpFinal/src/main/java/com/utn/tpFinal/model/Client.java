@@ -47,6 +47,8 @@ public class Client {
     @OneToMany(mappedBy = "client",cascade = CascadeType.ALL) //si eliminas un cliente, se eliminan sus domicilios
     private List<Residence> residencesList;
 
+
+
     @Override
     public String toString() {
         return "Client{" +
