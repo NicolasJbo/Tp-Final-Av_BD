@@ -1,6 +1,7 @@
 package com.utn.tpFinal.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.utn.tpFinal.model.dto.RegisterDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +40,12 @@ public class User {
     @JsonIgnore
     private Client client;
 
-
+    public static User from(RegisterDto registerDto){
+        return User.builder()
+                .mail(registerDto.getMail())
+                .password(registerDto.getPassword())
+                .isClient(registerDto.getIsClient())
+                .build();//por default isClient es true
+    }
 
 }

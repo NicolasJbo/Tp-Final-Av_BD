@@ -37,7 +37,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
      * @throws ServletException
      * @throws IOException
      */
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         try {
@@ -96,4 +95,5 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             return false;
         return true;
     }
+
 }

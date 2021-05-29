@@ -2,6 +2,7 @@ package com.utn.tpFinal.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.utn.tpFinal.model.dto.RegisterDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -61,6 +62,15 @@ public class Client {
     }
 //----------------------------------------->> METODOS <<-----------------------------------------
 
+    public static Client from(RegisterDto registerDto){
+
+        return Client.builder()
+                .dni(registerDto.getDni())
+                .birthday(registerDto.getBirthday())
+                .name(registerDto.getName())
+                .lastName(registerDto.getLastName())
+                .build();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

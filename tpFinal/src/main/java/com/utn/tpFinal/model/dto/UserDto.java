@@ -15,4 +15,5 @@ public class UserDto {
 
     private String id;
     private String mail;
+    private Boolean isClient;
 }
