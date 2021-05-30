@@ -2,11 +2,13 @@ package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.exception.ClientNotExists;
 import com.utn.tpFinal.exception.IncorrectDatesException;
+import com.utn.tpFinal.exception.NoConsumptionsFoundException;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
+import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.proyection.Consumption;
 import com.utn.tpFinal.model.proyection.MeasureProyection;
@@ -124,40 +126,83 @@ public class ClientController {
 //--------------------------- BILLS --------------------------------------------
 
     //  [PROG - PUNTO 2] USUARIOS -> Consulta de facturas con rango de fechas
-    @GetMapping("/{idClient}/bills")
+    @GetMapping("/{idClient}/bills") //TODO TEST
     public ResponseEntity<List<BillDto>> getClientBillsByDates(@PathVariable Integer idClient,
-                                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
+                                                               @RequestParam(defaultValue = "0") Integer page,
+                                                               @RequestParam(defaultValue = "5") Integer size,
+                                                               @RequestParam(defaultValue = "id") String sortField1,
+                                                               @RequestParam(defaultValue = "initialDate") String sortField2,
+                                                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
 
-        List<BillDto> bills = billService.getClientBillsByDates(idClient,from, to);
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Order(Sort.Direction.ASC, sortField2));
+
+        Page<BillDto> bills = billService.getClientBillsByDates(idClient,from, to, page, size, orders);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(bills.stream().count()))
-                //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                //.header("X-Actual-Page", Integer.toString(pageNumber))
-                .body(bills);
+                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(bills.getContent());
     }
 
+    //  [PROG - PUNTO 3] USUARIOS -> Consulta de facturas impagas EN BACKOFFICE CONTROLLER
+    @GetMapping("{idClient}/bills/unpaid") //TODO TEST
+    public ResponseEntity<List<BillDto>>getClientUnpaidBills(@PathVariable Integer idClient,
+                                                             @RequestParam(defaultValue = "0") Integer page,
+                                                             @RequestParam(defaultValue = "5") Integer size,
+                                                             @RequestParam(defaultValue = "id") String sortField1,
+                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
+
+        Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(bills.getContent());
+    }
 
     //  [PROG - PUNTO 4] USUARIOS -> Consulta de consumo por rango de fechas
-    @GetMapping("/{idClient}/consumption")
+    @GetMapping("/{idClient}/consumption") //TODO TEST
     public ResponseEntity<Consumption> getClientTotalEnergyByAndAmountDates(@PathVariable Integer idClient,
-                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException {
+                                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException, NoConsumptionsFoundException {
         Consumption consumption = billService.getClientTotalEnergyAndAmountByDates(idClient, from, to);
         return ResponseEntity.status(HttpStatus.OK).body(consumption);
     }
 
     //  [PROG - PUNTO 5] USUARIOS -> Consulta de mediciones por rango de fechas
-    @GetMapping("/{idClient}/measures")
-    public ResponseEntity<List<MeasureProyection>> getClientMeasuresByDates(@PathVariable Integer idClient,
-                                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
-        List<MeasureProyection> measures = billService.getClientMeasuresByDates(idClient, from, to);
+    @GetMapping("/{idClient}/measures") //TODO TEST
+    public ResponseEntity<List<MeasureDto>> getClientMeasuresByDates(@PathVariable Integer idClient,
+                                                                            @RequestParam(defaultValue = "0") Integer page,
+                                                                            @RequestParam(defaultValue = "5") Integer size,
+                                                                            @RequestParam(defaultValue = "id") String sortField1,
+                                                                            @RequestParam(defaultValue = "date") String sortField2,
+                                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws Exception {
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order(Sort.Direction.ASC, sortField1));
+        orders.add(new Order(Sort.Direction.ASC, sortField2));
+
+        Page<MeasureDto> measures = billService.getClientMeasuresByDates(idClient, from, to, page, size,orders);
+
         return ResponseEntity.status(HttpStatus.OK)
-                //.header("X-Total-Elements", Long.toString(measures.stream().count()))
-                //.header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                //.header("X-Actual-Page", Integer.toString(pageNumber))
-                .body(measures);
+                .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(measures.getContent());
     }
 
 //--------------------------- BACKOFFICE --------------------------------------------

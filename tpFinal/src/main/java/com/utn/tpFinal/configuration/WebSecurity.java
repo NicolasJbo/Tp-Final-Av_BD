@@ -10,16 +10,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
-public class WebSecurity extends WebSecurityConfigurerAdapter{
+public class WebSecurity extends WebSecurityConfigurerAdapter {
 
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                    .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                    .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/login").permitAll()
-                    .anyRequest().authenticated();
-        }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/login").permitAll() //metodos que se puede ejecutar sin token
+                .antMatchers(HttpMethod.POST, "/measurements").permitAll()
+                .antMatchers(HttpMethod.GET, "/client").permitAll()
+                .anyRequest().authenticated();
+    }
 
 }

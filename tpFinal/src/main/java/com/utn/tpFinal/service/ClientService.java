@@ -99,8 +99,13 @@ public class ClientService {
 
 
     public Page<BillDto> getClientUnpaidBills(Integer idClient, Integer page, Integer size, List<Order> orders) throws ClientNotExists, NoContentException {
-        if(!clientRepository.existsById(idClient))
-            throw new ClientNotExists(this.getClass().getSimpleName(), "getClientUnpaidBills");
+        /*todo VERIFICAR SI EL USER ES CLIENTE (EL ID INGRESADO DEBE SER EL MISMO QUE EL USER) O
+                                    ES EMPLEADO (PUEDE VER FACTURAS DE CUALQUIER CLIENTE)
+         if(user.is empleado || idClient== user.getClient().getId())
+            EJECUTAR EL METODO
+         else
+           lanzar securityException
+         */
 
         Client c = getClientById(idClient);
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));

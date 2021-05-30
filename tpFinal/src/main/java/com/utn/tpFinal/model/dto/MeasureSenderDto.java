@@ -21,8 +21,4 @@ public class MeasureSenderDto {
     String date;
     String password;
 
-
-    //todo se podria cortar el string y armar la fecha por dime mes año minuto y segundo
-
-
 }

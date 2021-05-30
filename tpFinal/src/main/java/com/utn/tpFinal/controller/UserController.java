@@ -37,7 +37,7 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping
+    @PostMapping                                            //todo cambir por modelo user
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequest) throws JsonProcessingException {
         User user = userService.findByMailAndPassword(loginRequest.getMail(), loginRequest.getPassword());
         System.out.println(user);
@@ -48,16 +48,20 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Invalid username or password.");
         }
     }
+
     private String generateToken(UserDto user) throws JsonProcessingException {
         String role = user.getIsClient() ? "CLIENT" : "EMPLOYEE";
 
+        //parte de spring security que permite la utilizacion de roles jwt
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(role);
+
         String token = Jwts.builder()
                 .setId("JWT")
                 .setSubject(user.getMail())
                 .claim("user",objectMapper.writeValueAsString(user))
                 .claim("authorities",grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .setIssuedAt(new Date(System.currentTimeMillis() + 2000000 ))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 60000 ))
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET.getBytes()).compact();
 
         return token;

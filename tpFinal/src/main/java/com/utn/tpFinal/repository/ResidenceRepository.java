@@ -21,16 +21,9 @@ import java.util.Optional;
 @Repository
 public interface ResidenceRepository extends JpaRepository<Residence, Integer>, JpaSpecificationExecutor<Residence> {
 
-    Page<Residence> findByStreet(String street, Pageable pageable);
     Page<Residence> findByClientId(Integer idClient, Pageable pageable);
     Residence findByEnergyMeterId(Integer idEnergyMeter);
     Page<Residence> findByTariffId(Integer idTariff, Pageable pageable);
 
-    @Query(value = "CALL getMeasuresBetweenDaysByIdResidences(:idResidence,:from,:to)", nativeQuery = true)
-    List<MeasuresById> getMeasuresBetweenDaysByIdResidences(Integer idResidence, Date from, Date to);
 
-/*
-    @Procedure(procedureName = "getMeasuresBetweenDaysByIdResidences(:idResidence,:from,:to)")
-    List<MeasuresById> getMeasuresBetweenDaysByIdResidences(Integer idResidence, Date from, Date to);
-*/
 }

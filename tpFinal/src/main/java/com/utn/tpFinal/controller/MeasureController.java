@@ -26,12 +26,6 @@ public class MeasureController {
     @PostMapping
     public void  addMeasure(@RequestBody MeasureSenderDto dto) throws Exception {
         System.out.println("INCOMING DTO -> "+dto.toString());
-        /*Date a = Date.valueOf(dto.getDate());//todo aca se rompe y devuelve null
-        System.out.println("Date -> "+a);*/
-
-        //Date date = new Date();
-        //DateFormat hourdateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-       // System.out.println("Hora y fecha: "+hourdateFormat.format(date));
 
         Measure measure= Measure.from(dto);
         System.out.println("MEASURE CREATED -> "+measure.toString());
