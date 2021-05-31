@@ -14,4 +14,5 @@ public class SpecsConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolverList) {
         argumentResolverList.add(new SpecificationArgumentResolver());
     }
+
 }
