@@ -19,6 +19,7 @@ import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.Authenticator;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,14 +60,16 @@ public class ResidenceController {
 
 
     @GetMapping
-    public ResponseEntity<List<ResidenceDto>> getAll(@RequestParam(defaultValue = "0") Integer page,
-                                                  @RequestParam(defaultValue = "5") Integer size,
-                                                  @RequestParam(defaultValue = "id") String sortField1,
-                                                  @RequestParam(defaultValue = "street") String sortField2,
-                                                  @And({  @Spec(path = "id", spec = Equal.class),
+    public ResponseEntity<List<ResidenceDto>> getAll(Authentication authenticator, @RequestParam(defaultValue = "0") Integer page,
+                                                     @RequestParam(defaultValue = "5") Integer size,
+                                                     @RequestParam(defaultValue = "id") String sortField1,
+                                                     @RequestParam(defaultValue = "street") String sortField2,
+                                                     @And({  @Spec(path = "id", spec = Equal.class),
                                                           @Spec(path = "street", spec = LikeIgnoreCase.class),
                                                           @Spec(path = "number", spec = LikeIgnoreCase.class)
                                                   }) Specification<Residence> residenceSpecification) throws Exception {
+        System.out.println(authenticator.getPrincipal());
+
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));

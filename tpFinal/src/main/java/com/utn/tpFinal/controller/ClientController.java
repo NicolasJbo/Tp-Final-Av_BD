@@ -56,11 +56,12 @@ public class ClientController {
     public ResponseEntity addClient(@RequestBody Client client){
         //todo hacer RegisterDTO
        Client c = clientService.add(client);
-       URI location = ServletUriComponentsBuilder
-                     .fromCurrentRequest()
-                     .path("/?id={idClient}") //todo arreglar esto
-                     .buildAndExpand(c.getId())
-                     .toUri();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/")
+                .query("id={idClient}")//todo arreglar esto
+                .buildAndExpand(c.getId())
+                .toUri();
        return ResponseEntity.created(location).build();
     }
 

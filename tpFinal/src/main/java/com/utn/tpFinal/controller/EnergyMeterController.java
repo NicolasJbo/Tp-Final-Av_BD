@@ -44,7 +44,8 @@ public class EnergyMeterController {
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{idEnergyMeter}")
+                .path("/")
+                .query("id={idEnergyMeter}")
                 .buildAndExpand(e.getId())
                 .toUri();
         return ResponseEntity.created(location).build();

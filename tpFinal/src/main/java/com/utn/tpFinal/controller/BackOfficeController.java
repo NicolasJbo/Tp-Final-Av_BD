@@ -40,7 +40,12 @@ public class BackOfficeController {
     @PostMapping("/tariff")
     public ResponseEntity addTariff(@RequestBody Tariff tariff) throws URISyntaxException {
         Tariff t = tariffService.add(tariff);
-        URI location = new URI("localhost:8080/tariff?id="+t.getId());
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/")
+                .query("id={idTariff}")
+                .buildAndExpand(t.getId())
+                .toUri();
         return ResponseEntity.created(location).build();
     }
     @DeleteMapping("/tariff/{idTariff}")
@@ -64,7 +69,8 @@ public class BackOfficeController {
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{idResidence}")
+                .path("/")
+                .query("id={idResidence}")
                 .buildAndExpand(res.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
