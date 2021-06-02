@@ -169,8 +169,10 @@ public class BackOfficeController {
 //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/client/topConsumers")
-    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(Authentication authenticator,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
+
+        System.out.println(authenticator.getAuthorities());
 
             List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from, to);
             return ResponseEntity.status(HttpStatus.OK).body(rta);
