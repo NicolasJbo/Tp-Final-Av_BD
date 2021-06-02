@@ -41,20 +41,23 @@ public class TariffController {
                                                   @RequestParam(defaultValue = "name") String sortField2,
                                                   @And({ @Spec(path = "name", spec = LikeIgnoreCase.class),
                                                          @Spec(path = "id", spec = Equal.class)
-                                                  }) Specification<Tariff> tariffSpecification) throws NoContentException {
+                                                  }) Specification<Tariff> tariffSpecification)  {
         List<Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
         Page<TariffDto> tariffs = tariffService.getAll(tariffSpecification, page, size, orders);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(tariffs.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(tariffs.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(tariffs.getContent());
+        if(tariffs.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(tariffs.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(tariffs.getTotalPages()))
+                    .header("X-Actual-Page",Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(tariffs.getContent());
     }
 
     @GetMapping("/{idTariff}/residences")

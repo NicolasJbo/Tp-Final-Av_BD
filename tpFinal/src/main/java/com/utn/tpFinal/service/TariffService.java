@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -37,14 +39,17 @@ public class TariffService {
         return tariffRepository.save(tariff);
     }
 
-    public Page<TariffDto> getAll(Specification<Tariff> tariffSpecification, Integer page, Integer size, List<Order>orders) throws NoContentException {
+    public Page<TariffDto> getAll(Specification<Tariff> tariffSpecification, Integer page, Integer size, List<Order>orders){
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Tariff>tariffs =tariffRepository.findAll(tariffSpecification,pageable);
 
-        if(tariffs.isEmpty()) //todo no muestra mensaje (proba buscar por id de uno q no existe)
-            throw new NoContentException(this.getClass().getSimpleName(), "getAll");
+        Page<TariffDto> tariffDtos  = Page.empty();// = Page.empty(pageable);
 
-        Page<TariffDto> tariffDtos = tariffs.map(t-> TariffDto.from(t));
+        System.out.println(tariffDtos.getContent());
+
+        if(!tariffs.isEmpty())
+            tariffDtos = tariffs.map(t-> TariffDto.from(t));
+
 
         return tariffDtos;
     }

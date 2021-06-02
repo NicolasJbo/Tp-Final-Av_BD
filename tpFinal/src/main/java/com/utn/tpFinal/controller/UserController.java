@@ -61,7 +61,7 @@ public class UserController {
                 .claim("user",objectMapper.writeValueAsString(user))
                 .claim("authorities",grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1800000 ))
+                .setExpiration(new Date(System.currentTimeMillis() + 180000000 ))
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET.getBytes()).compact();
 
         return token;
