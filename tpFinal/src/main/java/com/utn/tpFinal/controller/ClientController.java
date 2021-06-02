@@ -27,6 +27,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.data.domain.Sort.Order;
@@ -64,7 +65,7 @@ public class ClientController {
                 .toUri();
        return ResponseEntity.created(location).build();
     }
-
+    @PreAuthorize(value= "hasAuthority('EMPLOYEE')")
     @GetMapping
     public ResponseEntity<List<ClientDto>> getAll( @RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "5") Integer size,
@@ -90,7 +91,7 @@ public class ClientController {
                 .header("X-Second-Sort-By", sortField2)
                 .body(dtoClients.getContent());
     }
-
+    @PreAuthorize(value= "hasAuthority('EMPLOYEE') or authentication.principal.id.equals(#idClient)")
     @GetMapping("/{idClient}/residences")
     public ResponseEntity<List<ResidenceDto>>getClientResidences(@PathVariable Integer idClient,
                                                                  @RequestParam(defaultValue = "0") Integer page,
