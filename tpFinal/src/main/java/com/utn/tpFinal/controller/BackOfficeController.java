@@ -47,7 +47,7 @@ public class BackOfficeController {
     public ResponseEntity addTariff(Authentication authenticator,@RequestBody Tariff tariff) throws URISyntaxException {
         Tariff t = tariffService.add(tariff);
 
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
@@ -62,7 +62,7 @@ public class BackOfficeController {
     }
     @DeleteMapping("/tariff/{idTariff}")
     public ResponseEntity deleteTariffById(Authentication authenticator,@PathVariable Integer idTariff) throws TariffNotExists {
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             tariffService.deleteTariffById(idTariff);
             return ResponseEntity.ok().build();
@@ -75,7 +75,7 @@ public class BackOfficeController {
     public ResponseEntity modifyTariff(Authentication authenticator,@PathVariable Integer idTarrif ,@RequestBody Tariff tariff) throws Exception {
         Tariff tar= tariffService.modifyTariff(idTarrif,tariff);
 
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             return ResponseEntity.status(HttpStatus.OK)
                     .header("Class modify", tar.getClass().getSimpleName())
@@ -90,7 +90,7 @@ public class BackOfficeController {
     public ResponseEntity addResidence(Authentication authenticator,@RequestBody Residence residence){
         Residence res= residenceService.addResidence(residence);
 
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
@@ -105,7 +105,7 @@ public class BackOfficeController {
     }
     @DeleteMapping("/residence/{idResidence}")
     public ResponseEntity removeResidenceById(Authentication authenticator,@PathVariable Integer idResidence) throws ResidenceNotExists {
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             residenceService.removeResidenceById(idResidence);
             return ResponseEntity.ok().build();
@@ -116,7 +116,7 @@ public class BackOfficeController {
     @PutMapping("/residence/{idResidence}")
     public ResponseEntity modifyResidence(Authentication authenticator,@PathVariable Integer idResidence, @RequestBody Residence residence) throws Exception {
 
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             Residence res = residenceService.modifyResidence(idResidence, residence);
             return ResponseEntity
@@ -140,7 +140,7 @@ public class BackOfficeController {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             Page<BillDto> bills = residenceService.getResidenceUnpaidBills(idResidence, page, size, orders);
             return ResponseEntity.status(HttpStatus.OK)
@@ -168,7 +168,7 @@ public class BackOfficeController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
         UserDto dto = (UserDto)authenticator.getPrincipal();
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")){
             Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
             return ResponseEntity.status(HttpStatus.OK)
@@ -190,7 +190,7 @@ public class BackOfficeController {
     @GetMapping("/client/topConsumers")
     public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(Authentication authenticator,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from, to);
             return ResponseEntity.status(HttpStatus.OK).body(rta);
@@ -212,7 +212,7 @@ public class BackOfficeController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        String role= getRole(authenticator);
         if(role.equalsIgnoreCase("EMPLOYEE")) {
             Page<MeasureDto> measures = residenceService.getResidenceMeasuresByDates(idResidence, from, to, page, size, orders);
             return ResponseEntity.status(HttpStatus.OK)
@@ -229,8 +229,11 @@ public class BackOfficeController {
 
 //---------------------------------------------------------------------------------------------
     private ResponseEntity noAcces(){
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .build();
+    }
+    private String getRole(Authentication authenticator){
+        return authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
     }
 
 
