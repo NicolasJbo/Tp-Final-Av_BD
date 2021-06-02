@@ -42,13 +42,12 @@ public class BackOfficeController {
 //-----------------------------PUNTO 1 ------------------------------------------------
     //todo login
 //-----------------------------PUNTO 2 ------------------------------------------------
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PostMapping("/tariff")
-    public ResponseEntity addTariff(Authentication authenticator,@RequestBody Tariff tariff) throws URISyntaxException {
+    public ResponseEntity addTariff(@RequestBody Tariff tariff) throws URISyntaxException {
         Tariff t = tariffService.add(tariff);
 
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/")
@@ -56,42 +55,36 @@ public class BackOfficeController {
                     .buildAndExpand(t.getId())
                     .toUri();
             return ResponseEntity.created(location).build();
-        }else {
-            return noAcces();
-        }
+
     }
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @DeleteMapping("/tariff/{idTariff}")
-    public ResponseEntity deleteTariffById(Authentication authenticator,@PathVariable Integer idTariff) throws TariffNotExists {
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+    public ResponseEntity deleteTariffById(@PathVariable Integer idTariff) throws TariffNotExists {
+
             tariffService.deleteTariffById(idTariff);
             return ResponseEntity.ok().build();
-        }else {
-            return noAcces();
-        }
+
     }
 
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PutMapping("/tariff/{idTarrif}")
-    public ResponseEntity modifyTariff(Authentication authenticator,@PathVariable Integer idTarrif ,@RequestBody Tariff tariff) throws Exception {
+    public ResponseEntity modifyTariff(@PathVariable Integer idTarrif ,@RequestBody Tariff tariff) throws Exception {
         Tariff tar= tariffService.modifyTariff(idTarrif,tariff);
 
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+
             return ResponseEntity.status(HttpStatus.OK)
                     .header("Class modify", tar.getClass().getSimpleName())
                     .build();
-        }else {
-            return  noAcces();
-        }
+
     }
 
 //-----------------------------PUNTO 3 ------------------------------------------------
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PostMapping("/residence")
-    public ResponseEntity addResidence(Authentication authenticator,@RequestBody Residence residence){
+    public ResponseEntity addResidence(@RequestBody Residence residence){
         Residence res= residenceService.addResidence(residence);
 
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/")
@@ -99,40 +92,34 @@ public class BackOfficeController {
                     .buildAndExpand(res.getId())
                     .toUri();
             return ResponseEntity.created(location).build();
-        }else {
-            return noAcces();
-        }
+
     }
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @DeleteMapping("/residence/{idResidence}")
-    public ResponseEntity removeResidenceById(Authentication authenticator,@PathVariable Integer idResidence) throws ResidenceNotExists {
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+    public ResponseEntity removeResidenceById(@PathVariable Integer idResidence) throws ResidenceNotExists {
+
             residenceService.removeResidenceById(idResidence);
             return ResponseEntity.ok().build();
-        }else{
-            return noAcces();
-        }
-    }
-    @PutMapping("/residence/{idResidence}")
-    public ResponseEntity modifyResidence(Authentication authenticator,@PathVariable Integer idResidence, @RequestBody Residence residence) throws Exception {
 
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+    }
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
+    @PutMapping("/residence/{idResidence}")
+    public ResponseEntity modifyResidence(@PathVariable Integer idResidence, @RequestBody Residence residence) throws Exception {
+
+
             Residence res = residenceService.modifyResidence(idResidence, residence);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .header("Class Modify", res.getClass().getSimpleName())
                     .build();
-        }else {
-            return noAcces();
-        }
+
     }
     //-----------------------------PUNTO 4 ------------------------------------------------
 
 //  [PROG - 4]  BACKOFFICE -> Consulta de facturas impagas por  domicilio
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/residence/{idResidence}/bills/unpaid")
-    public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(Authentication authenticator,@PathVariable Integer idResidence,
+    public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(@PathVariable Integer idResidence,
                                                                 @RequestParam(defaultValue = "0") Integer page,
                                                                 @RequestParam(defaultValue = "5") Integer size,
                                                                 @RequestParam(defaultValue = "id") String sortField1,
@@ -140,8 +127,7 @@ public class BackOfficeController {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+
             Page<BillDto> bills = residenceService.getResidenceUnpaidBills(idResidence, page, size, orders);
             return ResponseEntity.status(HttpStatus.OK)
                     .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
@@ -150,15 +136,13 @@ public class BackOfficeController {
                     .header("X-First-Sort-By", sortField1)
                     .header("X-Second-Sort-By", sortField2)
                     .body(bills.getContent());
-        }else {
-            return noAcces();
-        }
+
     }
 
     //  [PROG - 4]  BACKOFFICE -> Consulta de facturas impagas por  cliente
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/client/{idClient}/bills/unpaid")
-    public ResponseEntity<List<BillDto>>getClientUnpaidBills(Authentication authenticator,
+    public ResponseEntity<List<BillDto>>getClientUnpaidBills(
                                                              @PathVariable Integer idClient,
                                                              @RequestParam(defaultValue = "0") Integer page,
                                                              @RequestParam(defaultValue = "5") Integer size,
@@ -167,9 +151,7 @@ public class BackOfficeController {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
-        UserDto dto = (UserDto)authenticator.getPrincipal();
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")){
+
             Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
             return ResponseEntity.status(HttpStatus.OK)
                     .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
@@ -178,30 +160,27 @@ public class BackOfficeController {
                     .header("X-First-Sort-By", sortField1)
                     .header("X-Second-Sort-By", sortField2)
                     .body(bills.getContent());
-        }else {
-            return noAcces();
-        }
+
 
 
 
     }
 //-----------------------------PUNTO 5  ------------------------------------------------
 //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/client/topConsumers")
-    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(Authentication authenticator,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+
             List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from, to);
             return ResponseEntity.status(HttpStatus.OK).body(rta);
-        }else{
-            return noAcces();
-        }
+
     }
 //-----------------------------PUNTO 6  ------------------------------------------------
 //  [PROG - PUNTO 6] BACKOFFICE -> Consulta mediciones de un domicilio por rango de fechas
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/residence/{idResidence}/measures")
-    public ResponseEntity<List<MeasureDto>>getResidenceMeasuresByDates(Authentication authenticator,@PathVariable Integer idResidence,
+    public ResponseEntity<List<MeasureDto>>getResidenceMeasuresByDates(@PathVariable Integer idResidence,
                                                                        @RequestParam(defaultValue = "0") Integer page,
                                                                        @RequestParam(defaultValue = "5") Integer size,
                                                                        @RequestParam(defaultValue = "id") String sortField1,
@@ -212,8 +191,7 @@ public class BackOfficeController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-        String role= getRole(authenticator);
-        if(role.equalsIgnoreCase("EMPLOYEE")) {
+
             Page<MeasureDto> measures = residenceService.getResidenceMeasuresByDates(idResidence, from, to, page, size, orders);
             return ResponseEntity.status(HttpStatus.OK)
                     .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
@@ -222,19 +200,11 @@ public class BackOfficeController {
                     .header("X-First-Sort-By", sortField1)
                     .header("X-Second-Sort-By", sortField2)
                     .body(measures.getContent());
-        }else {
-            return noAcces();
-        }
+
     }
 
 //---------------------------------------------------------------------------------------------
-    private ResponseEntity noAcces(){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .build();
-    }
-    private String getRole(Authentication authenticator){
-        return authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
-    }
+
 
 
 
