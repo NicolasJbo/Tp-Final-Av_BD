@@ -59,18 +59,19 @@ public class TariffService {
         tariffRepository.save(tariff);
     }
 
-    public Page<ResidenceDto> getResidencesByTariff(Integer idTariff, Integer page, Integer size, List<Order>orders) throws TariffNotExists, NoContentException {
+    public Page<ResidenceDto> getResidencesByTariff(Integer idTariff, Integer page, Integer size, List<Order>orders) throws TariffNotExists {
         if(!tariffRepository.existsById(idTariff))
            throw new TariffNotExists(this.getClass().getSimpleName(), "getResidencesByTariff");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-        Page<Residence> residences = residenceService.getResidenceByTariffId(idTariff, pageable);
+        Page<Residence> residences = residenceService.getResidencesByTariffId(idTariff, pageable);
 
-        if(residences.isEmpty())
-            throw new NoContentException(this.getClass().getSimpleName(), "getResidencesByTariff");
+        Page<ResidenceDto> residenceDtos = Page.empty();
 
-        Page<ResidenceDto> residencesDtos = residences.map(r-> ResidenceDto.from(r));
-        return residencesDtos;
+        if(!residences.isEmpty()) {
+            residenceDtos = residences.map(r -> ResidenceDto.from(r));
+        }
+        return residenceDtos;
     }
 
     public void deleteTariffById(Integer idTariff) throws TariffNotExists {

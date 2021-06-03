@@ -77,7 +77,7 @@ public class ResidenceService {
         return residenceRepository.findByClientId(idClient, pageable);
     }
 
-    public Page<Residence> getResidenceByTariffId(Integer idTariff, Pageable pageable) {
+    public Page<Residence> getResidencesByTariffId(Integer idTariff, Pageable pageable) {
         return residenceRepository.findByTariffId(idTariff, pageable);
     }
 
