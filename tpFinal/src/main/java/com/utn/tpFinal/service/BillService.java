@@ -65,8 +65,6 @@ public class BillService {
         if(from.equals(to) || from.after(to))
             throw new IncorrectDatesException(this.getClass().getSimpleName(),"getClientTotalEnergyAndAmountByDates");
 
-        //TODO si no se encuentra un consumo entre las fechas ingresadas muestra NULL, pero no se uede poner
-        // exception porque es una proyeccion
 
         Consumption consumption = billRepository.getClientTotalEnergyAndAmountByDates(idClient,from,to);
 
@@ -85,7 +83,7 @@ public class BillService {
             residencesIds.add(r.getId());
 
         Page<Measure> measures = measureRepository.findByDateBetweenAndResidenceIdIn(from, to, residencesIds, pageable);
-        if (measures.isEmpty()) //todo= no lanza bien la exception (solo muestra el codigo)
+        if (measures.isEmpty())
             throw new NoContentException(this.getClass().getSimpleName(), "getClientMeasuresByDates");
 
         Page<MeasureDto> measureDtos = measures.map(m -> MeasureDto.from(m));

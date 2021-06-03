@@ -21,10 +21,6 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
     @Query(value = "CALL getClientTotalEnergyAndAmountByDates(:idClient, :from, :to)", nativeQuery = true)
     Consumption getClientTotalEnergyAndAmountByDates(Integer idClient, Date from, Date to);
 
-    @Query(value = "CALL getClientMeasuresByDates(:idClient, :from, :to)", nativeQuery = true)
-    List<MeasureProyection> getClientMeasuresByDates(Integer idClient, Date from, Date to);
-
-
     Page<Bill> findByIsPaidFalseAndResidenceIdIn(List<Integer> residencesIds, Pageable pageable);
 
     Page<Bill> findByIsPaidFalseAndResidenceId(Integer idResidence, Pageable pageable);

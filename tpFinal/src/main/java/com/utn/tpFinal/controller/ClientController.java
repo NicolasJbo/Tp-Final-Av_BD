@@ -149,7 +149,7 @@ public ResponseEntity<ClientDto> getById(Authentication authenticator, @PathVari
             clientService.addResidenceToClient(idClient, idResidence);
             return ResponseEntity.accepted().build();
         }else {
-            ResponseEntity.status(HttpStatus.FORBIDDEN)
+           return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .build();
         }
     }
@@ -187,7 +187,7 @@ public ResponseEntity<ClientDto> getById(Authentication authenticator, @PathVari
                     .header("X-Second-Sort-By", sortField2)
                     .body(bills.getContent());
         }else{
-            ResponseEntity.status(HttpStatus.FORBIDDEN)
+            return    ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .build();
         }
 
@@ -215,7 +215,7 @@ public ResponseEntity<ClientDto> getById(Authentication authenticator, @PathVari
                     .header("X-Second-Sort-By", sortField2)
                     .body(bills.getContent());
         }else {
-            ResponseEntity.status(HttpStatus.FORBIDDEN)
+           return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .build();
         }
     }
