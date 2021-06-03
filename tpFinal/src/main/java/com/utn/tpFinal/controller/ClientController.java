@@ -6,10 +6,7 @@ import com.utn.tpFinal.exception.NoConsumptionsFoundException;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.dto.BillDto;
-import com.utn.tpFinal.model.dto.ClientDto;
-import com.utn.tpFinal.model.dto.MeasureDto;
-import com.utn.tpFinal.model.dto.ResidenceDto;
+import com.utn.tpFinal.model.dto.*;
 import com.utn.tpFinal.model.proyection.Consumption;
 import com.utn.tpFinal.model.proyection.MeasureProyection;
 import com.utn.tpFinal.model.proyection.Top10Clients;
@@ -28,6 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.data.domain.Sort.Order;
@@ -51,12 +49,38 @@ public class ClientController {
         this.billService = billService;
     }
 
+    public static  Boolean isEmployeeOrIsClientAndIdMatch(Authentication authenticator ,Integer id){
+        Boolean rta =false;
+        String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
+        UserDto userDto = (UserDto) authenticator.getPrincipal();
+        System.out.println("AUTENTICATED -> " + userDto.getId());
+        if ( role.equalsIgnoreCase("EMPLOYEE") ||
+                ( role.equalsIgnoreCase("CLIENT") && Integer.parseInt(userDto.getId()) == id )){
+           rta=true;
+        }
+        return rta;
+    }
+
 //--------------------------- CLIENT --------------------------------------------
+@GetMapping("/{id}")
+public ResponseEntity<ClientDto> getById(Authentication authenticator, @PathVariable Integer id) throws ClientNotExists {
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,id))
+        {
+            Client c = clientService.getClientById(id);
+            ClientDto clientDto = ClientDto.from(c);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(clientDto);
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
+}
 
     @PostMapping
-    public ResponseEntity addClient(@RequestBody Client client){
-        //todo hacer RegisterDTO
-       Client c = clientService.add(client);
+    public ResponseEntity addClient(@RequestBody RegisterDto registerDto){
+
+       Client c = clientService.add(registerDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/")
@@ -69,10 +93,9 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<List<ClientDto>> getAll( @RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "5") Integer size,
-                                                   @RequestParam(defaultValue = "id") String sortField1,
-                                                   @RequestParam(defaultValue = "name") String sortField2,
-                                                   @And({  @Spec(path = "id", spec = Equal.class),
-                                                           @Spec(path = "name", spec = LikeIgnoreCase.class),
+                                                   @RequestParam(defaultValue = "lastName") String sortField1,
+                                                   @RequestParam(defaultValue = "dni") String sortField2,
+                                                   @And({
                                                            @Spec(path = "lastName", spec = LikeIgnoreCase.class),
                                                            @Spec(path="dni", spec = LikeIgnoreCase.class),
                                                            @Spec(path = "birthday", spec = LikeIgnoreCase.class)
@@ -91,9 +114,9 @@ public class ClientController {
                 .header("X-Second-Sort-By", sortField2)
                 .body(dtoClients.getContent());
     }
-    @PreAuthorize(value= "hasAuthority('EMPLOYEE') or authentication.principal.id.equals(#idClient)")
+
     @GetMapping("/{idClient}/residences")
-    public ResponseEntity<List<ResidenceDto>>getClientResidences(@PathVariable Integer idClient,
+    public ResponseEntity<List<ResidenceDto>>getClientResidences( Authentication authenticator,@PathVariable Integer idClient,
                                                                  @RequestParam(defaultValue = "0") Integer page,
                                                                  @RequestParam(defaultValue = "5") Integer size,
                                                                  @RequestParam(defaultValue = "street") String sortField1,
@@ -102,23 +125,35 @@ public class ClientController {
         orders.add(new Order(Sort.Direction.ASC, sortField1));
         orders.add(new Order(Sort.Direction.ASC, sortField2));
 
-        Page<ResidenceDto> residences = clientService.getClientResidences(idClient, page, size, orders);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(residences.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(residences.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(residences.getContent());
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,idClient))
+        {
+            Page<ResidenceDto> residences = clientService.getClientResidences(idClient, page, size, orders);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(residences.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(residences.getTotalPages()))
+                    .header("X-Actual-Page", Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(residences.getContent());
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 
     @PutMapping("/{idClient}/residence/{idResidence}")
-    public ResponseEntity addResidenceToClient(@PathVariable Integer idClient, @PathVariable Integer idResidence) throws Exception {
-        clientService.addResidenceToClient(idClient,idResidence);
-        return ResponseEntity.accepted().build();
+    public ResponseEntity addResidenceToClient(Authentication authenticator,@PathVariable Integer idClient, @PathVariable Integer idResidence) throws Exception {
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,idClient)) {
+            clientService.addResidenceToClient(idClient, idResidence);
+            return ResponseEntity.accepted().build();
+        }else {
+            ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @DeleteMapping("{idClient}")
     public ResponseEntity deleteClientById(@PathVariable Integer idClient) throws Exception {
         clientService.deleteClientById(idClient);
@@ -129,7 +164,7 @@ public class ClientController {
 
     //  [PROG - PUNTO 2] USUARIOS -> Consulta de facturas con rango de fechas
     @GetMapping("/{idClient}/bills") //TODO TEST
-    public ResponseEntity<List<BillDto>> getClientBillsByDates(@PathVariable Integer idClient,
+    public ResponseEntity<List<BillDto>> getClientBillsByDates(Authentication authenticator,@PathVariable Integer idClient,
                                                                @RequestParam(defaultValue = "0") Integer page,
                                                                @RequestParam(defaultValue = "5") Integer size,
                                                                @RequestParam(defaultValue = "id") String sortField1,
@@ -141,20 +176,26 @@ public class ClientController {
         orders.add(new Order(Sort.Direction.ASC, sortField1));
         orders.add(new Order(Sort.Direction.ASC, sortField2));
 
-        Page<BillDto> bills = billService.getClientBillsByDates(idClient,from, to, page, size, orders);
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,idClient)) {
+            Page<BillDto> bills = billService.getClientBillsByDates(idClient, from, to, page, size, orders);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(bills.getContent());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                    .header("X-Actual-Page", Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(bills.getContent());
+        }else{
+            ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
+
     }
 
     //  [PROG - PUNTO 3] USUARIOS -> Consulta de facturas impagas EN BACKOFFICE CONTROLLER
     @GetMapping("{idClient}/bills/unpaid") //TODO TEST
-    public ResponseEntity<List<BillDto>>getClientUnpaidBills(@PathVariable Integer idClient,
+    public ResponseEntity<List<BillDto>>getClientUnpaidBills(Authentication authenticator,@PathVariable Integer idClient,
                                                              @RequestParam(defaultValue = "0") Integer page,
                                                              @RequestParam(defaultValue = "5") Integer size,
                                                              @RequestParam(defaultValue = "id") String sortField1,
@@ -163,29 +204,39 @@ public class ClientController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-        Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,idClient)) {
+            Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(bills.getContent());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                    .header("X-Actual-Page", Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(bills.getContent());
+        }else {
+            ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 
     //  [PROG - PUNTO 4] USUARIOS -> Consulta de consumo por rango de fechas
     @GetMapping("/{idClient}/consumption") //TODO TEST
-    public ResponseEntity<Consumption> getClientTotalEnergyByAndAmountDates(@PathVariable Integer idClient,
+    public ResponseEntity<Consumption> getClientTotalEnergyByAndAmountDates(Authentication authenticator,@PathVariable Integer idClient,
                                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws IncorrectDatesException, NoConsumptionsFoundException {
-        Consumption consumption = billService.getClientTotalEnergyAndAmountByDates(idClient, from, to);
-        return ResponseEntity.status(HttpStatus.OK).body(consumption);
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,idClient)) {
+            Consumption consumption = billService.getClientTotalEnergyAndAmountByDates(idClient, from, to);
+            return ResponseEntity.status(HttpStatus.OK).body(consumption);
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 
     //  [PROG - PUNTO 5] USUARIOS -> Consulta de mediciones por rango de fechas
     @GetMapping("/{idClient}/measures") //TODO TEST
-    public ResponseEntity<List<MeasureDto>> getClientMeasuresByDates(@PathVariable Integer idClient,
+    public ResponseEntity<List<MeasureDto>> getClientMeasuresByDates(Authentication authenticator,@PathVariable Integer idClient,
                                                                             @RequestParam(defaultValue = "0") Integer page,
                                                                             @RequestParam(defaultValue = "5") Integer size,
                                                                             @RequestParam(defaultValue = "id") String sortField1,
@@ -195,53 +246,24 @@ public class ClientController {
         List<Order> orders = new ArrayList<>();
         orders.add(new Order(Sort.Direction.ASC, sortField1));
         orders.add(new Order(Sort.Direction.ASC, sortField2));
+        if(isEmployeeOrIsClientAndIdMatch(authenticator,idClient)) {
+            Page<MeasureDto> measures = billService.getClientMeasuresByDates(idClient, from, to, page, size, orders);
 
-        Page<MeasureDto> measures = billService.getClientMeasuresByDates(idClient, from, to, page, size,orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(measures.getContent());
-    }
-
-//--------------------------- BACKOFFICE --------------------------------------------
-//todo sacar
-    /*
-    //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
-    @GetMapping("/topConsumers")
-    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
-        List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from,to);
-
-        return ResponseEntity.status(HttpStatus.OK).body(rta);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
+                    .header("X-Actual-Page", Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(measures.getContent());
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 
 
-    //  [PROG - PUNTO 3-4] USUARIOS - BACKOFFICE -> Consulta de facturas impagas por cliente y domicilio
-    @GetMapping("/{idClient}/bills/unpaid")
-    public ResponseEntity<List<BillDto>>getClientUnpaidBills(@PathVariable Integer idClient,
-                                                             @RequestParam(defaultValue = "0") Integer page,
-                                                             @RequestParam(defaultValue = "5") Integer size,
-                                                             @RequestParam(defaultValue = "id") String sortField1,
-                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists {
-        List<Order> orders = new ArrayList<>();
-        orders.add(new Order(Sort.Direction.ASC, sortField1));
-        orders.add(new Order(Sort.Direction.ASC, sortField2));
 
-        Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(bills.getContent());
-    }
-     */
 
 
 

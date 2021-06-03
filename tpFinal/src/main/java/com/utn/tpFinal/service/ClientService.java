@@ -35,6 +35,8 @@ public class ClientService {
     private ResidenceService residenceService;
     @Autowired
     private BillRepository billRepository;
+    @Autowired
+    private UserService userService;
 
 
     public Client getClientById(Integer id) throws ClientNotExists {
@@ -44,7 +46,18 @@ public class ClientService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public Client add(Client client) {
+    public Client add(RegisterDto registerDto) {
+        User user = userService.addClient(registerDto);
+
+        Client client = Client.builder()
+                    .dni(registerDto.getDni())
+                    .name(registerDto.getName())
+                    .lastName(registerDto.getLastName())
+                    .birthday(registerDto.getBirthday())
+                .user(user)
+                .id(user.getId())
+                .build();
+
         return clientRepository.save(client);
     }
 

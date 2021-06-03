@@ -29,6 +29,7 @@ public class MeasureService {
 
 
     public void add(Measure measure, String serialNumber, String password) throws EnergyMeterNotExists, IncorrectPasswordException, ResidenceNotDefined {
+
         EnergyMeter energyMeter= energyMeterService.getEnergyMeterBySerialNumber(serialNumber);
         Residence residence=residenceService.getResidenceByEnergyMeterId(energyMeter.getId());
 

@@ -40,12 +40,6 @@ public class User {
     @JsonIgnore
     private Client client;
 
-    public static User from(RegisterDto registerDto){
-        return User.builder()
-                .mail(registerDto.getMail())
-                .password(registerDto.getPassword())
-                .isClient(registerDto.getIsClient())
-                .build();//por default isClient es true
-    }
+
 
 }

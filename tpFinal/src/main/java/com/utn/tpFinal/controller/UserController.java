@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import static com.utn.tpFinal.util.Constants.*;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     UserService userService;
@@ -37,7 +37,16 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping                                            //todo cambir por modelo user
+
+    @PostMapping("/employee")
+    public  ResponseEntity<UserDto> addemployee(@RequestBody  User user  ){
+       UserDto userDTO= userService.addEmploye(user);
+       return ResponseEntity.ok().body(userDTO);
+    }
+
+
+
+    @PostMapping("/login")                                          //todo cambir por modelo user
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequest) throws JsonProcessingException {
         User user = userService.findByMailAndPassword(loginRequest.getMail(), loginRequest.getPassword());
         System.out.println(user);

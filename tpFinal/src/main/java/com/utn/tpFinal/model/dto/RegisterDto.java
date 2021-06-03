@@ -25,7 +25,7 @@ public class RegisterDto {
     //user
     private String mail;
     private String password;
-    private Boolean isClient;
+
 
 
 

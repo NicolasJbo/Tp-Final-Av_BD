@@ -60,7 +60,7 @@ public class ResidenceController {
 
 
     @GetMapping
-    public ResponseEntity<List<ResidenceDto>> getAll(Authentication authenticator, @RequestParam(defaultValue = "0") Integer page,
+    public ResponseEntity<List<ResidenceDto>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                      @RequestParam(defaultValue = "5") Integer size,
                                                      @RequestParam(defaultValue = "id") String sortField1,
                                                      @RequestParam(defaultValue = "street") String sortField2,
@@ -68,7 +68,6 @@ public class ResidenceController {
                                                           @Spec(path = "street", spec = LikeIgnoreCase.class),
                                                           @Spec(path = "number", spec = LikeIgnoreCase.class)
                                                   }) Specification<Residence> residenceSpecification) throws Exception {
-        System.out.println(authenticator.getPrincipal());
 
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
