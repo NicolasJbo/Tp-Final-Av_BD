@@ -65,10 +65,10 @@ public class ClientService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Client>clients = clientRepository.findAll(clientSpecification,pageable);
 
-        if(clients.isEmpty())
-            throw new NoContentException(this.getClass().getSimpleName(), "getAll");
+        Page<ClientDto> dtoClients =Page.empty();
 
-        Page<ClientDto> dtoClients = clients.map(c -> ClientDto.fromWithOutResidences(c));
+        if(!clients.isEmpty())
+              dtoClients = clients.map(c -> ClientDto.fromWithOutResidences(c));
 
         return dtoClients;
     }

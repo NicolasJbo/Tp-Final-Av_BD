@@ -49,11 +49,10 @@ public class ClientController {
         this.billService = billService;
     }
 
-    public static  Boolean isEmployeeOrIsClientAndIdMatch(Authentication authenticator ,Integer id){
+    public Boolean isEmployeeOrIsClientAndIdMatch(Authentication authenticator ,Integer id){
         Boolean rta =false;
         String role= authenticator.getAuthorities().toString().replaceAll("[^A-Za-z]","");
         UserDto userDto = (UserDto) authenticator.getPrincipal();
-        System.out.println("AUTENTICATED -> " + userDto.getId());
         if ( role.equalsIgnoreCase("EMPLOYEE") ||
                 ( role.equalsIgnoreCase("CLIENT") && Integer.parseInt(userDto.getId()) == id )){
            rta=true;
@@ -105,14 +104,16 @@ public ResponseEntity<ClientDto> getById(Authentication authenticator, @PathVari
         orders.add(new Order(Sort.Direction.ASC, sortField2));
 
         Page<ClientDto> dtoClients = clientService.getAll(clientSpecification, page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(dtoClients.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(dtoClients.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(dtoClients.getContent());
+        if(dtoClients.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(dtoClients.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(dtoClients.getTotalPages()))
+                    .header("X-Actual-Page",Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(dtoClients.getContent());
     }
 
     @GetMapping("/{idClient}/residences")

@@ -45,7 +45,7 @@ public class TariffService {
 
         Page<TariffDto> tariffDtos  = Page.empty();// = Page.empty(pageable);
 
-        System.out.println(tariffDtos.getContent());
+
 
         if(!tariffs.isEmpty())
             tariffDtos = tariffs.map(t-> TariffDto.from(t));
