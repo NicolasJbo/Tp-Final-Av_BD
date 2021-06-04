@@ -80,8 +80,7 @@ public class ClientController {
         Client c = clientService.add(registerDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/")
-                .query("id={idClient}")//todo arreglar esto
+                .path("/{idClient}") //TODO CAMBIAR EN DEMAS (PROBAR)
                 .buildAndExpand(c.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
@@ -124,11 +123,8 @@ public class ClientController {
         List<Order> orders = new ArrayList<>();
         orders.add(new Order(Sort.Direction.ASC, sortField1));
         orders.add(new Order(Sort.Direction.ASC, sortField2));
-
-
         if (isEmployeeOrIsClientAndIdMatch(authenticator, idClient)) {
             Page<ResidenceDto> residences = clientService.getClientResidences(idClient, page, size, orders);
-
             return ResponseEntity.status(HttpStatus.OK)
                     .header("X-Total-Elements", Long.toString(residences.getTotalElements()))
                     .header("X-Total-Pages", Long.toString(residences.getTotalPages()))

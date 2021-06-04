@@ -22,7 +22,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/employee").permitAll()//metodos que se puede ejecutar sin token
                 .antMatchers(HttpMethod.POST, "/measurements").permitAll()
                 .antMatchers(HttpMethod.POST, "/client").permitAll()
                 .anyRequest().authenticated();

@@ -2,11 +2,10 @@ package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.controller.ClientController;
 import com.utn.tpFinal.exception.ClientNotExists;
+import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.dto.ClientDto;
-import com.utn.tpFinal.model.dto.ResidenceDto;
-import com.utn.tpFinal.model.dto.UserDto;
+import com.utn.tpFinal.model.dto.*;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import org.junit.Assert;
@@ -20,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class ClientControllerTest {
     ClientService   clientService;   // externa
     BillService billService;        // externa
     ClientController clientController;
+    private UserDto userDto;
 
     @Before
     public void setUp(){
@@ -110,7 +112,6 @@ public class ClientControllerTest {
             Authentication authenticator =mock(Authentication.class);
 
             List<Residence> red =new ArrayList<>();
-            List<ResidenceDto> residences= Collections.EMPTY_LIST;
 
             List list = new ArrayList<SimpleGrantedAuthority>();
             list.add(new SimpleGrantedAuthority("CLIENT"));
@@ -130,11 +131,141 @@ public class ClientControllerTest {
             //assert
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals("PEREZ CARLOS",response.getBody().getClient());
-    } catch (ParseException e) {
-            Assert.fail("No se cargo bien la fecha");
-    }
+        } catch (ParseException e) {
+                Assert.fail("No se cargo bien la fecha");
+        }
 
     }
+
+    @Test
+    public  void getById_Test403() throws ClientNotExists {
+
+            Integer idClient =1;
+            Authentication authenticator =mock(Authentication.class);
+
+            List list = new ArrayList<SimpleGrantedAuthority>();
+            list.add(new SimpleGrantedAuthority("INVALID"));
+
+            UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").build();
+
+            when(authenticator.getAuthorities()).thenReturn(list);
+            when(authenticator.getPrincipal()).thenReturn(userDto);
+
+            //then
+            ResponseEntity<ClientDto> response = clientController.getById(authenticator,idClient);
+
+            //assert
+            assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+/*
+    @Test
+    public void addClient_Test200(){
+
+        try {  //todo VER COMO HACER
+            Date birtday = new SimpleDateFormat("yyyy-MM-dd").parse("2020-02-02");
+            ServletUriComponentsBuilder location = mock(ServletUriComponentsBuilder.class);
+
+            RegisterDto registerDto = RegisterDto.builder()
+                    .dni("123456")
+                    .name("Pepe")
+                    .lastName("Popas")
+                    .birthday(birtday)
+                    .mail("pepe@gmail.com")
+                    .password("1234")
+                    .build();
+
+            Client client= Client.builder().id(1).name("Pepe").lastName("Popas").birthday(birtday).dni("123456").build();
+
+            when(clientService.add(registerDto)).thenReturn(client);
+
+            ResponseEntity response = clientController.addClient(registerDto);
+
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        } catch (ParseException e) {
+            Assert.fail("No se cargo bien la fecha");
+        }
+
+    }
+*/
+    @Test
+    public void getClientResidences_Test200() throws Exception {
+        //give
+        Integer page = 0;
+        Integer size = 10;
+        Integer idClient=1;
+
+        Authentication authenticator =mock(Authentication.class);
+        List list = new ArrayList<SimpleGrantedAuthority>();
+        list.add(new SimpleGrantedAuthority("CLIENT"));
+
+        EnergyMeterDto energyMeterDto = EnergyMeterDto.builder().brandName("brand1").serialNumber("001").modelName("model1").passWord("1234").build();
+        EnergyMeterDto energyMeterDto2 = EnergyMeterDto.builder().brandName("brand1").serialNumber("002").modelName("model1").passWord("1234").build();
+
+        ResidenceDto residenceDto =ResidenceDto.builder().street("calle1").number(123).client("nicolas").energyMeter(energyMeterDto).id(1).build();
+        ResidenceDto residenceDto2 =ResidenceDto.builder().street("calle2").number(222).client("lautaro").energyMeter(energyMeterDto2).id(2).build();
+
+        Page<ResidenceDto> mockedPage = mock(Page.class);
+
+        List<ResidenceDto> residences = new ArrayList<ResidenceDto>();
+        residences.add(residenceDto);
+        residences.add(residenceDto2);
+
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, "street"));
+        orders.add(new Sort.Order(Sort.Direction.ASC, "number"));
+
+        UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").build();
+
+        when(authenticator.getAuthorities()).thenReturn(list);
+        when(authenticator.getPrincipal()).thenReturn(userDto);
+
+        when(mockedPage.getContent()).thenReturn(residences);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(residences.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(clientService.getClientResidences(idClient,page,size,orders)).thenReturn(mockedPage);
+        //then
+
+        ResponseEntity<List<ResidenceDto>>response = clientController.getClientResidences(authenticator,idClient,page,size,"street","number");
+
+        //assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("calle1", response.getBody().get(0).getStreet());
+
+    }
+
+    @Test
+    public  void getClientResidences_Test403() throws Exception {
+        //give
+        Integer page = 0;
+        Integer size = 10;
+        Integer idClient=1;
+
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, "street"));
+        orders.add(new Sort.Order(Sort.Direction.ASC, "number"));
+
+        Authentication authenticator =mock(Authentication.class);
+        List list = new ArrayList<SimpleGrantedAuthority>();
+        list.add(new SimpleGrantedAuthority("INVALID"));
+
+        UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").build();
+
+        Page<ResidenceDto> emptyPage = Page.empty();
+
+        when(authenticator.getAuthorities()).thenReturn(list);
+        when(authenticator.getPrincipal()).thenReturn(userDto);
+
+        //then
+        ResponseEntity<List<ResidenceDto>>response = clientController.getClientResidences(authenticator,idClient,page,size,"street","number");
+
+        //assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+
+    }
+
 
 
 }
