@@ -1,31 +1,26 @@
-package com.utn.tpFinal.Controller;
+package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.controller.ClientController;
-import com.utn.tpFinal.controller.TariffController;
 import com.utn.tpFinal.exception.ClientNotExists;
-import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
-import com.utn.tpFinal.model.dto.TariffDto;
+import com.utn.tpFinal.model.dto.UserDto;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
-import com.utn.tpFinal.service.TariffService;
-import net.kaczmarzyk.spring.data.jpa.domain.In;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +46,7 @@ public class ClientControllerTest {
         clientService = mock(ClientService.class);
         clientController = new ClientController(clientService,billService);
     }
+
     @Test
     public void getAllClients_Test200() throws Exception {
         //give
@@ -86,6 +82,7 @@ public class ClientControllerTest {
         assertEquals("Mati", response.getBody().get(1).getClient());
 
     }
+
     @Test
     public void getAllClients_Test204() throws Exception {
         //give
@@ -105,34 +102,34 @@ public class ClientControllerTest {
         //assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
+
     @Test
     public  void getById_Test200() throws ClientNotExists {
         try {
             Integer idClient =1;
-
             Authentication authenticator =mock(Authentication.class);
 
             List<Residence> red =new ArrayList<>();
             List<ResidenceDto> residences= Collections.EMPTY_LIST;
 
+            List list = new ArrayList<SimpleGrantedAuthority>();
+            list.add(new SimpleGrantedAuthority("CLIENT"));
+
 
             Date birtday = new SimpleDateFormat("yyyy-MM-dd").parse("2020-02-02");
+            Client client= Client.builder().id(1).name("Carlos").lastName("Perez").birthday(birtday).dni("1111111").residencesList(red).build();
+            UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").build();
 
-            Client client= Client.builder().id(1).name("Carlos").lastName("Apellido").birthday(birtday).dni("1111111").residencesList(red).build();
-            ClientDto client1 = ClientDto.builder().client("Carlos").dni("11111111").birthday("2020-02-02").residencesList(residences).build();
-
-
-            when(clientController.isEmployeeOrIsClientAndIdMatch(authenticator,idClient)).thenReturn(true);
+            when(authenticator.getAuthorities()).thenReturn(list);
+            when(authenticator.getPrincipal()).thenReturn(userDto);
             when(clientService.getClientById(idClient)).thenReturn(client);
-            when(authenticator.getPrincipal()).thenReturn(client1);
 
-            //when(ClientDto.from(client)).thenReturn(client1);
-           // when(ResidenceDto.fromWithOutClient(red)).thenReturn(residences);
             //then
             ResponseEntity<ClientDto> response = clientController.getById(authenticator,idClient);
-             //assert
+
+            //assert
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals("Carlos",response.getBody().getClient());
+            assertEquals("PEREZ CARLOS",response.getBody().getClient());
     } catch (ParseException e) {
             Assert.fail("No se cargo bien la fecha");
     }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.kaczmarzyk.spring.data.jpa.domain.In;
 
 @Data
 @AllArgsConstructor
@@ -14,12 +15,12 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
 
-    private String id;
+    private Integer id;
     private String mail;
     private Boolean isClient;
 
     public static UserDto from(User user){
-        return UserDto.builder().id(String.valueOf(user.getId()))
+        return UserDto.builder().id(user.getId())
                 .isClient(user.getIsClient())
                 .mail(user.getMail())
                 .build();

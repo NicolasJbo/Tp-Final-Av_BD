@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 
 //@SpringBootTest(classes = TariffController.class)  //especificamos sobre que clase va a trabajar asi se ejecuta cuando corro los test
-public class TariffControllerTest2 {
+public class TariffControllerTest {
 
     TariffService tariffService; //dependencia externa
 
