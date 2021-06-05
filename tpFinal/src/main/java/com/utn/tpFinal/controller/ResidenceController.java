@@ -19,6 +19,7 @@ import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -39,26 +40,17 @@ import java.util.List;
 @RequestMapping("/residence")
 public class ResidenceController {
 
-    @Autowired
+
     private ResidenceService residenceService;
+
+    private BillService billService;
     @Autowired
-    BillService billService;
-    //Todo borrar este endpoint si funciona el de backoffice
-    /*
-    @PostMapping
-    public ResponseEntity addResidence(@RequestBody Residence residence){
-        Residence res= residenceService.addResidence(residence);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{idResidence}")
-                .buildAndExpand(res.getId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+    public ResidenceController(ResidenceService residenceService, BillService billService) {
+        this.residenceService = residenceService;
+        this.billService = billService;
     }
-     */
 
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping
     public ResponseEntity<List<ResidenceDto>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                      @RequestParam(defaultValue = "5") Integer size,
@@ -74,16 +66,19 @@ public class ResidenceController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
         Page<ResidenceDto> dtoResidence = residenceService.getAll(residenceSpecification, page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(dtoResidence.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(dtoResidence.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(dtoResidence.getContent());
+        if(dtoResidence.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(dtoResidence.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(dtoResidence.getTotalPages()))
+                    .header("X-Actual-Page",Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(dtoResidence.getContent());
     }
 
+    //todo TEST DE aca para abajo
     @PutMapping("/{idResidence}/energyMeter/{idEnergyMeter}")
     public void addEnergyMeterToResidence(@PathVariable Integer idResidence,@PathVariable Integer idEnergyMeter ) throws Exception {
         residenceService.addEnergyMeterToResidence(idResidence,idEnergyMeter);
@@ -93,73 +88,6 @@ public class ResidenceController {
     public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ) throws Exception{
         residenceService.addTariffToResidence(idResidence,idTariff);
     }
-    //Todo borrar este endpoint si funciona el de backoffice
-    /*
-    @PutMapping("/{idResidence}")
-    public ResponseEntity modifyResidence(@PathVariable Integer idResidence, @RequestBody Residence residence) throws Exception {
-        Residence res= residenceService.modifyResidence(idResidence,residence);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .header("Class Modify",res.getClass().getSimpleName())
-                .build();
-    }
-    */
-
-    //Todo borrar este endpoint si funciona el de backoffice
-   /* @DeleteMapping("/{idResidence}")
-    public ResponseEntity removeResidenceById(@PathVariable Integer idResidence) throws ResidenceNotExists {
-        residenceService.removeResidenceById(idResidence);
-        return ResponseEntity.ok().build();
-    }
-    */
-
-    //todo sacar
-    /*
-    @GetMapping("/{idResidence}/measures")
-    public ResponseEntity<List<MeasureDto>>getResidenceMeasuresByDates(@PathVariable Integer idResidence,
-                                                                             @RequestParam(defaultValue = "0") Integer page,
-                                                                             @RequestParam(defaultValue = "5") Integer size,
-                                                                             @RequestParam(defaultValue = "id") String sortField1,
-                                                                             @RequestParam(defaultValue = "date") String sortField2,
-                                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException, ResidenceNotExists {
-        List<Sort.Order> orders = new ArrayList<>();
-        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
-        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
-
-        Page<MeasureDto> measures = residenceService.getResidenceMeasuresByDates(idResidence,from,to,page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(measures.getContent());
-    }
-
-    @GetMapping("/{idResidence}/bills/unpaid")
-    public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(@PathVariable Integer idResidence,
-                                                             @RequestParam(defaultValue = "0") Integer page,
-                                                             @RequestParam(defaultValue = "5") Integer size,
-                                                             @RequestParam(defaultValue = "id") String sortField1,
-                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists, ResidenceNotExists {
-        List<Sort.Order> orders = new ArrayList<>();
-        orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
-        orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
-
-        Page<BillDto> bills = residenceService.getResidenceUnpaidBills(idResidence, page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                .header("X-Actual-Page",Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(bills.getContent());
-    }
-
-     */
 
 
 }

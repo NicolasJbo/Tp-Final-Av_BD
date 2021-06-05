@@ -61,11 +61,13 @@ public class ResidenceService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Residence> residences = residenceRepository.findAll(residenceSpecification,pageable);
 
-      if(residences.isEmpty())//TODO muestra mal
-          throw new NoContentException(this.getClass().getSimpleName(), "getAll");
+        Page<ResidenceDto> dtoPage= Page.empty();
 
-        Page<ResidenceDto> dtoResidence = residences.map(r -> ResidenceDto.from(r));
-        return dtoResidence;
+      if(!residences.isEmpty())
+         dtoPage=residences.map(r -> ResidenceDto.from(r));
+
+
+        return dtoPage;
     }
 
     public Residence getResidenceById(Integer id) throws ResidenceNotExists {
