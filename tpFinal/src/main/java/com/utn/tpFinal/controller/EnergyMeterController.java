@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -37,7 +38,7 @@ public class EnergyMeterController {
     }
 
     //--------------------------- ENERGYMETER --------------------------------------------
-
+    //todo TEST
     @PostMapping
     public ResponseEntity addEnergyMeter (@RequestBody EnergyMeter energyMeter,@RequestParam Integer idModel,@RequestParam Integer idBrand){
         EnergyMeter e = energyMeterService.add(energyMeter,idModel,idBrand);
@@ -59,14 +60,16 @@ public class EnergyMeterController {
                                                         @And({
                                                                 @Spec(path = "serialNumber", spec = LikeIgnoreCase.class),
                                                                 @Spec(path = "id", spec = Equal.class)
-                                                        }) Specification<EnergyMeter> meterSpecification) throws NoContentException {
+                                                        }) Specification<EnergyMeter> meterSpecification)  {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
         Page<EnergyMeterDto> meters = energyMeterService.getAll(meterSpecification, page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
+        if(meters.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+             return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Elements", Long.toString(meters.getTotalElements()))
                 .header("X-Total-Pages", Long.toString(meters.getTotalPages()))
                 .header("X-Actual-Page",Integer.toString(page))
@@ -75,7 +78,7 @@ public class EnergyMeterController {
                 .body(meters.getContent());
     }
 
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @DeleteMapping("/{idEnergyMeter}")
     public ResponseEntity deleteEnergyMeterById(@PathVariable Integer idEnergyMeter ) throws EnergyMeterNotExists {
         energyMeterService.deleteEnergyMeterById(idEnergyMeter);
@@ -90,6 +93,8 @@ public class EnergyMeterController {
         return ResponseEntity.ok(residence);
     }
 //--------------------------- BRAND --------------------------------------------
+    //todo estos metodos CREO QUE ESTAN DEMAS!
+
 
     @GetMapping("/brands")
     public ResponseEntity<List<MeterBrand>> getAllMeterBrands(@RequestParam(defaultValue = "0") Integer page,

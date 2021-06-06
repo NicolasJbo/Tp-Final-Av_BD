@@ -66,14 +66,14 @@ public class EnergyMeterService {
         return   energyMeterRepository.save(energyMeter);
     }
 
-    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Order>orders) throws NoContentException {
+    public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Order>orders)  {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<EnergyMeter>meters =energyMeterRepository.findAll(meterSpecification,pageable);
+        Page<EnergyMeterDto> dtoMeters= Page.empty();
 
-        if(meters.isEmpty()) //todo no muestra mensaje (proba buscar por id de uno q no existe)
-            throw new NoContentException(this.getClass().getSimpleName(), "getAll");
+        if(!meters.isEmpty())
+            dtoMeters=meters.map(m-> EnergyMeterDto.from(m));
 
-        Page<EnergyMeterDto> dtoMeters = meters.map(m-> EnergyMeterDto.from(m));
 
         return  dtoMeters;
     }
@@ -144,6 +144,7 @@ public class EnergyMeterService {
             throw new EnergyMeterNotExists(this.getClass().getSimpleName(), "deleteEnergyMeterById");
 
         energyMeterRepository.deleteById(idEnergyMeter);
+
     }
 
 

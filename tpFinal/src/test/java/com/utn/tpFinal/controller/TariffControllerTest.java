@@ -1,5 +1,6 @@
 package com.utn.tpFinal.controller;
 
+import com.utn.tpFinal.UTILS_TESTCONSTANTS;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.TariffNotExists;
 import com.utn.tpFinal.model.Tariff;
@@ -49,10 +50,7 @@ public class TariffControllerTest {
         Integer size = 10;
         Specification<Tariff> specification = mock(Specification.class);
 
-        List<TariffDto> tariffs = new ArrayList<>();
-        tariffs.add(TariffDto.builder().tariff("A1").amount(Float.valueOf(10)).build());
-        tariffs.add(TariffDto.builder().tariff("A2").amount(Float.valueOf(20)).build());
-
+        List<TariffDto> tariffs = UTILS_TESTCONSTANTS.getTariffDTO_List();
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
         orders.add(new Sort.Order(Sort.Direction.ASC, "name"));

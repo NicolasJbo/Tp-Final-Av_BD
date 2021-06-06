@@ -72,6 +72,23 @@ public class UTILS_TESTCONSTANTS {
 
         return list;
     }
+    public static  List<TariffDto> getTariffDTO_List(){
+        TariffDto tariffDto1=TariffDto.builder().tariff("A1").amount(Float.valueOf(10)).build();
+        TariffDto tariffDto2=TariffDto.builder().tariff("b2").amount(Float.valueOf(20)).build();
+        List<TariffDto> tariffDtoList=new ArrayList<>();
+        tariffDtoList.add(tariffDto1);
+        tariffDtoList.add(tariffDto2);
+
+        return  tariffDtoList;
+    }
+    public static  List<EnergyMeterDto> getEnergyMeterDTO_List(){
+        EnergyMeterDto energyMeterDto1= EnergyMeterDto.builder().brandName("marca1").modelName("model1").serialNumber("A1").passWord("111").build();
+        EnergyMeterDto energyMeterDto2= EnergyMeterDto.builder().brandName("marca2").modelName("model2").serialNumber("B2").passWord("222").build();
+        List<EnergyMeterDto> energyMeterDtoList=new ArrayList<>();
+        energyMeterDtoList.add(energyMeterDto1);
+        energyMeterDtoList.add(energyMeterDto2);
+        return energyMeterDtoList;
+    }
 
     public static ClientDto getClientDTO(Integer id){
         ClientDto client1 = ClientDto.builder().client("Carlos").dni("11111111").birthday("2020-02-02").build();
