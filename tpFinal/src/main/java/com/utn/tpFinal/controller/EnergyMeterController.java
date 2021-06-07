@@ -109,15 +109,18 @@ public class EnergyMeterController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-        Page<MeterBrand> meterBrands = energyMeterService.getAllMeterBrands(meterBrandSpecification, page, size, orders);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(meterBrands.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(meterBrands.getTotalPages()))
-                .header("X-Actual-Page", Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(meterBrands.getContent());
+        Page<MeterBrand> meterBrands = energyMeterService.getAllMeterBrands(meterBrandSpecification, page, size, orders);
+        if(meterBrands.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(meterBrands.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(meterBrands.getTotalPages()))
+                    .header("X-Actual-Page", Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(meterBrands.getContent());
     }
 
 //--------------------------- MODEL --------------------------------------------
@@ -135,14 +138,16 @@ public class EnergyMeterController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
         Page<MeterModel> meterModels = energyMeterService.getAllMeterModels(meterModelSpecification, page, size, orders);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Elements", Long.toString(meterModels.getTotalElements()))
-                .header("X-Total-Pages", Long.toString(meterModels.getTotalPages()))
-                .header("X-Actual-Page", Integer.toString(page))
-                .header("X-First-Sort-By", sortField1)
-                .header("X-Second-Sort-By", sortField2)
-                .body(meterModels.getContent());
+        if (meterModels.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header("X-Total-Elements", Long.toString(meterModels.getTotalElements()))
+                    .header("X-Total-Pages", Long.toString(meterModels.getTotalPages()))
+                    .header("X-Actual-Page", Integer.toString(page))
+                    .header("X-First-Sort-By", sortField1)
+                    .header("X-Second-Sort-By", sortField2)
+                    .body(meterModels.getContent());
     }
 
 

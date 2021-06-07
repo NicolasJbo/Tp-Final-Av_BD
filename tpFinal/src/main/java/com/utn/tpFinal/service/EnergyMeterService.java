@@ -95,14 +95,16 @@ public class EnergyMeterService {
     }
 //-------------------------------------------->> BRAND <<--------------------------------------------
 
-    public Page<MeterBrand> getAllMeterBrands(Specification<MeterBrand> meterBrandSpecification, Integer page, Integer size, List<Sort.Order>orders) throws NoContentException {
+    public Page<MeterBrand> getAllMeterBrands(Specification<MeterBrand> meterBrandSpecification, Integer page, Integer size, List<Sort.Order>orders)  {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<MeterBrand>meterBrands = meterBrandRepository.findAll(meterBrandSpecification, pageable);
 
-        if(meterBrands.isEmpty())
-            throw new NoContentException(this.getClass().getSimpleName(), "getAllMeterBrands");
+        Page<MeterBrand> rta=Page.empty();
 
-        return meterBrands;
+        if(!meterBrands.isEmpty())
+            return meterBrands;
+        else
+            return rta;
     }
 
     public MeterBrand getMeterBrandById(Integer id) {
@@ -121,10 +123,11 @@ public class EnergyMeterService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<MeterModel>meterModels = meterModelRepository.findAll(meterModelSpecification, pageable);
 
-        if(meterModels.isEmpty())
-            throw new NoContentException(this.getClass().getSimpleName(), "getAllMeterModels");
-
-        return meterModels;
+      Page<MeterModel> rta=Page.empty();
+            if(meterModels.isEmpty())
+                return meterModels;
+            else
+                return rta;
     }
 
 
