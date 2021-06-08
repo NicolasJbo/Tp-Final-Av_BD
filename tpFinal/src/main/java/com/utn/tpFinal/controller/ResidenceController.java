@@ -40,10 +40,9 @@ import java.util.List;
 @RequestMapping("/residence")
 public class ResidenceController {
 
-
     private ResidenceService residenceService;
-
     private BillService billService;
+
     @Autowired
     public ResidenceController(ResidenceService residenceService, BillService billService) {
         this.residenceService = residenceService;
@@ -64,29 +63,32 @@ public class ResidenceController {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
-
         Page<ResidenceDto> dtoResidence = residenceService.getAll(residenceSpecification, page, size, orders);
         if(dtoResidence.isEmpty())
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else
+        else {
             return ResponseEntity.status(HttpStatus.OK)
                     .header("X-Total-Elements", Long.toString(dtoResidence.getTotalElements()))
                     .header("X-Total-Pages", Long.toString(dtoResidence.getTotalPages()))
-                    .header("X-Actual-Page",Integer.toString(page))
+                    .header("X-Actual-Page", Integer.toString(page))
                     .header("X-First-Sort-By", sortField1)
                     .header("X-Second-Sort-By", sortField2)
                     .body(dtoResidence.getContent());
+        }
     }
 
-    //todo TEST DE aca para abajo
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PutMapping("/{idResidence}/energyMeter/{idEnergyMeter}")
-    public void addEnergyMeterToResidence(@PathVariable Integer idResidence,@PathVariable Integer idEnergyMeter ) throws Exception {
+    public ResponseEntity addEnergyMeterToResidence(@PathVariable Integer idResidence,@PathVariable Integer idEnergyMeter ) throws Exception {
         residenceService.addEnergyMeterToResidence(idResidence,idEnergyMeter);
+        return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PutMapping("/{idResidence}/tariff/{idTariff}")
-    public void addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ) throws Exception{
+    public ResponseEntity addTariffToResidence(@PathVariable Integer idResidence,@PathVariable Integer idTariff ) throws Exception{
         residenceService.addTariffToResidence(idResidence,idTariff);
+        return ResponseEntity.ok().build();
     }
 
 

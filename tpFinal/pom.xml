@@ -103,23 +103,15 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version></version>
-				<configuration>
-					<skip>false</skip>
-					<destFile>${basedir}/target/jacoco.exec</destFile>
-				</configuration>
+				<version>0.8.2</version>
 				<executions>
 					<execution>
-						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
+					<!-- attached to Maven test phase -->
 					<execution>
-						<configuration>
-							<dataFile>${basedir}/target/jacoco.exec</dataFile>
-							<outputDirectory>${basedir}/target</outputDirectory>
-						</configuration>
 						<id>report</id>
 						<phase>test</phase>
 						<goals>

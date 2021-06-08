@@ -74,6 +74,7 @@ public class ClientController {
         }
     }
 
+    //todo hacer test
     @PostMapping
     public ResponseEntity addClient(@RequestBody RegisterDto registerDto) {
 

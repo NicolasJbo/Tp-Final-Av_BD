@@ -1,6 +1,9 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
+import com.utn.tpFinal.exception.EnergyMeterNotExists;
+import com.utn.tpFinal.exception.ResidenceDefined;
+import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.dto.ClientDto;
@@ -10,6 +13,7 @@ import com.utn.tpFinal.service.ClientService;
 import com.utn.tpFinal.service.ResidenceService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ResidenceControllerTest {
 
@@ -69,7 +72,7 @@ public class ResidenceControllerTest {
 
         Specification<Residence> specification = mock(Specification.class);
 
-        List<ResidenceDto> residenceDtoList = UTILS_TESTCONSTANTS.getResidendesDTO_List();
+        //List<ResidenceDto> residenceDtoList = UTILS_TESTCONSTANTS.getResidendesDTO_List();
 
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street");
 
@@ -82,6 +85,28 @@ public class ResidenceControllerTest {
 
         //assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    public void addEnergyMeterToResidence_Test() throws Exception {
+        Integer idResidence = 1;
+        Integer idEnergyMeter = 4;
+        doNothing().when(residenceService).addEnergyMeterToResidence(idResidence,idEnergyMeter);
+
+        ResponseEntity response = residenceController.addEnergyMeterToResidence(idResidence,idEnergyMeter);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void addTariffToResidence() throws Exception {
+        Integer idResidence = 1;
+        Integer idTariff = 2;
+        doNothing().when(residenceService).addTariffToResidence(idResidence,idTariff);
+
+        ResponseEntity response = residenceController.addTariffToResidence(idResidence,idTariff);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
 }

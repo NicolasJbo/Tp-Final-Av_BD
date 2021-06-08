@@ -17,10 +17,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.parameters.P;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -155,12 +158,15 @@ public class ClientControllerTest {
         //assert
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
-    //todo VER COMO HACER
-/*
+
+
     @Test
     public void addClient_Test200(){
 
         try {
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
             Date birtday = new SimpleDateFormat("yyyy-MM-dd").parse("2020-02-02");
             ServletUriComponentsBuilder location = mock(ServletUriComponentsBuilder.class);
 
@@ -186,7 +192,7 @@ public class ClientControllerTest {
         }
 
     }
-*/
+
     @Test
     public void getClientResidences_Test200() throws Exception {
         //give

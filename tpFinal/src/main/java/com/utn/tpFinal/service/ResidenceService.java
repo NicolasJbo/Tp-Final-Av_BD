@@ -92,7 +92,7 @@ public class ResidenceService {
 
         EnergyMeter energyMeter = energyMeterService.getEnergyMeterById(idEnergyMeter);
         if(energyMeter.getResidence() != null) { //si el medidor ya tiene un domicilio
-            throw new ResidenceDefined(this.getClass().getSimpleName(), "getClientResidences");
+            throw new ResidenceDefined(this.getClass().getSimpleName(), "addEnergyMeterToResidence");
         }
         Residence residence = getResidenceById(idResidence);
         energyMeterService.addResidenceToMeter(residence, energyMeter);

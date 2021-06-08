@@ -141,11 +141,7 @@ public class TariffControllerTest {
         Integer size = 10;
         Integer idTariff=1;
 
-
-      
-
         //Tariff tariff= Tariff.builder().id(1).name("tarifa1").amount(100F).residencesList(residences).build();
-
 
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
