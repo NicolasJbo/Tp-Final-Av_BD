@@ -7,6 +7,7 @@ import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.MeasureSenderDto;
 import com.utn.tpFinal.service.MeasureService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,14 +25,12 @@ public class MeasureController {
     MeasureService measureService;
 
     @PostMapping
-    public void  addMeasure(@RequestBody MeasureSenderDto dto) throws Exception {
-        System.out.println("INCOMING DTO -> "+dto.toString());
-
+    public ResponseEntity addMeasure(@RequestBody MeasureSenderDto dto) throws Exception {
+       // System.out.println("INCOMING DTO -> "+dto.toString());
         Measure measure= Measure.from(dto);
-        System.out.println("MEASURE CREATED -> "+measure.toString());
-
+        //System.out.println("MEASURE CREATED -> "+measure.toString());
         measureService.add(measure,dto.getSerialNumber(),dto.getPassword());
-
+        return ResponseEntity.ok().build();
     }
 
 }

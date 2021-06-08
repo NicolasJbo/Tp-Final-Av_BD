@@ -4,17 +4,16 @@ import com.utn.tpFinal.UTILS_TESTCONSTANTS;
 import com.utn.tpFinal.exception.EnergyMeterNotExists;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotDefined;
-import com.utn.tpFinal.model.EnergyMeter;
-import com.utn.tpFinal.model.MeterBrand;
-import com.utn.tpFinal.model.MeterModel;
-import com.utn.tpFinal.model.Tariff;
+import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
+import com.utn.tpFinal.model.dto.RegisterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import com.utn.tpFinal.service.EnergyMeterService;
 import net.kaczmarzyk.spring.data.jpa.domain.In;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
@@ -22,8 +21,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +37,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class EnergyMeterControllerTest {
-     private final Integer PAGE=0;
+    private final Integer PAGE=0;
     private final Integer SIZE=10;
     private final Integer IDMETER=1;
     EnergyMeterService energyMeterService;
@@ -42,6 +48,24 @@ public class EnergyMeterControllerTest {
         energyMeterService = mock(EnergyMeterService.class);
         energyMeterController = new EnergyMeterController(energyMeterService);
     }
+
+
+    @Test
+    public void addEnergyMeter_Test200(){
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        EnergyMeter e = UTILS_TESTCONSTANTS.getEnergyMeter();
+
+        when(energyMeterService.add(e,1,1)).thenReturn(e);
+
+        ResponseEntity response = energyMeterController.addEnergyMeter(e,1,1);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+    }
+
     @Test
     public void getAllEnergy_Test200()  {
         //give
@@ -95,7 +119,7 @@ public class EnergyMeterControllerTest {
     }
 
     @Test
-    public void  getResidenceByEnergyMeterId_Test200() throws EnergyMeterNotExists, ResidenceNotDefined {
+    public void getResidenceByEnergyMeterId_Test200() throws EnergyMeterNotExists, ResidenceNotDefined {
         ResidenceDto residenceDto= UTILS_TESTCONSTANTS.getResidendesDTO_List().get(0);
 
         when(energyMeterService.getResidenceByEnergyMeterId(IDMETER)).thenReturn(residenceDto);
@@ -107,7 +131,7 @@ public class EnergyMeterControllerTest {
     }
 
     @Test
-    public  void  getAllMeterBrands_Test200() throws Exception {
+    public void getAllMeterBrands_Test200() throws Exception {
 
         Specification<MeterBrand> specification = mock(Specification.class);
 
@@ -135,7 +159,7 @@ public class EnergyMeterControllerTest {
     }
 
     @Test
-    public  void  getAllMeterBrands_Test204() throws Exception {
+    public void getAllMeterBrands_Test204() throws Exception {
 
         Specification<MeterBrand> specification = mock(Specification.class);
 

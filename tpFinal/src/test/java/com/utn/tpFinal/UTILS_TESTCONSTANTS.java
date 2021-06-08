@@ -2,9 +2,7 @@ package com.utn.tpFinal;
 
 
 
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.MeterBrand;
-import com.utn.tpFinal.model.MeterModel;
+import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -49,6 +47,32 @@ public class UTILS_TESTCONSTANTS {
         list.add(MeterModel.builder().id(1).name("model1").build());
         list.add(MeterModel.builder().id(2).name("model2").build());
         return list;
+    }
+
+    public static EnergyMeter getEnergyMeter(){
+        return EnergyMeter.builder()
+                .model(getMeterModel_List().get(0))
+                .brand(getMeterBrand_List().get(0))
+                .passWord("1234")
+                .serialNumber("001")
+                .id(1)
+                .build();
+    }
+
+    public static Measure getMeasure() throws ParseException {
+        return Measure.builder()
+                .kw(100F)
+                .date(getFecha(1))
+                .build();
+    }
+
+    public static MeasureSenderDto getMeasureSenderDto() throws ParseException {
+        return MeasureSenderDto.builder()
+                .kw(100F)
+                .date("2021-06-02")
+                .password("1234")
+                .serialNumber("001")
+                .build();
     }
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------
     public static UserDto getUserDto(Integer idClient){
