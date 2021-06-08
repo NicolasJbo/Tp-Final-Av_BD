@@ -3,6 +3,8 @@ package com.utn.tpFinal;
 
 
 import com.utn.tpFinal.model.Client;
+import com.utn.tpFinal.model.MeterBrand;
+import com.utn.tpFinal.model.MeterModel;
 import com.utn.tpFinal.model.dto.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,14 +24,30 @@ public class UTILS_TESTCONSTANTS {
 
         return orders;
     }
+
     public static List getGrandAuthorityClient(){
         List list = new ArrayList<SimpleGrantedAuthority>();
         list.add(new SimpleGrantedAuthority("CLIENT"));
         return list;
     }
+
     public static List getGrandAuthorityInvalid(){
         List list = new ArrayList<SimpleGrantedAuthority>();
         list.add(new SimpleGrantedAuthority("INVALID"));
+        return list;
+    }
+
+    public static  List<MeterBrand>getMeterBrand_List(){
+        List<MeterBrand> list = new ArrayList<>();
+        list.add(MeterBrand.builder().id(1).name("brand1").build());
+        list.add(MeterBrand.builder().id(2).name("brand2").build());
+        return list;
+    }
+
+    public static  List<MeterModel>getMeterModel_List(){
+        List<MeterModel> list = new ArrayList<>();
+        list.add(MeterModel.builder().id(1).name("model1").build());
+        list.add(MeterModel.builder().id(2).name("model2").build());
         return list;
     }
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------

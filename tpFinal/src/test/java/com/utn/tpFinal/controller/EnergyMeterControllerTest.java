@@ -5,6 +5,8 @@ import com.utn.tpFinal.exception.EnergyMeterNotExists;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotDefined;
 import com.utn.tpFinal.model.EnergyMeter;
+import com.utn.tpFinal.model.MeterBrand;
+import com.utn.tpFinal.model.MeterModel;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
@@ -91,6 +93,7 @@ public class EnergyMeterControllerTest {
         //assert
         assertEquals(HttpStatus.OK,response.getStatusCode());
     }
+
     @Test
     public void  getResidenceByEnergyMeterId_Test200() throws EnergyMeterNotExists, ResidenceNotDefined {
         ResidenceDto residenceDto= UTILS_TESTCONSTANTS.getResidendesDTO_List().get(0);
@@ -101,6 +104,108 @@ public class EnergyMeterControllerTest {
         //assert
         assertEquals(HttpStatus.OK,response.getStatusCode());
         assertEquals("calle1",response.getBody().getStreet());
+    }
+
+    @Test
+    public  void  getAllMeterBrands_Test200() throws Exception {
+
+        Specification<MeterBrand> specification = mock(Specification.class);
+
+        List<MeterBrand> brands = UTILS_TESTCONSTANTS.getMeterBrand_List();
+
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name");
+
+
+        Page<MeterBrand> mockedPage = mock(Page.class);
+
+        when(mockedPage.getContent()).thenReturn(brands);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(brands.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(energyMeterService.getAllMeterBrands(specification,PAGE,SIZE,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<MeterBrand>> response = energyMeterController.getAllMeterBrands(PAGE,SIZE,"id","name",specification);
+
+        //assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("brand1", response.getBody().get(0).getName());
+
+    }
+
+    @Test
+    public  void  getAllMeterBrands_Test204() throws Exception {
+
+        Specification<MeterBrand> specification = mock(Specification.class);
+
+        List<MeterBrand> brands = UTILS_TESTCONSTANTS.getMeterBrand_List();
+
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name");
+
+
+        Page<MeterBrand> mockedPage =Page.empty();
+
+
+        when(energyMeterService.getAllMeterBrands(specification,PAGE,SIZE,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<MeterBrand>> response = energyMeterController.getAllMeterBrands(PAGE,SIZE,"id","name",specification);
+
+        //assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+    }
+
+    @Test
+    public  void  getAllMeterModels_Test200() throws Exception {
+
+        Specification<MeterModel> specification = mock(Specification.class);
+
+        List<MeterModel> brands = UTILS_TESTCONSTANTS.getMeterModel_List();
+
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name");
+
+
+        Page<MeterModel> mockedPage = mock(Page.class);
+
+        when(mockedPage.getContent()).thenReturn(brands);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(brands.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(energyMeterService.getAllMeterModels(specification,PAGE,SIZE,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<MeterModel>> response = energyMeterController.getAllMeterModels(PAGE,SIZE,"id","name",specification);
+
+        //assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("model1", response.getBody().get(0).getName());
+
+    }
+
+    @Test
+    public  void  getAllMeterModels_Test403() throws Exception {
+
+        Specification<MeterModel> specification = mock(Specification.class);
+
+        List<MeterModel> brands = UTILS_TESTCONSTANTS.getMeterModel_List();
+
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name");
+
+
+        Page<MeterModel> mockedPage =Page.empty();
+
+
+        when(energyMeterService.getAllMeterModels(specification,PAGE,SIZE,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<MeterModel>> response = energyMeterController.getAllMeterModels(PAGE,SIZE,"id","name",specification);
+
+        //assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
     }
 
 }
