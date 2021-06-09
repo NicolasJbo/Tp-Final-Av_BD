@@ -118,13 +118,13 @@ public class ResidenceService {
         residenceRepository.deleteById(idResidence);
     }
 
-    public Residence modifyResidence(Integer idResidence, Residence residence) throws ResidencesDoNotMatch, ResidenceNotExists {
+    public void modifyResidence(Integer idResidence, Residence residence) throws ResidencesDoNotMatch, ResidenceNotExists {
         Residence r=getResidenceById(idResidence);
 
         if(r.getId() != residence.getId())
             throw new ResidencesDoNotMatch(this.getClass().getSimpleName(),"modifyResidence" );
         r=residence;
-        return  residenceRepository.save(r);
+        residenceRepository.save(r);
     }
 
     public Residence getResidenceByEnergyMeterId(Integer id){

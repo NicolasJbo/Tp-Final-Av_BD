@@ -1,26 +1,18 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.ResidenceDefined;
-import com.utn.tpFinal.exception.ResidenceNotExists;
-import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.service.BillService;
-import com.utn.tpFinal.service.ClientService;
 import com.utn.tpFinal.service.ResidenceService;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

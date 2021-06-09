@@ -82,13 +82,11 @@ public class TariffService {
     }
 
 
-    public Tariff modifyTariff(Integer idTariff,Tariff tariff) throws TariffNotExists, TariffsDoNotMatch {
-        Tariff tar= getTariffById(idTariff);
-
-        if(tar.getId() != tariff.getId())
-            throw new TariffsDoNotMatch(this.getClass().getSimpleName(),"modifyTariff" );
-        tar=tariff;
-        return  tariffRepository.save(tar);
-
+    public void modifyTariff(Integer idTariff,Tariff tariff) throws TariffNotExists, TariffsDoNotMatch {
+        Tariff tar = getTariffById(idTariff);
+        if (tar.getId() != tariff.getId())
+            throw new TariffsDoNotMatch(this.getClass().getSimpleName(), "modifyTariff");
+        tar = tariff;
+        tariffRepository.save(tar);
     }
 }

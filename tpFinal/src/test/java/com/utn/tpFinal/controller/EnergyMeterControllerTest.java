@@ -33,8 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class EnergyMeterControllerTest {
     private final Integer PAGE=0;
@@ -112,7 +111,7 @@ public class EnergyMeterControllerTest {
     @Test
     public void deleteEnergyMeterById_Test200() throws EnergyMeterNotExists {
 
-
+        doNothing().when(energyMeterService).deleteEnergyMeterById(IDMETER);
         ResponseEntity response = energyMeterController.deleteEnergyMeterById(IDMETER);
         //assert
         assertEquals(HttpStatus.OK,response.getStatusCode());

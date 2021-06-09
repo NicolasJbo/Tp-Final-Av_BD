@@ -33,49 +33,44 @@ import java.util.List;
 @RequestMapping("/backoffice")
 public class BackOfficeController {
 
-    @Autowired
     ResidenceService residenceService;
-    @Autowired
     ClientService clientService;
-    @Autowired
     TariffService tariffService;
-//-----------------------------PUNTO 1 ------------------------------------------------
-    //todo login
-//-----------------------------PUNTO 2 ------------------------------------------------
+
+    @Autowired
+    public BackOfficeController(ResidenceService residenceService, ClientService clientService, TariffService tariffService) {
+        this.residenceService = residenceService;
+        this.clientService = clientService;
+        this.tariffService = tariffService;
+    }
+
+    //-----------------------------PUNTO 2 ------------------------------------------------
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PostMapping("/tariff")
     public ResponseEntity addTariff(@RequestBody Tariff tariff) throws URISyntaxException {
         Tariff t = tariffService.add(tariff);
 
-
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/")
-                    .query("id={idTariff}")
-                    .buildAndExpand(t.getId())
-                    .toUri();
-            return ResponseEntity.created(location).build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/")
+                .query("id={idTariff}")
+                .buildAndExpand(t.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
 
     }
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @DeleteMapping("/tariff/{idTariff}")
     public ResponseEntity deleteTariffById(@PathVariable Integer idTariff) throws TariffNotExists {
-
-            tariffService.deleteTariffById(idTariff);
-            return ResponseEntity.ok().build();
-
+        tariffService.deleteTariffById(idTariff);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PutMapping("/tariff/{idTarrif}")
     public ResponseEntity modifyTariff(@PathVariable Integer idTarrif ,@RequestBody Tariff tariff) throws Exception {
-        Tariff tar= tariffService.modifyTariff(idTarrif,tariff);
-
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .header("Class modify", tar.getClass().getSimpleName())
-                    .build();
-
+        tariffService.modifyTariff(idTarrif,tariff);
+        return ResponseEntity.accepted().build();
     }
 
 //-----------------------------PUNTO 3 ------------------------------------------------
@@ -84,34 +79,27 @@ public class BackOfficeController {
     public ResponseEntity addResidence(@RequestBody Residence residence){
         Residence res= residenceService.addResidence(residence);
 
-
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/")
-                    .query("id={idResidence}")
-                    .buildAndExpand(res.getId())
-                    .toUri();
-            return ResponseEntity.created(location).build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/")
+                .query("id={idResidence}")
+                .buildAndExpand(res.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
 
     }
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @DeleteMapping("/residence/{idResidence}")
-    public ResponseEntity removeResidenceById(@PathVariable Integer idResidence) throws ResidenceNotExists {
-
-            residenceService.removeResidenceById(idResidence);
-            return ResponseEntity.ok().build();
+    public ResponseEntity deleteResidenceById(@PathVariable Integer idResidence) throws ResidenceNotExists {
+        residenceService.removeResidenceById(idResidence);
+        return ResponseEntity.ok().build();
 
     }
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PutMapping("/residence/{idResidence}")
     public ResponseEntity modifyResidence(@PathVariable Integer idResidence, @RequestBody Residence residence) throws Exception {
-
-
-            Residence res = residenceService.modifyResidence(idResidence, residence);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header("Class Modify", res.getClass().getSimpleName())
-                    .build();
+        residenceService.modifyResidence(idResidence, residence);
+        return ResponseEntity.accepted().build();
 
     }
     //-----------------------------PUNTO 4 ------------------------------------------------

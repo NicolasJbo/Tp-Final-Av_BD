@@ -116,6 +116,7 @@ public class UTILS_TESTCONSTANTS {
         list.add(billDto2);
         return list;
     }
+
     public static List<MeasureDto> getMeasureDTO_List()  {
         MeasureDto measureDto1= MeasureDto.builder().kw(100F).serialNumber("serial1").password("1111").price(150).date("2020-02-02").build();
         MeasureDto measureDto2= MeasureDto.builder().kw(200F).serialNumber("serial2").password("2222").price(120).date("2020-03-02").build();
@@ -207,4 +208,20 @@ public class UTILS_TESTCONSTANTS {
         return client;
     }
 
+    public static Tariff getTariff(Integer idTariff) {
+        return Tariff.builder().id(idTariff)
+                    .name("TariffExample")
+                    .amount(50F)
+                    .build();
+    }
+
+    public static Residence getResidence(Integer idResidence) {
+        return Residence.builder().id(idResidence)
+                .number(1234)
+                .street("Siempre Viva")
+                .floor("4")
+                .apartament("B")
+                .build();
+
+    }
 }
