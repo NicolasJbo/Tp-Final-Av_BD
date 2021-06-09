@@ -29,6 +29,12 @@ public class UTILS_TESTCONSTANTS {
         return list;
     }
 
+    public static List getGrandAuthorityEmployee(){
+        List list = new ArrayList<SimpleGrantedAuthority>();
+        list.add(new SimpleGrantedAuthority("EMPLOYEE"));
+        return list;
+    }
+
     public static List getGrandAuthorityInvalid(){
         List list = new ArrayList<SimpleGrantedAuthority>();
         list.add(new SimpleGrantedAuthority("INVALID"));
@@ -74,9 +80,15 @@ public class UTILS_TESTCONSTANTS {
                 .serialNumber("001")
                 .build();
     }
+
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------
     public static UserDto getUserDto(Integer idClient){
         UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").isClient(true).build();
+        return userDto;
+    }
+
+    public static UserDto getUserDtoEmployee(Integer idClient){
+        UserDto userDto = UserDto.builder().id(idClient).mail("admin@gmail.com").isClient(false).build();
         return userDto;
     }
 

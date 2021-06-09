@@ -39,7 +39,7 @@ public class UserControllerTest {
         userController= new UserController(userService,objectMapper,modelMapper);
     }
     @Test
-    public void addemployee_Test200(){
+    public void addEmployee_Test200(){
         try {
             User user = UTILS_TESTCONSTANTS.getUser();
             UserDto userdto = UTILS_TESTCONSTANTS.getUserDto(1);
@@ -56,11 +56,31 @@ public class UserControllerTest {
         }
     }
     @Test
-    public void login_Test200(){
+    public void loginClient_Test200(){
         try {
             LoginRequestDto loginRequestDto = UTILS_TESTCONSTANTS.getLoginRequestDTO();
             User user = UTILS_TESTCONSTANTS.getUserCLient();
             UserDto userDto = UTILS_TESTCONSTANTS.getUserDto(1);
+
+            when(modelMapper.map(user,UserDto.class)).thenReturn(userDto);
+            when(userService.findByMailAndPassword(loginRequestDto.getMail(),loginRequestDto.getPassword())).thenReturn(user);
+            when(userController.generateToken(userDto)).thenReturn("123abc");
+            ResponseEntity<LoginResponseDto> responseEntity = userController.login(loginRequestDto);
+
+            assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+
+        } catch (ParseException | JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void loginEmployee_Test200False(){
+        try {
+            LoginRequestDto loginRequestDto = UTILS_TESTCONSTANTS.getLoginRequestDTO();
+            User user = UTILS_TESTCONSTANTS.getUserCLient();
+            UserDto userDto = UTILS_TESTCONSTANTS.getUserDtoEmployee(1);
 
             when(modelMapper.map(user,UserDto.class)).thenReturn(userDto);
             when(userService.findByMailAndPassword(loginRequestDto.getMail(),loginRequestDto.getPassword())).thenReturn(user);

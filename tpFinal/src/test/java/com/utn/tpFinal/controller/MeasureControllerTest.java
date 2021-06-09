@@ -40,7 +40,7 @@ public class MeasureControllerTest {
         measureController = new MeasureController(measureService);
     }
 
-    /*@Test
+    @Test
     public void addMeasure_Test200 () throws Exception {
 
         Measure m = UTILS_TESTCONSTANTS.getMeasure();
@@ -51,7 +51,7 @@ public class MeasureControllerTest {
         ResponseEntity response = measureController.addMeasure(measureSenderDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-    }*/
+    }
 
 
 

@@ -139,6 +139,37 @@ public class ClientControllerTest {
     }
 
     @Test
+    public  void getByIdEMPLOYEE_Test200() throws ClientNotExists {
+        try {
+            Authentication authenticator =mock(Authentication.class);
+
+            List<Residence> red =new ArrayList<>();
+
+            List list = UTILS_TESTCONSTANTS.getGrandAuthorityEmployee();
+
+
+            Date birtday = UTILS_TESTCONSTANTS.getFecha(1);
+            Client client= UTILS_TESTCONSTANTS.getClient(IDCLIENT);
+            client.setResidencesList(red);
+            UserDto userDto = UTILS_TESTCONSTANTS.getUserDto(IDCLIENT);
+
+            when(authenticator.getAuthorities()).thenReturn(list);
+            when(authenticator.getPrincipal()).thenReturn(userDto);
+            when(clientService.getClientById(IDCLIENT)).thenReturn(client);
+
+            //then
+            ResponseEntity<ClientDto> response = clientController.getById(authenticator,IDCLIENT);
+
+            //assert
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals("PEREZ CARLOS",response.getBody().getClient());
+        } catch (ParseException e) {
+            Assert.fail("No se cargo bien la fecha");
+        }
+
+    }
+
+    @Test
     public  void getById_Test403() throws ClientNotExists {
 
         Authentication authenticator =mock(Authentication.class);
@@ -231,10 +262,7 @@ public class ClientControllerTest {
     public  void getClientResidences_Test403() throws Exception {
         //give
 
-
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("street","number");
-
-
         Authentication authenticator =mock(Authentication.class);
         List list = UTILS_TESTCONSTANTS.getGrandAuthorityInvalid();
 
