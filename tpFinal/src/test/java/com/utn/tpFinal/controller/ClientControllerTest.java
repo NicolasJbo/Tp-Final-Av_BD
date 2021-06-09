@@ -94,11 +94,9 @@ public class ClientControllerTest {
     @Test
     public void getAllClients_Test204() throws Exception {
         //give
-
         Specification<Client> specification = mock(Specification.class);
 
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders(SORTFIELD1,SORTFIELD2);
-
 
         Page<ClientDto> emptyPage = Page.empty();
 

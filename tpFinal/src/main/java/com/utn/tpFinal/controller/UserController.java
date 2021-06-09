@@ -30,12 +30,16 @@ import static com.utn.tpFinal.util.Constants.*;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Autowired
-    UserService userService;
-    @Autowired
+    private UserService userService;
     private ObjectMapper objectMapper;
-    @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    public UserController(UserService userService, ObjectMapper objectMapper, ModelMapper modelMapper) {
+        this.userService = userService;
+        this.objectMapper = objectMapper;
+        this.modelMapper = modelMapper;
+    }
 
 
     @PostMapping("/employee")

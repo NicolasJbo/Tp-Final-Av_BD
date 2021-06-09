@@ -21,8 +21,12 @@ import java.util.Date;
 @RequestMapping("/measurements")
 public class MeasureController {
 
-    @Autowired
     MeasureService measureService;
+
+    @Autowired
+    public MeasureController(MeasureService measureService) {
+        this.measureService = measureService;
+    }
 
     @PostMapping
     public ResponseEntity addMeasure(@RequestBody MeasureSenderDto dto) throws Exception {

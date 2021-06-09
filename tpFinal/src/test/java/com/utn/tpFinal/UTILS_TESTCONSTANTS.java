@@ -69,7 +69,7 @@ public class UTILS_TESTCONSTANTS {
     public static MeasureSenderDto getMeasureSenderDto() throws ParseException {
         return MeasureSenderDto.builder()
                 .kw(100F)
-                .date("2021-06-02")
+                .date("2021-06-02 12:12:12")
                 .password("1234")
                 .serialNumber("001")
                 .build();
@@ -145,6 +145,31 @@ public class UTILS_TESTCONSTANTS {
                 break;
         }
         return rta;
+    }
+
+    public static LoginRequestDto getLoginRequestDTO(){
+        return LoginRequestDto.builder().mail("mail@gmail.com")
+                .password("1234")
+                .build();
+    }
+    public static  LoginResponseDto getLoginResponse(){
+        return LoginResponseDto.builder().token("123abc").build();
+    }
+    public static  User getUser() throws ParseException {
+        return User.builder().id(1)
+                .mail("mail1@gmail.com")
+                .password("123")
+                .isClient(false)
+                .client(getClient(1))
+                .build();
+    }
+    public static  User getUserCLient() throws ParseException {
+        return User.builder().id(1)
+                .mail("mail1@gmail.com")
+                .password("123")
+                .isClient(true)
+                .client(getClient(1))
+                .build();
     }
     //---------------------------------------------------------F E C H A S -------------------------------------------------------
 
