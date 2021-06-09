@@ -8,11 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Data
 public class CustomGenericException extends Exception {
-
      String route;
      String method;
      HttpStatus httpStatus;
-
-
-
 }

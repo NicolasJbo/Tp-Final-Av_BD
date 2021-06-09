@@ -21,11 +21,14 @@ import java.util.List;
 
 @Service
 public class TariffService {
-    @Autowired
     private TariffRepository tariffRepository;
-    @Autowired
     private ResidenceService residenceService;
 
+    @Autowired
+    public TariffService(TariffRepository tariffRepository, ResidenceService residenceService) {
+        this.tariffRepository = tariffRepository;
+        this.residenceService = residenceService;
+    }
 
     public Tariff getTariffById(Integer id) throws TariffNotExists {
         return tariffRepository.findById(id)
