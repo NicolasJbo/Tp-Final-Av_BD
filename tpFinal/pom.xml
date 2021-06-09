@@ -115,6 +115,16 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.2</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*com/utn/tpFinal/configuration/**</exclude>
+						<exclude>**/*com/utn/tpFinal/model/**</exclude>
+						<exclude>**/*com/utn/tpFinal/filter/**</exclude>
+						<exclude>**/*com/utn/tpFinal/util/**</exclude>
+						<exclude>**/*com/utn/tpFinal/TpFinalApplication</exclude>
+
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
