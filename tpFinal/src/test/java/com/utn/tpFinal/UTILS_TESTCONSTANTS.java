@@ -82,6 +82,13 @@ public class UTILS_TESTCONSTANTS {
     }
 
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------
+    public static RegisterDto getRegisterDTO(){
+        return RegisterDto.builder().dni("11111111")
+                .name("carlos")
+                .lastName("apellido")
+                .password("123")
+                .mail("mail@gmail.com").build();
+    }
     public static UserDto getUserDto(Integer idClient){
         UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").isClient(true).build();
         return userDto;
