@@ -10,8 +10,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-    @Autowired
+
     UserRepository userRepository;
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
 
 
     public User findByMailAndPassword(String mail, String password) {
