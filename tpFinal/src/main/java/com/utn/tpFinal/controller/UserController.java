@@ -62,7 +62,7 @@ public class UserController {
         }
     }
 
-    private String generateToken(UserDto user) throws JsonProcessingException {
+    public String generateToken(UserDto user) throws JsonProcessingException {
         String role = user.getIsClient() ? "CLIENT" : "EMPLOYEE";
 
         //parte de spring security que permite la utilizacion de roles jwt

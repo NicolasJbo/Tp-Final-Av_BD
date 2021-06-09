@@ -76,7 +76,7 @@ public class UTILS_TESTCONSTANTS {
     }
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------
     public static UserDto getUserDto(Integer idClient){
-        UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").build();
+        UserDto userDto = UserDto.builder().id(idClient).mail("carlos@gmail.com").isClient(true).build();
         return userDto;
     }
 
