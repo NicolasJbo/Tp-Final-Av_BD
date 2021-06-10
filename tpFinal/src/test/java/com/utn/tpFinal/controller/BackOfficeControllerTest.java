@@ -1,19 +1,22 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.ResidenceNotExists;
-import com.utn.tpFinal.exception.TariffNotExists;
-import com.utn.tpFinal.exception.TariffsDoNotMatch;
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.EnergyMeter;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
+import com.utn.tpFinal.model.dto.BillDto;
+import com.utn.tpFinal.model.dto.MeasureDto;
+import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import com.utn.tpFinal.service.ResidenceService;
 import com.utn.tpFinal.service.TariffService;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -21,6 +24,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -116,5 +121,81 @@ public class BackOfficeControllerTest {
 
         assertEquals(HttpStatus.ACCEPTED,response.getStatusCode());
     }
+
+    @Test
+    public void getResidenceUnpaidBills_Test200() throws ResidenceNotExists, ClientNotExists, NoContentException {
+
+        Page<BillDto> mockedPage = mock(Page.class);
+        List<BillDto> bills =UTILS_TESTCONSTANTS.getBillsDTO_List();
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","expirationDate") ;
+
+        when(mockedPage.getContent()).thenReturn(bills);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(bills.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(residenceService.getResidenceUnpaidBills(4,1,5,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<BillDto>>response = backOfficeController.getResidenceUnpaidBills(4,1,5,"id","expirationDate");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("casa1", response.getBody().get(0).getResidence());
+
+    }
+
+    @Test
+    public void getClientUnpaidBills() throws Exception {
+        Page<BillDto> mockedPage = mock(Page.class);
+        List<BillDto> bills =UTILS_TESTCONSTANTS.getBillsDTO_List();
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","expirationDate") ;
+
+        when(mockedPage.getContent()).thenReturn(bills);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(bills.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(clientService.getClientUnpaidBills(4,1,5,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<BillDto>>response = backOfficeController.getClientUnpaidBills(4,1,5,"id","expirationDate");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("casa1", response.getBody().get(0).getResidence());
+
+    }
+
+   /* @Test
+    public void getTop10ConsumerByDates_Test200(){
+
+
+
+    }*/
+
+
+    @Test
+    public void getResidenceMeasuresByDates_Test200() throws Exception {
+
+        Page<MeasureDto> mockedPage = mock(Page.class);
+        List<MeasureDto> measures =UTILS_TESTCONSTANTS.getMeasureDTO_List();
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","date") ;
+
+        when(mockedPage.getContent()).thenReturn(measures);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(measures.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(residenceService.getResidenceMeasuresByDates(4,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),1,5,orders)).thenReturn(mockedPage);
+
+        //then
+        ResponseEntity<List<MeasureDto>>response = backOfficeController.getResidenceMeasuresByDates(4,1,5,"id","date",
+                                                                                            UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2));
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("serial1", response.getBody().get(0).getSerialNumber());
+
+    }
+
+
 
 }

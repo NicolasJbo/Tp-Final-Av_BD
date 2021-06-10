@@ -119,7 +119,6 @@ public class UTILS_TESTCONSTANTS {
 
         List<BillDto> list = new ArrayList<BillDto>();
         list.add(billDto1);
-
         list.add(billDto2);
         return list;
     }
@@ -193,11 +192,11 @@ public class UTILS_TESTCONSTANTS {
     }
     //---------------------------------------------------------F E C H A S -------------------------------------------------------
 
-    public static Date getFecha(Integer id) throws ParseException {
+    public static Date getFecha(Integer num) throws ParseException {
         Date fecha1 =  new SimpleDateFormat("yyyy-MM-dd").parse("2020-02-02");
         Date fecha2 =  new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-02");
         Date rta=new Date();
-        switch (id){
+        switch (num){
             case 1:
                 rta= fecha1;
                 break;

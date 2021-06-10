@@ -230,7 +230,7 @@ public class ClientControllerTest {
         List list =UTILS_TESTCONSTANTS.getGrandAuthorityClient();
 
 
-        Page<ResidenceDto> mockedPage = mock(Page.class);
+               Page<ResidenceDto> mockedPage = mock(Page.class);
 
         List<ResidenceDto> residences =UTILS_TESTCONSTANTS.getResidendesDTO_List();
 

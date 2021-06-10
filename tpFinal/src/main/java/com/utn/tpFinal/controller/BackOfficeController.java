@@ -107,7 +107,7 @@ public class BackOfficeController {
 //  [PROG - 4]  BACKOFFICE -> Consulta de facturas impagas por  domicilio
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/residence/{idResidence}/bills/unpaid")
-    public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(@PathVariable Integer idResidence,
+        public ResponseEntity<List<BillDto>>getResidenceUnpaidBills(@PathVariable Integer idResidence,
                                                                 @RequestParam(defaultValue = "0") Integer page,
                                                                 @RequestParam(defaultValue = "5") Integer size,
                                                                 @RequestParam(defaultValue = "id") String sortField1,
@@ -116,14 +116,14 @@ public class BackOfficeController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-            Page<BillDto> bills = residenceService.getResidenceUnpaidBills(idResidence, page, size, orders);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
-                    .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                    .header("X-Actual-Page", Integer.toString(page))
-                    .header("X-First-Sort-By", sortField1)
-                    .header("X-Second-Sort-By", sortField2)
-                    .body(bills.getContent());
+        Page<BillDto> bills = residenceService.getResidenceUnpaidBills(idResidence, page, size, orders);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                .header("X-Actual-Page", Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(bills.getContent());
 
     }
 
@@ -140,30 +140,24 @@ public class BackOfficeController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
-            Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
-                    .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
-                    .header("X-Actual-Page",Integer.toString(page))
-                    .header("X-First-Sort-By", sortField1)
-                    .header("X-Second-Sort-By", sortField2)
-                    .body(bills.getContent());
-
-
-
+        Page<BillDto> bills = clientService.getClientUnpaidBills(idClient, page, size, orders);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(bills.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(bills.getTotalPages()))
+                .header("X-Actual-Page",Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(bills.getContent());
 
     }
 //-----------------------------PUNTO 5  ------------------------------------------------
 //  [PROG - PUNTO 5] BACKOFFICE -> Consulta de 10 clientes mas consumidores por fechas
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/client/topConsumers")
-    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(Authentication authenticator,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+    public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
-
-        System.out.println(authenticator.getAuthorities());
-
-            List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from, to);
-            return ResponseEntity.status(HttpStatus.OK).body(rta);
+        List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from, to);
+        return ResponseEntity.status(HttpStatus.OK).body(rta);
 
     }
 //-----------------------------PUNTO 6  ------------------------------------------------
@@ -182,20 +176,13 @@ public class BackOfficeController {
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
 
 
-            Page<MeasureDto> measures = residenceService.getResidenceMeasuresByDates(idResidence, from, to, page, size, orders);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
-                    .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
-                    .header("X-Actual-Page", Integer.toString(page))
-                    .header("X-First-Sort-By", sortField1)
-                    .header("X-Second-Sort-By", sortField2)
-                    .body(measures.getContent());
-
+        Page<MeasureDto> measures = residenceService.getResidenceMeasuresByDates(idResidence, from, to, page, size, orders);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("X-Total-Elements", Long.toString(measures.getTotalElements()))
+                .header("X-Total-Pages", Long.toString(measures.getTotalPages()))
+                .header("X-Actual-Page", Integer.toString(page))
+                .header("X-First-Sort-By", sortField1)
+                .header("X-Second-Sort-By", sortField2)
+                .body(measures.getContent());
     }
-
-//---------------------------------------------------------------------------------------------
-
-
-
-
 }
