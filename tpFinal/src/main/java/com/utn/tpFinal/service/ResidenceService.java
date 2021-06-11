@@ -28,30 +28,33 @@ import static java.util.Objects.isNull;
 
 @Service
 public class ResidenceService {
-    @Autowired
+    //@Autowired
     private ResidenceRepository residenceRepository;
-    @Autowired
+    //@Autowired
     private EnergyMeterService  energyMeterService;
-    @Autowired
+    //@Autowired
     private TariffService tariffService;
-    @Autowired
+    //@Autowired
     private MeasureRepository measureRepository;
-    @Autowired
+    //@Autowired
     private BillRepository billRepository;
 
-
-
-
-
-   /* @Autowired
-    public ResidenceService(ResidenceRepository residenceRepository, EnergyMeterService energyMeterService, TariffService tariffService) {
+    @Autowired()
+    public ResidenceService(ResidenceRepository residenceRepository, EnergyMeterService energyMeterService, TariffService tariffService, MeasureRepository measureRepository, BillRepository billRepository) {
         this.residenceRepository = residenceRepository;
         this.energyMeterService = energyMeterService;
         this.tariffService = tariffService;
-    }*/
+        this.measureRepository = measureRepository;
+        this.billRepository = billRepository;
+    }
 
 
-//-------------------------------------------->> M E T O D O S <<--------------------------------------------
+    public Residence getResidenceById(Integer id) throws ResidenceNotExists {
+        return residenceRepository.findById(id)
+                .orElseThrow(() -> new ResidenceNotExists(this.getClass().getSimpleName(), "getResidenceById"));
+    }
+
+    //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
     public Residence addResidence(Residence residence) {
         return  residenceRepository.save(residence);
@@ -63,16 +66,10 @@ public class ResidenceService {
 
         Page<ResidenceDto> dtoPage= Page.empty();
 
-      if(!residences.isEmpty())
-         dtoPage=residences.map(r -> ResidenceDto.from(r));
-
+        if(!residences.isEmpty())
+            dtoPage=residences.map(r -> ResidenceDto.from(r));
 
         return dtoPage;
-    }
-
-    public Residence getResidenceById(Integer id) throws ResidenceNotExists {
-        return residenceRepository.findById(id)
-                .orElseThrow(() -> new ResidenceNotExists(this.getClass().getSimpleName(), "getResidenceById"));
     }
 
     public Page<Residence> getResidenceByClientId(Integer idClient, Pageable pageable) {
