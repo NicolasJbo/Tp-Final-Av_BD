@@ -4,6 +4,8 @@ import com.utn.tpFinal.UTILS_TESTCONSTANTS;
 import com.utn.tpFinal.exception.EnergyMeterNotExists;
 import com.utn.tpFinal.exception.TariffNotExists;
 import com.utn.tpFinal.model.EnergyMeter;
+import com.utn.tpFinal.model.MeterBrand;
+import com.utn.tpFinal.model.MeterModel;
 import com.utn.tpFinal.repository.EnergyMeterRepository;
 import com.utn.tpFinal.repository.MeterBrandRepository;
 import com.utn.tpFinal.repository.MeterModelRepository;
@@ -13,10 +15,12 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class EnergyMeterServiceTest {
 
@@ -42,6 +46,39 @@ public class EnergyMeterServiceTest {
     public void getEnergyMeterById_TestFAIL()  {
         when(energyMeterRepository.findById(1)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter()));
         assertThrows(EnergyMeterNotExists.class,()->energyMeterService.getEnergyMeterById(8));
+    }
+
+    @Test
+    public void getEnergyMeterBySerialNumber_TestOK() throws EnergyMeterNotExists {
+        when(energyMeterRepository.findBySerialNumber(anyString())).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter()));
+        EnergyMeter response= energyMeterService.getEnergyMeterBySerialNumber(anyString());
+        assertEquals("001",response.getSerialNumber() );
+    }
+    @Test
+    public void getEnergyMeterBySerialNumber_TestFAIL()  {
+        when(energyMeterRepository.findBySerialNumber("hola")).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter()));
+        assertThrows(EnergyMeterNotExists.class,()->energyMeterService.getEnergyMeterBySerialNumber(anyString()));
+    }
+    
+    @Test
+    public void add_Test200(){
+        EnergyMeter meter= UTILS_TESTCONSTANTS.getEnergyMeter();
+        Integer idModel=1;
+        Integer idBrand=1;
+
+        when(energyMeterRepository.save(any(EnergyMeter.class))).thenReturn(meter);
+        when(meterBrandRepository.findById(idBrand)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getMeterBrand_List().get(0)));
+        when(meterModelRepository.findById(idModel)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getMeterModel_List().get(0)));
+        doNothing().when(meterBrandRepository.save(any(MeterBrand.class))) ;
+        //doNothing().when(meterModelRepository.save(any(MeterModel.class)));
+
+        EnergyMeter response= energyMeterService.add(meter,idModel,idBrand);
+
+    }
+    @Test
+    public void addEnergyMeterToBrand(){
+        doNothing().when(meterBrandRepository.save(any(MeterBrand.class))) ;
+        energyMeterService.addEnergyMeterToBrand(UTILS_TESTCONSTANTS.getEnergyMeter(),UTILS_TESTCONSTANTS.getMeterBrand_List().get(0));
 
     }
 
