@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,7 @@ public class ResidenceServiceTest {
 
 
     @Test
-    public void addResidence_Test200(){
+    public void addResidence_Test200() throws ParseException {
         Residence r = UTILS_TESTCONSTANTS.getResidence(4);
 
         when(residenceRepository.save(any(Residence.class))).thenReturn(r);
@@ -67,7 +68,7 @@ public class ResidenceServiceTest {
     }
 
     @Test
-    public void getResidenceById_Test200() throws ResidenceNotExists {
+    public void getResidenceById_Test200() throws ResidenceNotExists, ParseException {
         Residence r = UTILS_TESTCONSTANTS.getResidence(4);
 
         when(residenceRepository.findById(any(Integer.class))).thenReturn(Optional.of(r));
@@ -85,10 +86,12 @@ public class ResidenceServiceTest {
     }
     
     //todo get all test = al de tariff service test
-    
+    /*
     @Test
     public void getResidenceByClientId(){
         List<Residence> residences = UTILS_TESTCONSTANTS.getResidendesList();
     }
+
+     */
 
 }

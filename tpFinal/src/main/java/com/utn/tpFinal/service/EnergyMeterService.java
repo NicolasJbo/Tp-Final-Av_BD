@@ -25,8 +25,14 @@ import static java.util.Objects.isNull;
 
 @Service
 public class EnergyMeterService {
-
-
+    /*
+    @Autowired
+    private EnergyMeterRepository energyMeterRepository;
+    @Autowired
+    private MeterBrandRepository meterBrandRepository;
+    @Autowired
+    private MeterModelRepository meterModelRepository;
+    */
     private static final String ENERGYMETER_PATH = "energyMeter";
     private EnergyMeterRepository energyMeterRepository;
     private MeterBrandRepository meterBrandRepository;
