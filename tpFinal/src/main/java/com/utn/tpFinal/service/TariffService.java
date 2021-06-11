@@ -43,16 +43,14 @@ public class TariffService {
     }
 
     public Page<TariffDto> getAll(Specification<Tariff> tariffSpecification, Integer page, Integer size, List<Order>orders){
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Tariff>tariffs =tariffRepository.findAll(tariffSpecification,pageable);
 
-        Page<TariffDto> tariffDtos  = Page.empty();// = Page.empty(pageable);
-
-
+        Page<TariffDto> tariffDtos  = Page.empty();
 
         if(!tariffs.isEmpty())
             tariffDtos = tariffs.map(t-> TariffDto.from(t));
-
 
         return tariffDtos;
     }

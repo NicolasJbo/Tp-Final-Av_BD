@@ -4,6 +4,9 @@ package com.utn.tpFinal;
 
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -80,6 +83,16 @@ public class UTILS_TESTCONSTANTS {
                 .serialNumber("001")
                 .build();
     }
+    public static  List<Tariff> getTariff_List(){
+        Tariff tariff1= getTariff(1);
+        Tariff tariff2=getTariff(2);
+        List<Tariff> tariffList=new ArrayList<>();
+        tariffList.add(tariff1);
+        tariffList.add(tariff2);
+
+        return  tariffList;
+    }
+
 
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------
     public static RegisterDto getRegisterDTO(){
@@ -221,9 +234,11 @@ public class UTILS_TESTCONSTANTS {
                     .build();
     }
 
-    public static Residence getResidence(Integer idResidence) {
+    public static Residence getResidence(Integer idResidence) throws ParseException {
         return Residence.builder().id(idResidence)
                 .number(1234)
+                .client(getClient(1))
+                .energyMeter(getEnergyMeter())
                 .street("Siempre Viva")
                 .floor("4")
                 .apartament("B")

@@ -8,11 +8,13 @@ import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
+import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
 import com.utn.tpFinal.service.ResidenceService;
 import com.utn.tpFinal.service.TariffService;
 import lombok.SneakyThrows;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
@@ -84,7 +86,7 @@ public class BackOfficeControllerTest {
     }
 
     @Test
-    public void addResidence_Test200() throws URISyntaxException {
+    public void addResidence_Test200() throws URISyntaxException, ParseException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
@@ -193,6 +195,24 @@ public class BackOfficeControllerTest {
         assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
         assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
         assertEquals("serial1", response.getBody().get(0).getSerialNumber());
+
+    }
+    @Test
+    public void getTop10ConsumerByDates(){
+
+        try {
+            List<Top10Clients> top10Clients=mock(List.class);
+            when(clientService.getTop10ConsumerByDates(UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2))).thenReturn(top10Clients);
+            ResponseEntity<List<Top10Clients>>response = backOfficeController.getTop10ConsumerByDates(UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2));
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        } catch (NoContentException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            Assert.fail("No se cargo bien la fecha");
+
+        }
 
     }
 
