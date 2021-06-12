@@ -85,6 +85,7 @@ public class UTILS_TESTCONSTANTS {
                 .brand(getMeterBrand_List().get(0))
                 .passWord("1234")
                 .serialNumber("001")
+                .residence(getResidence(id))
                 .id(id)
                 .build();
     }
