@@ -87,7 +87,7 @@ public class EnergyMeterService {
     }
 //------------------------------------------>> RESIDENCE <<------------------------------------------
 
-    public ResidenceDto getResidenceByEnergyMeterId(Integer idEnergyMeter) throws EnergyMeterNotExists, ResidenceNotDefined {
+    public ResidenceDto getResidenceByEnergyMeterId(Integer idEnergyMeter) throws ResidenceNotDefined, EnergyMeterNotExists {
         EnergyMeter energyMeter =getEnergyMeterById(idEnergyMeter);
         Residence residence = energyMeter.getResidence();
 
@@ -122,12 +122,12 @@ public class EnergyMeterService {
 
 //-------------------------------------------->> MODEL <<--------------------------------------------
 
-    public Page<MeterModel> getAllMeterModels(Specification<MeterModel> meterModelSpecification, Integer page, Integer size, List<Sort.Order>orders) throws NoContentException {
+    public Page<MeterModel> getAllMeterModels(Specification<MeterModel> meterModelSpecification, Integer page, Integer size, List<Sort.Order>orders)  {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<MeterModel>meterModels = meterModelRepository.findAll(meterModelSpecification, pageable);
 
       Page<MeterModel> rta=Page.empty();
-            if(meterModels.isEmpty())
+            if(!meterModels.isEmpty())
                 return meterModels;
             else
                 return rta;

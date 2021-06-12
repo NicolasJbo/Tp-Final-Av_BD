@@ -79,7 +79,7 @@ public class UTILS_TESTCONSTANTS {
         return list;
     }
 
-    public static EnergyMeter getEnergyMeter(Integer id){
+    public static EnergyMeter getEnergyMeter(Integer id) throws ParseException {
         return EnergyMeter.builder()
                 .model(getMeterModel_List().get(0))
                 .brand(getMeterBrand_List().get(0))
@@ -93,6 +93,7 @@ public class UTILS_TESTCONSTANTS {
         return Measure.builder()
                 .kw(100F)
                 .date(getFecha(1))
+                .price(100F)
                 .build();
     }
 

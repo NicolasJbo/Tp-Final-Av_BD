@@ -132,7 +132,7 @@ public class ResidenceService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Measure> measures = measureRepository.findByResidenceIdAndDateBetween(idResidence, from, to, pageable);
 
-        if(measures.isEmpty())//TODO muestra mal
+        if(measures.isEmpty())//
             throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBillsByResidence");
 
         Page<MeasureDto> measuresdto = measures.map(m -> MeasureDto.from(m));

@@ -50,7 +50,7 @@ public class EnergyMeterControllerTest {
 
 
     @Test
-    public void addEnergyMeter_Test200(){
+    public void addEnergyMeter_Test200() throws ParseException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
