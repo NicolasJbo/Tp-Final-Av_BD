@@ -13,6 +13,7 @@ import com.utn.tpFinal.repository.TariffRepository;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.ParseException;
 import java.util.Optional;
 
 
@@ -37,25 +38,25 @@ public class EnergyMeterServiceTest {
         energyMeterService = new EnergyMeterService(energyMeterRepository, meterBrandRepository,meterModelRepository);
     }
     @Test
-    public void getEnergyMeterById_TestOK() throws EnergyMeterNotExists {
+    public void getEnergyMeterById_TestOK() throws ParseException, EnergyMeterNotExists {
         when(energyMeterRepository.findById(1)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
         EnergyMeter response= energyMeterService.getEnergyMeterById(1);
         assertEquals("001",response.getSerialNumber() );
     }
     @Test
-    public void getEnergyMeterById_TestFAIL()  {
+    public void getEnergyMeterById_TestFAIL() throws ParseException   {
         when(energyMeterRepository.findById(1)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
         assertThrows(EnergyMeterNotExists.class,()->energyMeterService.getEnergyMeterById(8));
     }
 
     @Test
-    public void getEnergyMeterBySerialNumber_TestOK() throws EnergyMeterNotExists {
+    public void getEnergyMeterBySerialNumber_TestOK() throws ParseException, EnergyMeterNotExists {
         when(energyMeterRepository.findBySerialNumber(anyString())).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
         EnergyMeter response= energyMeterService.getEnergyMeterBySerialNumber(anyString());
         assertEquals("001",response.getSerialNumber() );
     }
     @Test
-    public void getEnergyMeterBySerialNumber_TestFAIL()  {
+    public void getEnergyMeterBySerialNumber_TestFAIL() throws ParseException   {
         when(energyMeterRepository.findBySerialNumber("hola")).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
         assertThrows(EnergyMeterNotExists.class,()->energyMeterService.getEnergyMeterBySerialNumber(anyString()));
     }

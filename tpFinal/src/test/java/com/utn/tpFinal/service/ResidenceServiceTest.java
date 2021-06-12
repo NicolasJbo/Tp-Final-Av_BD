@@ -172,12 +172,12 @@ public class ResidenceServiceTest {
         assertEquals(c.getId(), r.getClient().getId());
     }
 
-   /* @Test
-    public void addEnergyMeterToResidence_Test200() throws EnergyMeterNotExists {
+   @Test
+    public void addEnergyMeterToResidence_Test200() throws ParseException , EnergyMeterNotExists {
         EnergyMeter e = UTILS_TESTCONSTANTS.getEnergyMeter(4);
 
         when(energyMeterService.getEnergyMeterById(any(Integer.class))).thenReturn(e);
 
-    }*/
+    }
 
 }
