@@ -24,11 +24,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class ClientService {
+    /*
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -37,7 +39,18 @@ public class ClientService {
     private BillRepository billRepository;
     @Autowired
     private UserService userService;
-
+    */
+    private ClientRepository clientRepository;
+    private ResidenceService residenceService;
+    private BillRepository billRepository;
+    private UserService userService;
+    @Autowired
+    public ClientService(ClientRepository clientRepository, ResidenceService residenceService, BillRepository billRepository, UserService userService) {
+        this.clientRepository = clientRepository;
+        this.residenceService = residenceService;
+        this.billRepository = billRepository;
+        this.userService = userService;
+    }
 
     public Client getClientById(Integer id) throws ClientNotExists {
         return clientRepository.findById(id)
@@ -57,8 +70,8 @@ public class ClientService {
                 .user(user)
                 .id(user.getId())
                 .build();
-
-        return clientRepository.save(client);
+        clientRepository.save(client);
+        return client;
     }
 
     public Page<ClientDto> getAll(Specification<Client> clientSpecification, Integer page, Integer size, List<Order>orders) throws NoContentException {
