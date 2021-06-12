@@ -40,7 +40,7 @@ public class Residence {
 
     @JsonIgnore
     @OneToMany(mappedBy = "residence")
-    private List<Bill> bill;
+    private List<Bill> bills;
 
     @OneToOne(cascade = CascadeType.ALL) //si borras una residencia se borra el medidor
     @JoinColumn(name="id_energyMeter")

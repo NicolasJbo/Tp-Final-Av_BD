@@ -261,10 +261,10 @@ public class ResidenceServiceTest {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
         Pageable pageable = PageRequest.of(1,10,Sort.by(orders));
 
-        Measure m2 =UTILS_TESTCONSTANTS.getMeasure();
-        m2.setId(2);
+        Measure m2 =UTILS_TESTCONSTANTS.getMeasure(2);
+
         List<Measure> list = new ArrayList<>();
-        list.add(UTILS_TESTCONSTANTS.getMeasure());
+        list.add(UTILS_TESTCONSTANTS.getMeasure(4));
         list.add(m2);
         Page<Measure> pageM =new PageImpl<Measure>(list);
         when(measureRepository.findByResidenceIdAndDateBetween(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),pageable)).thenReturn(pageM);
@@ -278,12 +278,11 @@ public class ResidenceServiceTest {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
         Pageable pageable = PageRequest.of(1,10,Sort.by(orders));
 
-        Measure m2 =UTILS_TESTCONSTANTS.getMeasure();
-        m2.setId(2);
+        Measure m2 =UTILS_TESTCONSTANTS.getMeasure(2);
         List<Measure> list = new ArrayList<>();
-        list.add(UTILS_TESTCONSTANTS.getMeasure());
+        list.add(UTILS_TESTCONSTANTS.getMeasure(4));
         list.add(m2);
-        Page<Measure> pageM =new PageImpl<Measure>(list);
+        Page<Measure> pageM =new PageImpl<>(list);
         when(measureRepository.findByResidenceIdAndDateBetween(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),pageable)).thenReturn(Page.empty());
         assertThrows(NoContentException.class,()->residenceService.getResidenceMeasuresByDates(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),1,10,orders));
     }

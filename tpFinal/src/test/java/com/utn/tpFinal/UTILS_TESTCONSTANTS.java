@@ -89,8 +89,9 @@ public class UTILS_TESTCONSTANTS {
                 .build();
     }
 
-    public static Measure getMeasure() throws ParseException {
+    public static Measure getMeasure(Integer id) throws ParseException {
         return Measure.builder()
+                .id(id)
                 .kw(100F)
                 .date(getFecha(1))
                 .price(100F)
@@ -280,6 +281,7 @@ public class UTILS_TESTCONSTANTS {
                 .client(getClient(1))
                 .energyMeter(getEnergyMeter(idResidence))
                 .street("Siempre Viva")
+                .bills(Collections.emptyList())
                 .floor(String.valueOf(idResidence+4))
                 .apartament("B")
                 .tariff(getTariff(idResidence))

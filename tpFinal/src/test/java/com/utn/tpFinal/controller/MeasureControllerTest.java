@@ -43,7 +43,7 @@ public class MeasureControllerTest {
     @Test
     public void addMeasure_Test200 () throws Exception {
 
-        Measure m = UTILS_TESTCONSTANTS.getMeasure();
+        Measure m = UTILS_TESTCONSTANTS.getMeasure(1);
         MeasureSenderDto measureSenderDto = UTILS_TESTCONSTANTS.getMeasureSenderDto();
 
         doNothing().when(measureService).add(m,measureSenderDto.getSerialNumber(), measureSenderDto.getPassword());

@@ -20,15 +20,21 @@ import static java.util.Objects.isNull;
 
 @Service
 public class MeasureService {
-    @Autowired
+   // @Autowired
     MeasureRepository measureRepository;
-    @Autowired
+   // @Autowired
     EnergyMeterService  energyMeterService;
-    @Autowired
+    //@Autowired
     ResidenceService residenceService;
 
+    @Autowired
+    public MeasureService(MeasureRepository measureRepository, EnergyMeterService energyMeterService, ResidenceService residenceService) {
+        this.measureRepository = measureRepository;
+        this.energyMeterService = energyMeterService;
+        this.residenceService = residenceService;
+    }
 
-    public void add(Measure measure, String serialNumber, String password) throws EnergyMeterNotExists, IncorrectPasswordException, ResidenceNotDefined {
+    public void add(Measure measure, String serialNumber, String password) throws Exception {
 
         EnergyMeter energyMeter= energyMeterService.getEnergyMeterBySerialNumber(serialNumber);
         Residence residence=residenceService.getResidenceByEnergyMeterId(energyMeter.getId());
@@ -43,11 +49,9 @@ public class MeasureService {
         Float tariffAmount = residence.getTariff().getAmount(); //traigo la tarifa
         System.out.println("RESIDENCE TARIFF -> "+tariffAmount);
         measure.setPrice(  measure.getKw()* tariffAmount); // hago que el precio de la medicion es de tarifa * total
-
-
+        
         System.out.println("MEASURE UPDATED -> "+measure.toString());
         measureRepository.save(measure);
-
 
     }
 }
