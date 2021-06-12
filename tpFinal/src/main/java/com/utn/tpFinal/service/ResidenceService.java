@@ -60,7 +60,7 @@ public class ResidenceService {
         return  residenceRepository.save(residence);
     }
 
-    public Page<ResidenceDto> getAll(Specification<Residence> residenceSpecification,Integer page,Integer size,List<Order> orders) throws NoContentException {
+    public Page<ResidenceDto> getAll(Specification<Residence> residenceSpecification,Integer page,Integer size,List<Order> orders) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Residence> residences = residenceRepository.findAll(residenceSpecification,pageable);
 

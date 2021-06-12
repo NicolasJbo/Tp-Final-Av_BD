@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,26 +46,46 @@ public class UTILS_TESTCONSTANTS {
     }
 
     public static  List<MeterBrand>getMeterBrand_List(){
+        List<EnergyMeter>asd=new ArrayList<>();
+
+        EnergyMeter e = EnergyMeter.builder()
+                .model(MeterModel.builder().id(1).name("model1").energyMeters(asd).build())
+                .brand(MeterBrand.builder().id(1).name("brand1").energyMeters(asd).build())
+                .passWord("1234")
+                .serialNumber("001")
+                .id(1)
+                .build();
+        asd.add(e);
         List<MeterBrand> list = new ArrayList<>();
-        list.add(MeterBrand.builder().id(1).name("brand1").build());
-        list.add(MeterBrand.builder().id(2).name("brand2").build());
+        list.add(MeterBrand.builder().id(1).name("brand1").energyMeters(asd).build());
+        list.add(MeterBrand.builder().id(2).name("brand2").energyMeters(asd).build());
         return list;
     }
 
     public static  List<MeterModel>getMeterModel_List(){
+        List<EnergyMeter>asd=new ArrayList<>();
+
+        EnergyMeter e = EnergyMeter.builder()
+                .model(MeterModel.builder().id(1).name("model1").energyMeters(asd).build())
+                .brand(MeterBrand.builder().id(1).name("brand1").energyMeters(asd).build())
+                .passWord("1234")
+                .serialNumber("001")
+                .id(1)
+                .build();
+        asd.add(e);
         List<MeterModel> list = new ArrayList<>();
-        list.add(MeterModel.builder().id(1).name("model1").build());
-        list.add(MeterModel.builder().id(2).name("model2").build());
+        list.add(MeterModel.builder().id(1).name("model1").energyMeters(asd).build());
+        list.add(MeterModel.builder().id(2).name("model2").energyMeters(asd).build());
         return list;
     }
 
-    public static EnergyMeter getEnergyMeter(){
+    public static EnergyMeter getEnergyMeter(Integer id){
         return EnergyMeter.builder()
                 .model(getMeterModel_List().get(0))
                 .brand(getMeterBrand_List().get(0))
                 .passWord("1234")
                 .serialNumber("001")
-                .id(1)
+                .id(id)
                 .build();
     }
 
@@ -110,6 +131,16 @@ public class UTILS_TESTCONSTANTS {
     public static UserDto getUserDtoEmployee(Integer idClient){
         UserDto userDto = UserDto.builder().id(idClient).mail("admin@gmail.com").isClient(false).build();
         return userDto;
+    }
+
+    public static List<Residence> getResidenceList() throws ParseException {
+        List<Residence>residences = new ArrayList<>();
+
+        residences.add(getResidence(4));
+        residences.add(getResidence(6));
+
+        return residences;
+
     }
 
     public static List<ResidenceDto> getResidendesDTO_List(){
@@ -222,7 +253,14 @@ public class UTILS_TESTCONSTANTS {
     //-----------------------------------------------------------------------------------------------------------------------------
 
     public static Client getClient(Integer idClient) throws ParseException {
-        Client client=  Client.builder().id(1).name("Carlos").lastName("Perez").birthday(getFecha(1)).dni("1111111").build();
+        Client client=  Client.builder()
+                    .id(idClient)
+                    .name("Carlos")
+                    .lastName("Perez")
+                    .birthday(getFecha(1))
+                    .dni("1111111")
+                    .residencesList(Collections.emptyList())
+                    .build();
 
         return client;
     }
@@ -235,14 +273,17 @@ public class UTILS_TESTCONSTANTS {
     }
 
     public static Residence getResidence(Integer idResidence) throws ParseException {
-        return Residence.builder().id(idResidence)
+        return Residence.builder()
+                .id(idResidence)
                 .number(1234)
                 .client(getClient(1))
-                .energyMeter(getEnergyMeter())
+                .energyMeter(getEnergyMeter(idResidence))
                 .street("Siempre Viva")
-                .floor("4")
+                .floor(String.valueOf(idResidence+4))
                 .apartament("B")
+                .tariff(getTariff(idResidence))
                 .build();
 
     }
+
 }

@@ -55,7 +55,7 @@ public class EnergyMeterControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        EnergyMeter e = UTILS_TESTCONSTANTS.getEnergyMeter();
+        EnergyMeter e = UTILS_TESTCONSTANTS.getEnergyMeter(1);
 
         when(energyMeterService.add(e,1,1)).thenReturn(e);
 

@@ -58,16 +58,13 @@ public class EnergyMeterService {
 
     public EnergyMeter add(EnergyMeter energyMeter,Integer idmodel,Integer idBrand) {
 
-        if(!isNull(idBrand)){
-            MeterBrand brand = getMeterBrandById(idBrand);
-            addEnergyMeterToBrand(energyMeter,brand);
-            energyMeter.setBrand(brand);
-        }
-        if(!isNull(idmodel)){
-            MeterModel model = getMeterModelById(idmodel);
-            addEnergyMeterToModel(energyMeter,model);
-            energyMeter.setModel(model);
-        }
+        MeterBrand brand = getMeterBrandById(idBrand);
+        addEnergyMeterToBrand(energyMeter,brand);
+        energyMeter.setBrand(brand);
+
+        MeterModel model = getMeterModelById(idmodel);
+        addEnergyMeterToModel(energyMeter,model);
+        energyMeter.setModel(model);
 
         return   energyMeterRepository.save(energyMeter);
     }
