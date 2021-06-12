@@ -1,14 +1,9 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.ResidenceNotExists;
-import com.utn.tpFinal.exception.TariffNotExists;
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.EnergyMeter;
-import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.Tariff;
+import com.utn.tpFinal.exception.*;
+import com.utn.tpFinal.model.*;
+import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
 import com.utn.tpFinal.repository.BillRepository;
@@ -22,6 +17,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -173,11 +169,123 @@ public class ResidenceServiceTest {
     }
 
    @Test
-    public void addEnergyMeterToResidence_Test200() throws ParseException , EnergyMeterNotExists {
+    public void addEnergyMeterToResidence_Test200() throws ParseException, EnergyMeterNotExists, ResidenceNotExists, ResidenceDefined {
         EnergyMeter e = UTILS_TESTCONSTANTS.getEnergyMeter(4);
+        Residence r = UTILS_TESTCONSTANTS.getResidence(4);
+
+        when(energyMeterService.getEnergyMeterById(any(Integer.class))).thenReturn(e);
+        when(residenceRepository.findById(any(Integer.class))).thenReturn(Optional.of(r));
+        doNothing().when(energyMeterService).addResidenceToMeter(any(Residence.class),any(EnergyMeter.class));
+        when(residenceRepository.save(any(Residence.class))).thenReturn(r);
+
+        residenceService.addEnergyMeterToResidence(4, 4);
+
+        assertEquals(e.getId(), r.getEnergyMeter().getId());
+    }
+
+    @Test
+    public void addEnergyMeterToResidence_TestException() throws ParseException, EnergyMeterNotExists, ResidenceNotExists, ResidenceDefined {
+        EnergyMeter e = UTILS_TESTCONSTANTS.getEnergyMeter(4);
+        Residence r = UTILS_TESTCONSTANTS.getResidence(4);
+        e.setResidence(r);
 
         when(energyMeterService.getEnergyMeterById(any(Integer.class))).thenReturn(e);
 
+        assertThrows(ResidenceDefined.class,()->residenceService.addEnergyMeterToResidence(4, 4));
+    }
+
+    @Test
+    public void addTariffToResidence_Test200() throws Exception {
+        Tariff t = UTILS_TESTCONSTANTS.getTariff(4);
+        Residence r = UTILS_TESTCONSTANTS.getResidence(4);
+
+
+        when(residenceRepository.findById(any(Integer.class))).thenReturn(Optional.of(r));
+        when(tariffService.getTariffById(any(Integer.class))).thenReturn(t);
+        doNothing().when(tariffService).addResidenceToTariff(any(Residence.class),any(Tariff.class));
+        when(residenceRepository.save(any(Residence.class))).thenReturn(r);
+
+        residenceService.addTariffToResidence(4, 4);
+
+        assertEquals(t.getId(), r.getTariff().getId());
+    }
+
+    @Test
+    public void removeResidenceById_TestException(){
+        assertThrows(ResidenceNotExists.class,()->residenceService.removeResidenceById(4));
+    }
+
+   @Test
+    public void removeResidenceById_Test200(){
+        Integer idResidence=1;
+        when(residenceRepository.existsById(any(Integer.class))).thenReturn(true);
+        doNothing().when(residenceRepository).deleteById(idResidence);
+    }
+
+    @Test
+    public void modifyResidence_TestException() throws ParseException{
+        Residence r = UTILS_TESTCONSTANTS.getResidence(4);
+        Residence residence = UTILS_TESTCONSTANTS.getResidence(9);
+
+        when(residenceRepository.findById(any(Integer.class))).thenReturn(Optional.of(r));
+
+        assertThrows(ResidencesDoNotMatch.class,()-> residenceService.modifyResidence(4,residence));
+    }
+
+    @Test
+    public void modifyResidence_Test200() throws ParseException, ResidencesDoNotMatch, ResidenceNotExists {
+        Residence r = UTILS_TESTCONSTANTS.getResidence(4);
+
+        when(residenceRepository.findById(any(Integer.class))).thenReturn(Optional.of(r));
+        when(residenceRepository.save(any(Residence.class))).thenReturn(r);
+
+        residenceService.modifyResidence(8, r);
+
+        assertEquals(Integer.valueOf(4), r.getId());
+    }
+
+    @Test
+    public void getResidenceByEnergyMeterId_Test200() throws ParseException {
+        Residence residence = UTILS_TESTCONSTANTS.getResidence(4);
+
+        when(residenceRepository.findByEnergyMeterId(any(Integer.class))).thenReturn(residence);
+
+        Residence response = residenceService.getResidenceByEnergyMeterId(4);
+
+        assertEquals(Integer.valueOf(4),response.getEnergyMeter().getId());
+        assertEquals("Siempre Viva",response.getStreet());
+    }
+
+    @Test
+    public void getResidenceMeasuresByDates_TestOK() throws ParseException, NoContentException {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
+        Pageable pageable = PageRequest.of(1,10,Sort.by(orders));
+
+        Measure m2 =UTILS_TESTCONSTANTS.getMeasure();
+        m2.setId(2);
+        List<Measure> list = new ArrayList<>();
+        list.add(UTILS_TESTCONSTANTS.getMeasure());
+        list.add(m2);
+        Page<Measure> pageM =new PageImpl<Measure>(list);
+        when(measureRepository.findByResidenceIdAndDateBetween(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),pageable)).thenReturn(pageM);
+
+        Page<MeasureDto> response= residenceService.getResidenceMeasuresByDates(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),1,10,orders);
+        assertEquals("100.0",String.valueOf(response.getContent().get(0).getPrice()));
+        assertEquals(2   ,response.getNumberOfElements());
+    }
+    @Test
+    public void getResidenceMeasuresByDates_TestFail() throws ParseException, NoContentException {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
+        Pageable pageable = PageRequest.of(1,10,Sort.by(orders));
+
+        Measure m2 =UTILS_TESTCONSTANTS.getMeasure();
+        m2.setId(2);
+        List<Measure> list = new ArrayList<>();
+        list.add(UTILS_TESTCONSTANTS.getMeasure());
+        list.add(m2);
+        Page<Measure> pageM =new PageImpl<Measure>(list);
+        when(measureRepository.findByResidenceIdAndDateBetween(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),pageable)).thenReturn(Page.empty());
+        assertThrows(NoContentException.class,()->residenceService.getResidenceMeasuresByDates(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),1,10,orders));
     }
 
 }
