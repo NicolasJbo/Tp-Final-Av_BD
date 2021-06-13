@@ -225,6 +225,7 @@ public class EnergyMeterServiceTest {
         assertEquals("deleted", response);
 
     }
+
     @Test
     public  void deleteEnergyMeterById_TestFAIL(){
         assertThrows(EnergyMeterNotExists.class,()->energyMeterService.deleteEnergyMeterById(anyInt()));

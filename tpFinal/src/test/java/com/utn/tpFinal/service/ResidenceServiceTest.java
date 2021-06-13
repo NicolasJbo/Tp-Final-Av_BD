@@ -327,7 +327,7 @@ public class ResidenceServiceTest {
     }
 
     @Test
-    public void getResidenceUnpaidBills_TestNoContentException() throws ParseException, ResidenceNotExists, NoContentException {
+    public void getResidenceUnpaidBills_TestNoContent() throws ResidenceNotExists {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","initialDate") ;
 
         Pageable pageable = PageRequest.of(0,2,Sort.by(orders));

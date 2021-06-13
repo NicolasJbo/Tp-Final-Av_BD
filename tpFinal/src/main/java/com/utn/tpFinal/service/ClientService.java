@@ -95,37 +95,34 @@ public class ClientService {
         clientRepository.save(c);
     }
 
-    public Page<ResidenceDto> getClientResidences(Integer idClient, Integer page, Integer size, List<Order>orders) throws NoContentException, ClientNotExists {
+    public Page<ResidenceDto> getClientResidences(Integer idClient, Integer page, Integer size, List<Order>orders) throws  ClientNotExists {
         if(!clientRepository.existsById(idClient))
             throw new ClientNotExists(this.getClass().getSimpleName(), "getClientResidences");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Residence> residences = residenceService.getResidenceByClientId(idClient, pageable);
 
-        if(residences.isEmpty()) //todo no muestra el contenido de la exception
-            throw new NoContentException(this.getClass().getSimpleName(), "getClientResidences");
+        Page<ResidenceDto>residenceDtos = Page.empty(pageable);
 
-        Page<ResidenceDto> residencesDto = residences.map(r-> ResidenceDto.from(r));
+        if(!residences.isEmpty())
+            residenceDtos = residences.map(r-> ResidenceDto.from(r));
 
-        return residencesDto;
+        return residenceDtos;
     }
 
-    public void deleteClientById(Integer idClient) throws ClientNotExists {
+    public String deleteClientById(Integer idClient) throws ClientNotExists {
         if(!clientRepository.existsById(idClient))
             throw new ClientNotExists(this.getClass().getSimpleName(), "deleteClientById");
 
         clientRepository.deleteById(idClient);
+        return "deleted";
     }
 
-    public List<Top10Clients> getTop10ConsumerByDates(Date from, Date to) throws NoContentException {
-        List<Top10Clients> clientsList = clientRepository.getTop10Clients(from,to);
-        if(clientsList.isEmpty()) //todo no muestra el contenido de la exception
-            throw new NoContentException(this.getClass().getSimpleName(), "getTop10ConsumerByDates");
-        return clientsList;
+    public List<Top10Clients> getTop10ConsumerByDates(Date from, Date to) {
+        return clientRepository.getTop10Clients(from,to);
     }
 
-
-    public Page<BillDto> getClientUnpaidBills(Integer idClient, Integer page, Integer size, List<Order> orders) throws ClientNotExists, NoContentException {
+    public Page<BillDto> getClientUnpaidBills(Integer idClient, Integer page, Integer size, List<Order> orders) throws ClientNotExists {
         Client c = getClientById(idClient);
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
 
@@ -135,10 +132,10 @@ public class ClientService {
 
         Page<Bill> bills = billRepository.findByIsPaidFalseAndResidenceIdIn(residencesIds,pageable);
 
-        if(bills.isEmpty())
-            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBills");
+        Page<BillDto> billsDto = Page.empty(pageable);
 
-        Page<BillDto> billsDto = bills.map(b-> BillDto.from(b));
+        if(!bills.isEmpty())
+            billsDto = bills.map(b-> BillDto.from(b));
 
         return billsDto;
     }
