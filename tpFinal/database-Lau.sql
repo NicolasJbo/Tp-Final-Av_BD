@@ -157,3 +157,5 @@ SELECT * FROM bills
 
 INSERT INTO meter_brands(NAME) VALUES ("Samsung"),("Nokia");
 INSERT INTO meter_models(NAME) VALUES ("model1"),("model2");
+
+#--------------------------------------------------------------------------------------------------------------------------

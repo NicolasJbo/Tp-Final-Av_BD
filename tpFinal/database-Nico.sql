@@ -26,14 +26,14 @@ BEGIN
 		       SUM(p.Final)AS Total
 		FROM clients c
 			 JOIN(
-		    SELECT m.total,m.id_residence ,r.id_client,
-			   SUM(m.total) AS Final
+		    SELECT m.kw,m.id_residence ,r.id_client,
+			   SUM(m.kw) AS Final
 		    FROM measures m
 			     JOIN
 			 residences r
 			 ON m.id_residence = r.id
 		    WHERE m.date BETWEEN first_date AND last_date
-		    GROUP BY m.total,m.id_residence,r.id_client
+		    GROUP BY m.kw,m.id_residence,r.id_client
 		    ORDER BY m.id_residence ASC)p
 			     ON c.id=p.id_client
 		GROUP BY c.name,c.last_name
@@ -42,6 +42,8 @@ BEGIN
 	END IF;
 END;
 //
+
+call getTop10Clients();
 #--------------------------------------------------------------------------------------------------------------------
 #Punto 6 --BACKOFICCE--> Consulta de mediciones de un domicilio por rango de fechas  YA ESTA HECHO CON JPA
  CALL getMeasuresBetweenDaysByIdResidences(3,'2021-05-01','2021-01-30');
