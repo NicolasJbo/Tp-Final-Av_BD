@@ -1,39 +1,23 @@
 package com.utn.tpFinal.controller;
 
-import com.utn.tpFinal.exception.ClientNotExists;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.ResidenceNotExists;
-import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.Measure;
-import com.utn.tpFinal.model.dto.BillDto;
-import com.utn.tpFinal.model.dto.ClientDto;
-import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.Residence;
-import com.utn.tpFinal.model.proyection.MeasuresById;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ResidenceService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
-import net.kaczmarzyk.spring.data.jpa.domain.In;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.Authenticator;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController

@@ -125,7 +125,7 @@ public class BackOfficeControllerTest {
     }
 
     @Test
-    public void getResidenceUnpaidBills_Test200() throws ResidenceNotExists, ClientNotExists, NoContentException {
+    public void getResidenceUnpaidBills_Test200() throws ResidenceNotExists, ClientNotExists {
 
         Page<BillDto> mockedPage = mock(Page.class);
         List<BillDto> bills =UTILS_TESTCONSTANTS.getBillsDTO_List();
@@ -198,21 +198,13 @@ public class BackOfficeControllerTest {
 
     }
     @Test
-    public void getTop10ConsumerByDates(){
+    public void getTop10ConsumerByDates() throws ParseException {
 
-        try {
-            List<Top10Clients> top10Clients=mock(List.class);
-            when(clientService.getTop10ConsumerByDates(UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2))).thenReturn(top10Clients);
-            ResponseEntity<List<Top10Clients>>response = backOfficeController.getTop10ConsumerByDates(UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2));
+        List<Top10Clients> top10Clients=mock(List.class);
+        when(clientService.getTop10ConsumerByDates(UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2))).thenReturn(top10Clients);
+        ResponseEntity<List<Top10Clients>>response = backOfficeController.getTop10ConsumerByDates(UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2));
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        } catch (NoContentException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            Assert.fail("No se cargo bien la fecha");
-
-        }
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
 

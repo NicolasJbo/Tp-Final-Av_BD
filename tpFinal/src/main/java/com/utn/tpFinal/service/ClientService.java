@@ -1,7 +1,6 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.exception.ClientNotExists;
-import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.Client;
@@ -24,7 +23,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -75,7 +73,7 @@ public class ClientService {
         return client;
     }
 
-    public Page<ClientDto> getAll(Specification<Client> clientSpecification, Integer page, Integer size, List<Order>orders) throws NoContentException {
+    public Page<ClientDto> getAll(Specification<Client> clientSpecification, Integer page, Integer size, List<Order>orders) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Client>clients = clientRepository.findAll(clientSpecification,pageable);
 

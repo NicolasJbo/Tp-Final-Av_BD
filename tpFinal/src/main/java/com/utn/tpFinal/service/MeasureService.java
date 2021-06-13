@@ -8,6 +8,7 @@ import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.repository.MeasureRepository;
 import com.utn.tpFinal.repository.ResidenceRepository;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +19,15 @@ import java.util.Formatter;
 
 import static java.util.Objects.isNull;
 
+@Setter
 @Service
 public class MeasureService {
-   // @Autowired
-    MeasureRepository measureRepository;
-   // @Autowired
-    EnergyMeterService  energyMeterService;
     //@Autowired
-    ResidenceService residenceService;
+    private final MeasureRepository measureRepository;
+    //@Autowired
+    private final EnergyMeterService  energyMeterService;
+    //@Autowired
+    private final ResidenceService residenceService;
 
     @Autowired
     public MeasureService(MeasureRepository measureRepository, EnergyMeterService energyMeterService, ResidenceService residenceService) {

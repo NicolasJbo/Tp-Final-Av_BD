@@ -226,7 +226,7 @@ public class ResidenceServiceTest {
 
         String response = residenceService.removeResidenceById(4);
 
-       assertEquals("deleted", response);
+        assertEquals("deleted", response);
    }
 
 
@@ -265,7 +265,7 @@ public class ResidenceServiceTest {
     }
 
     @Test
-    public void getResidenceMeasuresByDates_TestOK() throws ParseException, NoContentException {
+    public void getResidenceMeasuresByDates_TestOK() throws ParseException {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
         Pageable pageable = PageRequest.of(1,10,Sort.by(orders));
 
@@ -283,17 +283,14 @@ public class ResidenceServiceTest {
     }
 
     @Test
-    public void getResidenceMeasuresByDates_TestFail() throws ParseException, NoContentException {
+    public void getResidenceMeasuresByDates_TestFail() throws ParseException {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
         Pageable pageable = PageRequest.of(1,10,Sort.by(orders));
 
-        Measure m2 =UTILS_TESTCONSTANTS.getMeasure(2);
-        List<Measure> list = new ArrayList<>();
-        list.add(UTILS_TESTCONSTANTS.getMeasure(4));
-        list.add(m2);
-        Page<Measure> pageM =new PageImpl<>(list);
         when(measureRepository.findByResidenceIdAndDateBetween(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),pageable)).thenReturn(Page.empty());
-        assertThrows(NoContentException.class,()->residenceService.getResidenceMeasuresByDates(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),1,10,orders));
+
+        Page<MeasureDto>response = residenceService.getResidenceMeasuresByDates(1, UTILS_TESTCONSTANTS.getFecha(1), UTILS_TESTCONSTANTS.getFecha(2), 1,10,orders);
+        assertEquals(true, response.getContent().isEmpty());
     }
 
     @Test

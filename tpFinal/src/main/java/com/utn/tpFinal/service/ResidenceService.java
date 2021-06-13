@@ -39,7 +39,7 @@ public class ResidenceService {
     //@Autowired
     private BillRepository billRepository;
 
-    @Autowired()
+    @Autowired
     public ResidenceService(ResidenceRepository residenceRepository, EnergyMeterService energyMeterService, TariffService tariffService, MeasureRepository measureRepository, BillRepository billRepository) {
         this.residenceRepository = residenceRepository;
         this.energyMeterService = energyMeterService;
@@ -129,15 +129,16 @@ public class ResidenceService {
        return residenceRepository.findByEnergyMeterId(id);
     }
 
-    public Page<MeasureDto> getResidenceMeasuresByDates(Integer idResidence, Date from, Date to, Integer page,Integer size,List<Order> orders) throws NoContentException {
+    public Page<MeasureDto> getResidenceMeasuresByDates(Integer idResidence, Date from, Date to, Integer page,Integer size,List<Order> orders) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Measure> measures = measureRepository.findByResidenceIdAndDateBetween(idResidence, from, to, pageable);
 
-        if(measures.isEmpty())//
-            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBillsByResidence");
+        Page<MeasureDto> measuresDto = Page.empty(pageable);
 
-        Page<MeasureDto> measuresdto = measures.map(m -> MeasureDto.from(m));
-        return measuresdto;
+        if(!measures.isEmpty())
+            measuresDto = measures.map(m -> MeasureDto.from(m));
+
+        return measuresDto;
     }
 
 

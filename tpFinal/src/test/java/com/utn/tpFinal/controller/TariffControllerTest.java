@@ -1,27 +1,20 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.TariffNotExists;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
 import com.utn.tpFinal.service.TariffService;
-import net.kaczmarzyk.spring.data.jpa.domain.In;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

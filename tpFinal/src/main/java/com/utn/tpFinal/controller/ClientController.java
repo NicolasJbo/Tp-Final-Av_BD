@@ -3,7 +3,6 @@ package com.utn.tpFinal.controller;
 import com.utn.tpFinal.exception.ClientNotExists;
 import com.utn.tpFinal.exception.IncorrectDatesException;
 import com.utn.tpFinal.exception.NoConsumptionsFoundException;
-import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
 import com.utn.tpFinal.model.dto.*;
 import com.utn.tpFinal.model.proyection.Consumption;
@@ -189,7 +188,7 @@ public class ClientController {
                                                               @RequestParam(defaultValue = "0") Integer page,
                                                               @RequestParam(defaultValue = "5") Integer size,
                                                               @RequestParam(defaultValue = "id") String sortField1,
-                                                              @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists {
+                                                              @RequestParam(defaultValue = "expirationDate") String sortField2) throws ClientNotExists {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));

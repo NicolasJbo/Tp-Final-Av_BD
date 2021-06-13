@@ -111,7 +111,7 @@ public class BackOfficeController {
                                                                 @RequestParam(defaultValue = "0") Integer page,
                                                                 @RequestParam(defaultValue = "5") Integer size,
                                                                 @RequestParam(defaultValue = "id") String sortField1,
-                                                                @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists, ResidenceNotExists {
+                                                                @RequestParam(defaultValue = "expirationDate") String sortField2) throws ResidenceNotExists {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
@@ -135,7 +135,7 @@ public class BackOfficeController {
                                                              @RequestParam(defaultValue = "0") Integer page,
                                                              @RequestParam(defaultValue = "5") Integer size,
                                                              @RequestParam(defaultValue = "id") String sortField1,
-                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws NoContentException, ClientNotExists {
+                                                             @RequestParam(defaultValue = "expirationDate") String sortField2) throws ClientNotExists {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));
@@ -155,7 +155,7 @@ public class BackOfficeController {
     @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/client/topConsumers")
     public ResponseEntity<List<Top10Clients>>getTop10ConsumerByDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException {
+                                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
         List<Top10Clients> rta = clientService.getTop10ConsumerByDates(from, to);
         return ResponseEntity.status(HttpStatus.OK).body(rta);
 
@@ -170,7 +170,7 @@ public class BackOfficeController {
                                                                        @RequestParam(defaultValue = "id") String sortField1,
                                                                        @RequestParam(defaultValue = "date") String sortField2,
                                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) throws NoContentException, ResidenceNotExists {
+                                                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField1));
         orders.add(new Sort.Order(Sort.Direction.ASC, sortField2));

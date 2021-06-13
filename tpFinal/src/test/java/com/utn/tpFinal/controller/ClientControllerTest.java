@@ -323,37 +323,30 @@ public class ClientControllerTest {
         assertEquals(HttpStatus.OK,response.getStatusCode());
     }
     @Test
-    public void getClientBillsByDates_Test200(){
-        try {
+    public void getClientBillsByDates_Test200() throws Exception {
 
-            List<BillDto> billList = UTILS_TESTCONSTANTS.getBillsDTO_List();
-            UserDto userDto= UTILS_TESTCONSTANTS.getUserDto(IDCLIENT);
-            List<Sort.Order> orders = UTILS_TESTCONSTANTS.getOrders("id", "initialDate");
+        List<BillDto> billList = UTILS_TESTCONSTANTS.getBillsDTO_List();
+        UserDto userDto= UTILS_TESTCONSTANTS.getUserDto(IDCLIENT);
+        List<Sort.Order> orders = UTILS_TESTCONSTANTS.getOrders("id", "initialDate");
 
-            Authentication authenticator = mock(Authentication.class);
-            List list = UTILS_TESTCONSTANTS.getGrandAuthorityClient();
-            when(authenticator.getAuthorities()).thenReturn(list);
-            when(authenticator.getPrincipal()).thenReturn(userDto);
+        Authentication authenticator = mock(Authentication.class);
+        List list = UTILS_TESTCONSTANTS.getGrandAuthorityClient();
+        when(authenticator.getAuthorities()).thenReturn(list);
+        when(authenticator.getPrincipal()).thenReturn(userDto);
 
-            Page<BillDto> mockedPage = mock(Page.class);
+        Page<BillDto> mockedPage = mock(Page.class);
 
-            when(mockedPage.getContent()).thenReturn(billList);
-            when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(billList.size()));
-            when(mockedPage.getTotalPages()).thenReturn(1);
-            when(billService.getClientBillsByDates(IDCLIENT, UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),PAGE,SIZE,orders )).thenReturn(mockedPage);
-            //then
-            ResponseEntity<List<BillDto>> response = clientController.getClientBillsByDates(authenticator,IDCLIENT,PAGE,SIZE,"id","initialDate",UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2));
-            //assert
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
-            assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
-            assertEquals("casa1",response.getBody().get(0).getResidence());
-
-        }catch (ParseException | IncorrectDatesException | NoContentException |  ClientNotExists e){
-            Assert.fail("No se cargo bien la fecha");
-        } catch (Exception e) {
-            Assert.fail("no se cargo algo");
-        }
+        when(mockedPage.getContent()).thenReturn(billList);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(billList.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(billService.getClientBillsByDates(IDCLIENT, UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),PAGE,SIZE,orders )).thenReturn(mockedPage);
+        //then
+        ResponseEntity<List<BillDto>> response = clientController.getClientBillsByDates(authenticator,IDCLIENT,PAGE,SIZE,"id","initialDate",UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2));
+        //assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("casa1",response.getBody().get(0).getResidence());
     }
     @Test
     public void getClientBillsByDates_Test403() throws Exception {
@@ -371,38 +364,30 @@ public class ClientControllerTest {
         assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
     }
     @Test
-    public void getClientUnpaidBills_Test200(){
-        try {
+    public void getClientUnpaidBills_Test200() throws ClientNotExists {
 
-            List<BillDto> billList = UTILS_TESTCONSTANTS.getBillsDTO_List();
-            UserDto userDto= UTILS_TESTCONSTANTS.getUserDto(IDCLIENT);
-            List<Sort.Order> orders = UTILS_TESTCONSTANTS.getOrders("id", "expirationDate");
-            //Authenticator
-            Authentication authenticator = mock(Authentication.class);
-            List list = UTILS_TESTCONSTANTS.getGrandAuthorityClient();
-            when(authenticator.getAuthorities()).thenReturn(list);
-            when(authenticator.getPrincipal()).thenReturn(userDto);
-            //endAuthenticator
-            Page<BillDto> mockedPage = mock(Page.class);
+        List<BillDto> billList = UTILS_TESTCONSTANTS.getBillsDTO_List();
+        UserDto userDto= UTILS_TESTCONSTANTS.getUserDto(IDCLIENT);
+        List<Sort.Order> orders = UTILS_TESTCONSTANTS.getOrders("id", "expirationDate");
+        //Authenticator
+        Authentication authenticator = mock(Authentication.class);
+        List list = UTILS_TESTCONSTANTS.getGrandAuthorityClient();
+        when(authenticator.getAuthorities()).thenReturn(list);
+        when(authenticator.getPrincipal()).thenReturn(userDto);
+        //endAuthenticator
+        Page<BillDto> mockedPage = mock(Page.class);
 
-            when(mockedPage.getContent()).thenReturn(billList);
-            when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(billList.size()));
-            when(mockedPage.getTotalPages()).thenReturn(1);
-            when(clientService.getClientUnpaidBills(IDCLIENT,PAGE,SIZE,orders)).thenReturn(mockedPage);
-            //then
-            ResponseEntity<List<BillDto>> response = clientController.getClientUnpaidBills(authenticator,IDCLIENT,PAGE,SIZE,"id","expirationDate");
-            //assert
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
-            assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
-            assertEquals("casa1",response.getBody().get(0).getResidence());
-
-        }catch ( NoContentException |  ClientNotExists e){
-            Assert.fail("No se cargo bien la fecha");
-        } catch (Exception e) {
-            Assert.fail("no se cargo algo");
-
-        }
+        when(mockedPage.getContent()).thenReturn(billList);
+        when(mockedPage.getTotalElements()).thenReturn(Long.valueOf(billList.size()));
+        when(mockedPage.getTotalPages()).thenReturn(1);
+        when(clientService.getClientUnpaidBills(IDCLIENT,PAGE,SIZE,orders)).thenReturn(mockedPage);
+        //then
+        ResponseEntity<List<BillDto>> response = clientController.getClientUnpaidBills(authenticator,IDCLIENT,PAGE,SIZE,"id","expirationDate");
+        //assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, Integer.parseInt(response.getHeaders().get("X-Total-Elements").get(0)));
+        assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)));
+        assertEquals("casa1",response.getBody().get(0).getResidence());
     }
     @Test
     public void getClientUnpaidBills_Test403() throws Exception {

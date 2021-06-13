@@ -5,6 +5,7 @@ import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.TariffDto;
+import com.utn.tpFinal.repository.ResidenceRepository;
 import com.utn.tpFinal.repository.TariffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,13 +22,14 @@ import java.util.List;
 
 @Service
 public class TariffService {
-    private TariffRepository tariffRepository;
-    private ResidenceService residenceService;
+    private  TariffRepository tariffRepository;
+    //private ResidenceService residenceService;
+    private ResidenceRepository residenceRepository;
 
     @Autowired
-    public TariffService(TariffRepository tariffRepository, ResidenceService residenceService) {
+    public TariffService(TariffRepository tariffRepository, ResidenceRepository residenceRepository) {
         this.tariffRepository = tariffRepository;
-        this.residenceService = residenceService;
+        this.residenceRepository = residenceRepository;
     }
 
     public Tariff getTariffById(Integer id) throws TariffNotExists {
@@ -65,7 +67,7 @@ public class TariffService {
            throw new TariffNotExists(this.getClass().getSimpleName(), "getResidencesByTariff");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-        Page<Residence> residences = residenceService.getResidencesByTariffId(idTariff, pageable);
+        Page<Residence> residences = residenceRepository.findByTariffId(idTariff, pageable);//getResidencesByTariffId(idTariff, pageable);
 
         Page<ResidenceDto> residenceDtos = Page.empty();
 
@@ -74,6 +76,7 @@ public class TariffService {
         }
         return residenceDtos;
     }
+
 
     public void deleteTariffById(Integer idTariff) throws TariffNotExists {
         if(!tariffRepository.existsById(idTariff))

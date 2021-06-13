@@ -1,6 +1,5 @@
 package com.utn.tpFinal.controller;
 
-import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
 import com.utn.tpFinal.model.Tariff;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class TariffController {
     }
 
 
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping
     public ResponseEntity<List<TariffDto>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                   @RequestParam(defaultValue = "5") Integer size,
@@ -60,12 +60,13 @@ public class TariffController {
                     .body(tariffs.getContent());
     }
 
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/{idTariff}/residences")
     public ResponseEntity<List<ResidenceDto>> getResidencesByTariff(@PathVariable Integer idTariff,
                                                                     @RequestParam(defaultValue = "0") Integer page,
                                                                     @RequestParam(defaultValue = "5") Integer size,
                                                                     @RequestParam(defaultValue = "id") String sortField1,
-                                                                    @RequestParam(defaultValue = "name") String sortField2) throws Exception {
+                                                                    @RequestParam(defaultValue = "street") String sortField2) throws Exception {
         List<Order> orders = new ArrayList<>();
         orders.add(new Order(Sort.Direction.ASC, sortField1));
         orders.add(new Order(Sort.Direction.ASC, sortField2));

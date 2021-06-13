@@ -28,14 +28,17 @@ public class MeasureServiceTest {
     private ResidenceService residenceService;
     private EnergyMeterService  energyMeterService;
     private MeasureRepository measureRepository;
-    MeasureService measureService;
+    private MeasureService measureService;
 
     @Before
     public void setUp(){
         measureRepository = mock(MeasureRepository.class);
         energyMeterService = mock(EnergyMeterService.class);
         residenceService = mock(ResidenceService.class);
-        measureService = new MeasureService(measureRepository, energyMeterService,residenceService);
+        measureService = new MeasureService(measureRepository, energyMeterService, residenceService);
+        /*measureService.setResidenceService(residenceService);
+        measureService.setEnergyMeterService(energyMeterService);
+        measureService.setMeasureRepository(measureRepository);*/
     }
 
     @Test
@@ -58,7 +61,7 @@ public class MeasureServiceTest {
     }
 
     @Test
-    public void add_TestIncorrecPasswordException() throws Exception {
+    public void add_TestIncorrectPasswordException() throws Exception {
         Residence r = UTILS_TESTCONSTANTS.getResidence(4);
         EnergyMeter e = EnergyMeter.builder().id(8).passWord("no-mas-tests-porfavor").serialNumber("123").build();
         Measure m = UTILS_TESTCONSTANTS.getMeasure(20);

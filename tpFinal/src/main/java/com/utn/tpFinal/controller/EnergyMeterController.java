@@ -36,7 +36,8 @@ public class EnergyMeterController {
     }
 
     //--------------------------- ENERGYMETER --------------------------------------------
-    //todo TEST
+
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @PostMapping
     public ResponseEntity addEnergyMeter (@RequestBody EnergyMeter energyMeter,@RequestParam Integer idModel,@RequestParam Integer idBrand) throws MeterModelNotExist, MeterBrandNotExist {
         EnergyMeter e = energyMeterService.add(energyMeter,idModel,idBrand);
@@ -50,6 +51,7 @@ public class EnergyMeterController {
         return ResponseEntity.created(location).build();
     }
 
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping
     public ResponseEntity<List<EnergyMeterDto>> getAll( @RequestParam(defaultValue = "0") Integer page,
                                                         @RequestParam(defaultValue = "5") Integer size,
@@ -85,15 +87,15 @@ public class EnergyMeterController {
 
 //--------------------------- RESIDENCE --------------------------------------------
 
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/{idEnergyMeter}/residence")
     public ResponseEntity<ResidenceDto> getResidenceByEnergyMeterId(@PathVariable Integer idEnergyMeter) throws EnergyMeterNotExists, ResidenceNotDefined {
         ResidenceDto residence = energyMeterService.getResidenceByEnergyMeterId(idEnergyMeter);
         return ResponseEntity.ok(residence);
     }
 //--------------------------- BRAND --------------------------------------------
-    //todo estos metodos CREO QUE ESTAN DEMAS!
 
-
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/brands")
     public ResponseEntity<List<MeterBrand>> getAllMeterBrands(@RequestParam(defaultValue = "0") Integer page,
                                                               @RequestParam(defaultValue = "5") Integer size,
@@ -122,6 +124,7 @@ public class EnergyMeterController {
     }
 
 //--------------------------- MODEL --------------------------------------------
+    @PreAuthorize(value = "hasAuthority('EMPLOYEE')")
     @GetMapping("/models")
     public ResponseEntity<List<MeterModel>> getAllMeterModels(@RequestParam(defaultValue = "0") Integer page,
                                                               @RequestParam(defaultValue = "5") Integer size,

@@ -10,6 +10,7 @@ import com.utn.tpFinal.model.Tariff;
 import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
+import com.utn.tpFinal.repository.ResidenceRepository;
 import com.utn.tpFinal.repository.TariffRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,14 +31,15 @@ import static org.mockito.Mockito.*;
 public class TariffServiceTest {
 
     TariffRepository tariffRepository;
-    ResidenceService residenceService;
+   // ResidenceService residenceService;
+    ResidenceRepository residenceRepository;
     TariffService tariffService;
 
     @Before
     public void setUp(){
         tariffRepository = mock(TariffRepository.class);
-        residenceService = mock(ResidenceService.class);
-        tariffService = new TariffService(tariffRepository, residenceService);
+        residenceRepository = mock(ResidenceRepository.class);
+        tariffService = new TariffService(tariffRepository, residenceRepository);
     }
 
     @Test
@@ -114,60 +116,45 @@ public class TariffServiceTest {
        tariffService.addResidenceToTariff(r,t);
     }
 
-    @Test
+   @Test
     public  void getResidencesByTariff_Test200() throws ParseException, TariffNotExists {
 
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
-
-        Specification<Tariff>specification=mock(Specification.class);
-        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
 
         List<Residence> list = new ArrayList<>();
         list.add(UTILS_TESTCONSTANTS.getResidence(1));
         list.add(UTILS_TESTCONSTANTS.getResidence(2));
 
-        Page<Residence> pageR =new PageImpl<Residence>(list);
-        when(tariffRepository.existsById(1)).thenReturn(true);
-        when(residenceService.getResidencesByTariffId(1,pageable)).thenReturn(pageR);
+        Page<Residence> pageR =new PageImpl<>(list);
 
-        Page<ResidenceDto> response = null;
+        when(tariffRepository.existsById(anyInt())).thenReturn(true);
+        when(residenceRepository.findByTariffId(anyInt(),any(Pageable.class))).thenReturn(pageR);
 
-        response = tariffService.getResidencesByTariff(1,0,2,orders);
+        Page<ResidenceDto> response = tariffService.getResidencesByTariff(1,0,2,orders);;
 
         assertEquals(false,response.getContent().isEmpty());
         assertEquals("Siempre Viva",response.getContent().get(0).getStreet());
         assertEquals(2,response.getNumberOfElements());
     }
 
-    @Test
+   @Test
     public  void getResidencesByTariff_Test204() throws ParseException, TariffNotExists {
 
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
 
-        Specification<Tariff>specification=mock(Specification.class);
-        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
-
         when(tariffRepository.existsById(1)).thenReturn(true);
-        when(residenceService.getResidencesByTariffId(1,pageable)).thenReturn(Page.empty());
+        when(residenceRepository.findByTariffId(anyInt(),any(Pageable.class))).thenReturn(Page.empty());
 
         Page<ResidenceDto> response = tariffService.getResidencesByTariff(1,0,2,orders);
 
         assertEquals(true,response.getContent().isEmpty());
     }
 
-    @Test
+   @Test
     public  void getResidencesByTariff_TestFAIL() throws ParseException {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
 
-        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
-
-        List<Residence> list = new ArrayList<>();
-        list.add(UTILS_TESTCONSTANTS.getResidence(1));
-        list.add(UTILS_TESTCONSTANTS.getResidence(2));
-
-        Page<Residence> pageR =new PageImpl<Residence>(list);
-        when(tariffRepository.existsById(1)).thenReturn(false);
-        when(residenceService.getResidencesByTariffId(1,pageable)).thenReturn(pageR);
+        when(tariffRepository.existsById(anyInt())).thenReturn(false);
 
         assertThrows(TariffNotExists.class,()->tariffService.getResidencesByTariff(1,0,2,orders));
     }

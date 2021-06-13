@@ -2,8 +2,6 @@ package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
 import com.utn.tpFinal.exception.ClientNotExists;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.exception.ResidenceNotExists;
 import com.utn.tpFinal.model.Bill;
 import com.utn.tpFinal.model.Client;
@@ -13,7 +11,6 @@ import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.RegisterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
-import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.repository.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +80,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public  void getALL_TestOK() throws ParseException, NoContentException {
+    public  void getALL_TestOK() throws ParseException {
         Specification<Client> specification = mock(Specification.class);
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
         Pageable pageable = PageRequest.of(0,10,Sort.by(orders));
@@ -101,19 +97,18 @@ public class ClientServiceTest {
         assertEquals("PEREZ CARLOS",response.getContent().get(0).getClient());
         assertEquals(2,response.getNumberOfElements());
     }
-    @Test
-    public void getALL_TestFAIL() throws ParseException {
+   @Test
+    public void getALL_TestFAIL() {
         Specification<Client> specification = mock(Specification.class);
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
         Pageable pageable = PageRequest.of(0,10,Sort.by(orders));
-        Page<Client> pageE =Page.empty();
 
-        when(clientRepository.findAll(specification,pageable)).thenReturn(pageE);
-        try {
-            Page<ClientDto> response = clientService.getAll(specification,0,10,orders);
-        } catch (NoContentException e) {
-            assertEquals("msg",e.getMessage());
-        }
+        when(clientRepository.findAll(any(Specification.class),any(Pageable.class))).thenReturn(Page.empty(pageable));
+
+        Page<ClientDto>response = clientService.getAll(specification,0,10,orders);
+
+        assertEquals(true, response.getContent().isEmpty());
+
     }
 
     @Test
