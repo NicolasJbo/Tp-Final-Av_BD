@@ -12,12 +12,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     UserRepository userRepository;
+
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-
 
 
     public User findByMailAndPassword(String mail, String password) {
@@ -30,7 +29,7 @@ public class UserService {
       return dto;
     }
 
-    public User addClient(RegisterDto registerDto) {
+   public User addClient(RegisterDto registerDto) {
         User u = User.builder().mail(registerDto.getMail())
                 .isClient(true)
                 .password(registerDto.getPassword())

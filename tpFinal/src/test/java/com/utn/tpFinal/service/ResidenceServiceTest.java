@@ -3,6 +3,7 @@ package com.utn.tpFinal.service;
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
 import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
+import com.utn.tpFinal.model.dto.BillDto;
 import com.utn.tpFinal.model.dto.MeasureDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
 import com.utn.tpFinal.model.dto.TariffDto;
@@ -212,15 +213,22 @@ public class ResidenceServiceTest {
 
     @Test
     public void removeResidenceById_TestException(){
+        when(residenceRepository.existsById(any(Integer.class))).thenReturn(false);
         assertThrows(ResidenceNotExists.class,()->residenceService.removeResidenceById(4));
     }
 
+
+
    @Test
-    public void removeResidenceById_Test200(){
-        Integer idResidence=1;
+    public void removeResidenceById_Test200() throws ResidenceNotExists {
         when(residenceRepository.existsById(any(Integer.class))).thenReturn(true);
-        doNothing().when(residenceRepository).deleteById(idResidence);
-    }
+        doNothing().when(residenceRepository).deleteById(any(Integer.class));
+
+        String response = residenceService.removeResidenceById(4);
+
+       assertEquals("deleted", response);
+   }
+
 
     @Test
     public void modifyResidence_TestException() throws ParseException{
@@ -273,6 +281,7 @@ public class ResidenceServiceTest {
         assertEquals("100.0",String.valueOf(response.getContent().get(0).getPrice()));
         assertEquals(2   ,response.getNumberOfElements());
     }
+
     @Test
     public void getResidenceMeasuresByDates_TestFail() throws ParseException, NoContentException {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","street") ;
@@ -285,6 +294,51 @@ public class ResidenceServiceTest {
         Page<Measure> pageM =new PageImpl<>(list);
         when(measureRepository.findByResidenceIdAndDateBetween(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),pageable)).thenReturn(Page.empty());
         assertThrows(NoContentException.class,()->residenceService.getResidenceMeasuresByDates(1,UTILS_TESTCONSTANTS.getFecha(1),UTILS_TESTCONSTANTS.getFecha(2),1,10,orders));
+    }
+
+    @Test
+    public void getResidenceUnpaidBills_Test200() throws ParseException, ResidenceNotExists {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","initialDate") ;
+
+        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
+
+        List<Bill> bills = new ArrayList<>();
+        bills.add(UTILS_TESTCONSTANTS.getBill(4));
+        bills.add(UTILS_TESTCONSTANTS.getBill(5));
+
+        Page<Bill> page =new PageImpl<>(bills);
+        when(residenceRepository.existsById(anyInt())).thenReturn(true);
+        when(billRepository.findByIsPaidFalseAndResidenceId(any(Integer.class),any(Pageable.class))).thenReturn(page);
+
+        Page<BillDto> response = residenceService.getResidenceUnpaidBills(4,0,2,orders);
+
+        assertEquals(false,response.getContent().isEmpty());
+        assertEquals(Float.valueOf(1500), response.getContent().get(0).getFinalAmount());
+        assertEquals(2,response.getNumberOfElements());
+    }
+
+    @Test
+    public void getResidenceUnpaidBills_TestResidenceNotExistsException() {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","initialDate") ;
+
+        when(residenceRepository.existsById(anyInt())).thenReturn(false);
+
+        assertThrows(ResidenceNotExists.class,()->residenceService.getResidenceUnpaidBills(4,0,2,orders));
+    }
+
+    @Test
+    public void getResidenceUnpaidBills_TestNoContentException() throws ParseException, ResidenceNotExists, NoContentException {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","initialDate") ;
+
+        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
+
+        when(residenceRepository.existsById(anyInt())).thenReturn(true);
+        when(billRepository.findByIsPaidFalseAndResidenceId(any(Integer.class),any(Pageable.class))).thenReturn(Page.empty(pageable));
+
+        Page<BillDto> response = residenceService.getResidenceUnpaidBills(4,0,2,orders);
+
+        assertEquals(true,response.getContent().isEmpty());
+
     }
 
 }

@@ -2,23 +2,17 @@ package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
 import com.utn.tpFinal.exception.ClientNotExists;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.EnergyMeter;
-import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.User;
 import com.utn.tpFinal.model.dto.ClientDto;
 import com.utn.tpFinal.model.dto.RegisterDto;
-import com.utn.tpFinal.model.dto.UserDto;
 import com.utn.tpFinal.repository.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.parameters.P;
 
-import javax.persistence.Table;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -57,13 +51,15 @@ public class ClientServiceTest {
         assertEquals("Carlos",response.getName());
         assertEquals("1111111",response.getDni());
     }
+
     @Test
     public  void getClientById_testFAIL(){
         assertThrows(ClientNotExists.class,()->clientService.getClientById(1));
     }
+
     @Test
     public void add_TestOK() throws ParseException {
-        User user= UTILS_TESTCONSTANTS.getUser();
+        User user= UTILS_TESTCONSTANTS.getUser(1);
 
         RegisterDto rg= UTILS_TESTCONSTANTS.getRegisterDTO();
         rg.setBirthday(UTILS_TESTCONSTANTS.getFecha(1));
@@ -79,6 +75,7 @@ public class ClientServiceTest {
         assertEquals("carlos",response.getName());
         assertEquals("11111111",response.getDni());
     }
+
     @Test
     public  void getALL_TestOK() throws ParseException, NoContentException {
         Specification<Client> specification = mock(Specification.class);

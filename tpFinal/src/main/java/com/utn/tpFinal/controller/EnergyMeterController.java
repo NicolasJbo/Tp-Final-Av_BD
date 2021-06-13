@@ -1,8 +1,6 @@
 package com.utn.tpFinal.controller;
 
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.ResidenceNotDefined;
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
@@ -40,7 +38,7 @@ public class EnergyMeterController {
     //--------------------------- ENERGYMETER --------------------------------------------
     //todo TEST
     @PostMapping
-    public ResponseEntity addEnergyMeter (@RequestBody EnergyMeter energyMeter,@RequestParam Integer idModel,@RequestParam Integer idBrand){
+    public ResponseEntity addEnergyMeter (@RequestBody EnergyMeter energyMeter,@RequestParam Integer idModel,@RequestParam Integer idBrand) throws MeterModelNotExist, MeterBrandNotExist {
         EnergyMeter e = energyMeterService.add(energyMeter,idModel,idBrand);
 
         URI location = ServletUriComponentsBuilder

@@ -103,7 +103,7 @@ public class BackOfficeControllerTest {
     public void deleteResidenceById_Test200() throws ResidenceNotExists {
         Integer residenceId=7;
 
-        doNothing().when(residenceService).removeResidenceById(residenceId);
+        when(residenceService.removeResidenceById(residenceId)).thenReturn("deleted");
 
         ResponseEntity response = backOfficeController.deleteResidenceById(residenceId);
 

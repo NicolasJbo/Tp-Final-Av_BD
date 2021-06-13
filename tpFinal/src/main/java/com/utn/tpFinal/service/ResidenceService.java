@@ -108,11 +108,12 @@ public class ResidenceService {
         residenceRepository.save(residence);
     }
 
-    public void removeResidenceById(Integer idResidence) throws ResidenceNotExists {
+    public String removeResidenceById(Integer idResidence) throws ResidenceNotExists {
         if(!residenceRepository.existsById(idResidence))
             throw new ResidenceNotExists(this.getClass().getSimpleName(),"removeResidenceById" );
 
         residenceRepository.deleteById(idResidence);
+        return "deleted";
     }
 
     public void modifyResidence(Integer idResidence, Residence residence) throws ResidencesDoNotMatch, ResidenceNotExists {
@@ -140,18 +141,17 @@ public class ResidenceService {
     }
 
 
-    public Page<BillDto> getResidenceUnpaidBills(Integer idResidence, Integer page, Integer size, List<Order> orders) throws ResidenceNotExists, NoContentException {
-
+    public Page<BillDto> getResidenceUnpaidBills(Integer idResidence, Integer page, Integer size, List<Order> orders) throws ResidenceNotExists {
         if(!residenceRepository.existsById(idResidence))
             throw new ResidenceNotExists(this.getClass().getSimpleName(), "getResidenceUnpaidBills");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
         Page<Bill> bills = billRepository.findByIsPaidFalseAndResidenceId(idResidence, pageable);
 
-        if(bills.isEmpty())
-            throw new NoContentException(this.getClass().getSimpleName(), "getClientUnpaidBills");
+        Page<BillDto> billsDto=Page.empty(pageable);
 
-        Page<BillDto> billsDto = bills.map(b-> BillDto.from(b));
+        if(!bills.isEmpty())
+            billsDto = bills.map(b-> BillDto.from(b));
 
         return billsDto;
     }

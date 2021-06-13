@@ -1,9 +1,7 @@
 package com.utn.tpFinal.controller;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.ResidenceNotDefined;
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.RegisterDto;
@@ -50,7 +48,7 @@ public class EnergyMeterControllerTest {
 
 
     @Test
-    public void addEnergyMeter_Test200() throws ParseException {
+    public void addEnergyMeter_Test200() throws ParseException, MeterModelNotExist, MeterBrandNotExist {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -111,7 +109,7 @@ public class EnergyMeterControllerTest {
     @Test
     public void deleteEnergyMeterById_Test200() throws EnergyMeterNotExists {
 
-        doNothing().when(energyMeterService).deleteEnergyMeterById(IDMETER);
+        when(energyMeterService.deleteEnergyMeterById(IDMETER)).thenReturn("deleted");
         ResponseEntity response = energyMeterController.deleteEnergyMeterById(IDMETER);
         //assert
         assertEquals(HttpStatus.OK,response.getStatusCode());

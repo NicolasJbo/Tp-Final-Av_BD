@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.text.ParseException;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,7 @@ public class UserServiceTest {
         User u = new User();
 
         try {
-            when(userRepository.findByMailAndPassword("mail@gmail.com", "123")).thenReturn(UTILS_TESTCONSTANTS.getUser());
+            when(userRepository.findByMailAndPassword("mail@gmail.com", "123")).thenReturn(UTILS_TESTCONSTANTS.getUser(1));
             u = userService.findByMailAndPassword("mail@gmail.com", "123");
             assertEquals("mail1@gmail.com", u.getMail());
         } catch (ParseException e) {
@@ -43,7 +44,7 @@ public class UserServiceTest {
     @Test
     public void addEmploye_TestOK() {
         try {
-            User u = UTILS_TESTCONSTANTS.getUser();
+            User u = UTILS_TESTCONSTANTS.getUser(1);
             when(userRepository.save(u)).thenReturn(u);
             UserDto userDto = userService.addEmploye(u);
             assertEquals("mail1@gmail.com", userDto.getMail());
@@ -51,22 +52,19 @@ public class UserServiceTest {
             Assert.fail("Fallo las fechas");
         }
     }
-    /*
-   //todo revisar
+
     @Test
-    public void addClient_TestOK() {
-        try {
-            RegisterDto registerDto = UTILS_TESTCONSTANTS.getRegisterDTO();
+    public void addClient_TestOK() throws ParseException {
 
-            User u = UTILS_TESTCONSTANTS.getUser();
-            when(userRepository.save(u)).thenReturn(u);
-            User user = userService.addClient(registerDto);
-            assertEquals("mail1@gmail.com", user.getMail());
+        RegisterDto registerDto = UTILS_TESTCONSTANTS.getRegisterDTO();
+        User u = UTILS_TESTCONSTANTS.getUser(4);
+        u.setIsClient(true);
 
-        } catch (ParseException e) {
-            Assert.fail("Fallo las fechas");
-        }
+        when(userRepository.save(any(User.class))).thenReturn(u);
+        User user = userService.addClient(registerDto);
+
+        assertEquals("mail1@gmail.com", user.getMail());
 
 
-    }*/
+    }
 }

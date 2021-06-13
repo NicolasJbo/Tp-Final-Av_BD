@@ -5,20 +5,15 @@ import com.utn.tpFinal.exception.IncorrectDatesException;
 import com.utn.tpFinal.exception.NoConsumptionsFoundException;
 import com.utn.tpFinal.exception.NoContentException;
 import com.utn.tpFinal.model.Client;
-import com.utn.tpFinal.model.Residence;
 import com.utn.tpFinal.model.dto.*;
 import com.utn.tpFinal.model.proyection.Consumption;
-import com.utn.tpFinal.model.proyection.MeasureProyection;
-import com.utn.tpFinal.model.proyection.Top10Clients;
 import com.utn.tpFinal.service.BillService;
 import com.utn.tpFinal.service.ClientService;
-import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -56,7 +51,6 @@ public class ClientController {
         return (role.equalsIgnoreCase("EMPLOYEE") ||
                 (role.equalsIgnoreCase("CLIENT") && userDto.getId() == id));
 
-
     }
 
     //--------------------------- CLIENT --------------------------------------------
@@ -74,14 +68,13 @@ public class ClientController {
         }
     }
 
-    //todo hacer test
     @PostMapping
     public ResponseEntity addClient(@RequestBody RegisterDto registerDto) {
 
         Client c = clientService.add(registerDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{idClient}") //TODO CAMBIAR EN DEMAS (PROBAR)
+                .path("/{idClient}")
                 .buildAndExpand(c.getId())
                 .toUri();
         return ResponseEntity.created(location).build();

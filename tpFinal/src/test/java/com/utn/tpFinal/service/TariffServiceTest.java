@@ -72,20 +72,6 @@ public class TariffServiceTest {
         assertThrows(TariffNotExists.class,()->tariffService.getTariffById(8));
     }
 
-    /*@Test(expected = CustomGenericException.class)
-      public void testNotExists(){
-        CustomGenericException t = new TariffNotExists("TEST","testNotExists");
-
-        when(tariffRepository.findById(any(Integer.class))).thenThrow(TariffNotExists.class);
-
-        try {
-            Tariff tariff = tariffService.getTariffById(8);
-
-        } catch (CustomGenericException tariffNotExists) {
-            assertEquals("TEST", tariffNotExists.getRoute());
-            tariffNotExists.printStackTrace();
-        }
-    }*/
     @Test
     public void getAll_Test200(){
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
@@ -115,22 +101,23 @@ public class TariffServiceTest {
 
         assertEquals(true,response.getContent().isEmpty());
     }
-    /*//todo ???
+
     @Test
-    public void addResidenceToTariff_Test(){
-        Tariff tariff = UTILS_TESTCONSTANTS.getTariff(1);
+    public void addResidenceToTariff_Test() throws ParseException {
+        Tariff t = UTILS_TESTCONSTANTS.getTariff(1);
+        Residence r= UTILS_TESTCONSTANTS.getResidence(1);
+        List<Residence> emtpyList = new ArrayList<>();
+        t.setResidencesList(emtpyList);
 
-        Residence residence= UTILS_TESTCONSTANTS.getResidence(1);
-       // tariff.getResidencesList().add(residence);
-        when(tariffRepository.save(any(Tariff.class))).thenReturn(tariff);
+        when(tariffRepository.save(any(Tariff.class))).thenReturn(t);
 
-       tariffService.addResidenceToTariff(residence,tariff);
+       tariffService.addResidenceToTariff(r,t);
     }
-     */
+
     @Test
-    public  void getResidencesByTariff_Test200() throws ParseException {
-        try {
-            List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
+    public  void getResidencesByTariff_Test200() throws ParseException, TariffNotExists {
+
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
 
         Specification<Tariff>specification=mock(Specification.class);
         Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
@@ -145,34 +132,44 @@ public class TariffServiceTest {
 
         Page<ResidenceDto> response = null;
 
-            response = tariffService.getResidencesByTariff(1,0,2,orders);
+        response = tariffService.getResidencesByTariff(1,0,2,orders);
 
         assertEquals(false,response.getContent().isEmpty());
         assertEquals("Siempre Viva",response.getContent().get(0).getStreet());
         assertEquals(2,response.getNumberOfElements());
-    } catch (TariffNotExists tariffNotExists) {
-            Assert.fail("Falle");
     }
 
+    @Test
+    public  void getResidencesByTariff_Test204() throws ParseException, TariffNotExists {
+
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
+
+        Specification<Tariff>specification=mock(Specification.class);
+        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
+
+        when(tariffRepository.existsById(1)).thenReturn(true);
+        when(residenceService.getResidencesByTariffId(1,pageable)).thenReturn(Page.empty());
+
+        Page<ResidenceDto> response = tariffService.getResidencesByTariff(1,0,2,orders);
+
+        assertEquals(true,response.getContent().isEmpty());
     }
+
     @Test
     public  void getResidencesByTariff_TestFAIL() throws ParseException {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
 
-            List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
+        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
 
+        List<Residence> list = new ArrayList<>();
+        list.add(UTILS_TESTCONSTANTS.getResidence(1));
+        list.add(UTILS_TESTCONSTANTS.getResidence(2));
 
-            Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
+        Page<Residence> pageR =new PageImpl<Residence>(list);
+        when(tariffRepository.existsById(1)).thenReturn(false);
+        when(residenceService.getResidencesByTariffId(1,pageable)).thenReturn(pageR);
 
-            List<Residence> list = new ArrayList<>();
-            list.add(UTILS_TESTCONSTANTS.getResidence(1));
-            list.add(UTILS_TESTCONSTANTS.getResidence(2));
-
-            Page<Residence> pageR =new PageImpl<Residence>(list);
-            when(tariffRepository.existsById(1)).thenReturn(false);
-            when(residenceService.getResidencesByTariffId(1,pageable)).thenReturn(pageR);
-
-            assertThrows(TariffNotExists.class,()->tariffService.getResidencesByTariff(1,0,2,orders));
-
+        assertThrows(TariffNotExists.class,()->tariffService.getResidencesByTariff(1,0,2,orders));
     }
 
     @Test
@@ -186,24 +183,27 @@ public class TariffServiceTest {
         when(tariffRepository.existsById(1)).thenReturn(true);
         tariffService.deleteTariffById(idTarif);
     }
-    //todo este no anda
-    /*@Test
+
+    @Test
     public  void modifyTariff_Test200() throws TariffsDoNotMatch, TariffNotExists {
 
-            Integer mod=1;
-        Tariff t = UTILS_TESTCONSTANTS.getTariff(1);
-        Integer idT=1;
-        when(tariffRepository.findById(idT)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getTariff(1)));
-        doNothing().when(tariffRepository.save(any(Tariff.class)));
+        Tariff t = UTILS_TESTCONSTANTS.getTariff(4);
 
-        tariffService.modifyTariff(mod,t);
+        when(tariffRepository.findById(any(Integer.class))).thenReturn(Optional.of(t));
+        when(tariffRepository.save(any(Tariff.class))).thenReturn(t);
 
+        tariffService.modifyTariff(4,t);
 
-    }*/
+        assertEquals(Integer.valueOf(4), t.getId());
+    }
+
     @Test
-    public void modifyTariff_TestFAIL(){
-        when(tariffRepository.findById(2)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getTariff(2)));
-        assertThrows(TariffsDoNotMatch.class,()->tariffService.modifyTariff(2,UTILS_TESTCONSTANTS.getTariff(1)));
+    public void modifyTariff_TestException(){
+        Tariff t = UTILS_TESTCONSTANTS.getTariff(4);
+        Tariff tariff = UTILS_TESTCONSTANTS.getTariff(15);
+
+        when(tariffRepository.findById(any(Integer.class))).thenReturn(Optional.of(t));
+        assertThrows(TariffsDoNotMatch.class,()->tariffService.modifyTariff(4,tariff));
     }
 
 

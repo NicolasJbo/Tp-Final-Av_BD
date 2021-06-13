@@ -41,7 +41,7 @@ public class UserControllerTest {
     @Test
     public void addEmployee_Test200(){
         try {
-            User user = UTILS_TESTCONSTANTS.getUser();
+            User user = UTILS_TESTCONSTANTS.getUser(1);
             UserDto userdto = UTILS_TESTCONSTANTS.getUserDto(1);
             when(userService.addEmploye(user)).thenReturn(userdto);
 

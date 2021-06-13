@@ -56,7 +56,7 @@ public class EnergyMeterService {
 
 //-------------------------------------------->> M E T O D O S <<--------------------------------------------
 
-    public EnergyMeter add(EnergyMeter energyMeter,Integer idmodel,Integer idBrand) {
+    public EnergyMeter add(EnergyMeter energyMeter,Integer idmodel,Integer idBrand) throws MeterModelNotExist, MeterBrandNotExist {
 
         MeterBrand brand = getMeterBrandById(idBrand);
         addEnergyMeterToBrand(energyMeter,brand);
@@ -66,7 +66,7 @@ public class EnergyMeterService {
         addEnergyMeterToModel(energyMeter,model);
         energyMeter.setModel(model);
 
-        return   energyMeterRepository.save(energyMeter);
+        return energyMeterRepository.save(energyMeter);
     }
 
     public Page<EnergyMeterDto> getAll(Specification<EnergyMeter> meterSpecification, Integer page, Integer size, List<Order>orders)  {
@@ -110,9 +110,9 @@ public class EnergyMeterService {
             return rta;
     }
 
-    public MeterBrand getMeterBrandById(Integer id) {
+    public MeterBrand getMeterBrandById(Integer id) throws MeterBrandNotExist {
         return meterBrandRepository.findById(id)
-            .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new MeterBrandNotExist(this.getClass().getSimpleName(), "getMeterBrandById"));
     }
 
     public void addEnergyMeterToBrand(EnergyMeter energyMeter, MeterBrand brand){
@@ -134,9 +134,9 @@ public class EnergyMeterService {
     }
 
 
-    public MeterModel getMeterModelById(Integer id) {
+    public MeterModel getMeterModelById(Integer id) throws MeterModelNotExist {
         return meterModelRepository.findById(id)
-            .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new MeterModelNotExist(this.getClass().getSimpleName(), "getMeterModelById"));
     }
 
     public void addEnergyMeterToModel(EnergyMeter energyMeter, MeterModel model){
@@ -145,11 +145,12 @@ public class EnergyMeterService {
     }
 
 
-    public void deleteEnergyMeterById(Integer idEnergyMeter) throws EnergyMeterNotExists {
+    public String deleteEnergyMeterById(Integer idEnergyMeter) throws EnergyMeterNotExists {
         if(!energyMeterRepository.existsById(idEnergyMeter))
             throw new EnergyMeterNotExists(this.getClass().getSimpleName(), "deleteEnergyMeterById");
 
         energyMeterRepository.deleteById(idEnergyMeter);
+        return "deleted";
 
     }
 

@@ -72,6 +72,7 @@ public class UTILS_TESTCONSTANTS {
                 .serialNumber("001")
                 .id(1)
                 .build();
+
         asd.add(e);
         List<MeterModel> list = new ArrayList<>();
         list.add(MeterModel.builder().id(1).name("model1").energyMeters(asd).build());
@@ -118,11 +119,12 @@ public class UTILS_TESTCONSTANTS {
 
 
     //--------------------------------------- D T O 's-------------------------------------------------------------------------------
-    public static RegisterDto getRegisterDTO(){
+    public static RegisterDto getRegisterDTO() throws ParseException {
         return RegisterDto.builder().dni("11111111")
                 .name("carlos")
                 .lastName("apellido")
                 .password("123")
+                .birthday(getFecha(1))
                 .mail("mail@gmail.com").build();
     }
     public static UserDto getUserDto(Integer idClient){
@@ -220,8 +222,10 @@ public class UTILS_TESTCONSTANTS {
     public static  LoginResponseDto getLoginResponse(){
         return LoginResponseDto.builder().token("123abc").build();
     }
-    public static  User getUser() throws ParseException {
-        return User.builder().id(1)
+
+    public static  User getUser(Integer idUser) throws ParseException {
+        return User.builder()
+                .id(idUser)
                 .mail("mail1@gmail.com")
                 .password("123")
                 .isClient(false)
@@ -289,4 +293,20 @@ public class UTILS_TESTCONSTANTS {
 
     }
 
+    public static Bill getBill(Integer idBill) throws ParseException {
+        return Bill.builder()
+                .id(idBill)
+                .isPaid(false)
+                .energyMeter(getEnergyMeter(idBill))
+                .finalAmount(1500F)
+                .initialDate(getFecha(1))
+                .initialMedition(5F)
+                .finalDate(getFecha(2))
+                .finalMedition(8F)
+                .totalEnergy(350F)
+                .expirationDate(getFecha(2))
+                .tariff(getTariff(idBill))
+                .residence(getResidence(idBill))
+                .build();
+    }
 }

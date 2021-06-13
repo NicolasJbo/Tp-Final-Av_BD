@@ -1,10 +1,7 @@
 package com.utn.tpFinal.service;
 
 import com.utn.tpFinal.UTILS_TESTCONSTANTS;
-import com.utn.tpFinal.exception.EnergyMeterNotExists;
-import com.utn.tpFinal.exception.NoContentException;
-import com.utn.tpFinal.exception.ResidenceNotDefined;
-import com.utn.tpFinal.exception.TariffNotExists;
+import com.utn.tpFinal.exception.*;
 import com.utn.tpFinal.model.*;
 import com.utn.tpFinal.model.dto.EnergyMeterDto;
 import com.utn.tpFinal.model.dto.ResidenceDto;
@@ -45,12 +42,14 @@ public class EnergyMeterServiceTest {
         meterModelRepository=mock(MeterModelRepository.class);
         energyMeterService = new EnergyMeterService(energyMeterRepository, meterBrandRepository,meterModelRepository);
     }
+
     @Test
     public void getEnergyMeterById_TestOK() throws EnergyMeterNotExists, ParseException {
         when(energyMeterRepository.findById(1)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
         EnergyMeter response= energyMeterService.getEnergyMeterById(1);
         assertEquals("001",response.getSerialNumber() );
     }
+
     @Test
     public void getEnergyMeterById_TestFAIL()  throws ParseException {
         when(energyMeterRepository.findById(1)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
@@ -63,6 +62,7 @@ public class EnergyMeterServiceTest {
         EnergyMeter response= energyMeterService.getEnergyMeterBySerialNumber(anyString());
         assertEquals("001",response.getSerialNumber() );
     }
+
     @Test
     public void getEnergyMeterBySerialNumber_TestFAIL() throws ParseException {
         when(energyMeterRepository.findBySerialNumber("hola")).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getEnergyMeter(1)));
@@ -70,7 +70,7 @@ public class EnergyMeterServiceTest {
     }
 
     @Test
-    public void add_Test200() throws ParseException {
+    public void add_Test200() throws ParseException, MeterModelNotExist, MeterBrandNotExist {
         EnergyMeter meter= UTILS_TESTCONSTANTS.getEnergyMeter(1);
         Integer idModel=1;
         Integer idBrand=1;
@@ -79,8 +79,8 @@ public class EnergyMeterServiceTest {
         EnergyMeter e= UTILS_TESTCONSTANTS.getEnergyMeter(1);
 
         e.setResidence(r);
-        List<EnergyMeter>asd=new ArrayList<>();
-        asd.add(e);
+        List<EnergyMeter>list=new ArrayList<>();
+        list.add(e);
 
         when(energyMeterRepository.save(any(EnergyMeter.class))).thenReturn(meter);
         when(meterBrandRepository.findById(idBrand)).thenReturn(Optional.of(UTILS_TESTCONSTANTS.getMeterBrand_List().get(0)));
@@ -95,7 +95,7 @@ public class EnergyMeterServiceTest {
 
     }
     @Test
-    public void getAll_Test() throws ParseException {
+    public void getAll_Test200() throws ParseException {
         List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
 
         Specification<EnergyMeter> specification=mock(Specification.class);
@@ -111,6 +111,22 @@ public class EnergyMeterServiceTest {
         assertEquals("001",response.getContent().get(0).getSerialNumber());
         assertEquals(2,response.getNumberOfElements());
     }
+
+    @Test
+    public void getAll_Test204() throws ParseException {
+        List<Sort.Order> orders =UTILS_TESTCONSTANTS.getOrders("id","name") ;
+        Specification<EnergyMeter> specification=mock(Specification.class);
+        Pageable pageable = PageRequest.of(0,2,Sort.by(orders));
+
+
+        when(energyMeterRepository.findAll(specification,pageable)).thenReturn(Page.empty(pageable));
+
+        Page<EnergyMeterDto> response = energyMeterService.getAll(specification,0,2,orders);
+
+        assertEquals(true,response.getContent().isEmpty());
+
+    }
+
     @Test
     public void addClientToResidence_Test200() throws ParseException {
         Residence r = UTILS_TESTCONSTANTS.getResidence(4);
@@ -200,13 +216,29 @@ public class EnergyMeterServiceTest {
         assertEquals(true,response.isEmpty());
     }
     @Test
-    public  void deleteEnergyMeterById_TestOk(){
-        when(energyMeterRepository.existsById(1)).thenReturn(true);
+    public  void deleteEnergyMeterById_TestOk() throws EnergyMeterNotExists {
+        when(energyMeterRepository.existsById(anyInt())).thenReturn(true);
         doNothing().when(energyMeterRepository).deleteById(anyInt());
+
+        String response = energyMeterService.deleteEnergyMeterById(4);
+
+        assertEquals("deleted", response);
+
     }
     @Test
     public  void deleteEnergyMeterById_TestFAIL(){
         assertThrows(EnergyMeterNotExists.class,()->energyMeterService.deleteEnergyMeterById(anyInt()));
+    }
+
+    @Test
+    public void getMeterBrandById_TestException(){
+        assertThrows(MeterBrandNotExist.class,()->energyMeterService.getMeterBrandById(anyInt()));
+
+    }
+
+    @Test
+    public void getMeterModelById_TestException(){
+        assertThrows(MeterModelNotExist.class,()->energyMeterService.getMeterModelById(anyInt()));
 
     }
 

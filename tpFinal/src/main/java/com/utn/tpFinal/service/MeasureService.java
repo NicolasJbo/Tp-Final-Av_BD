@@ -49,7 +49,7 @@ public class MeasureService {
         Float tariffAmount = residence.getTariff().getAmount(); //traigo la tarifa
         System.out.println("RESIDENCE TARIFF -> "+tariffAmount);
         measure.setPrice(  measure.getKw()* tariffAmount); // hago que el precio de la medicion es de tarifa * total
-        
+
         System.out.println("MEASURE UPDATED -> "+measure.toString());
         measureRepository.save(measure);
 
