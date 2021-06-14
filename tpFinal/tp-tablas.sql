@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS measures (
   `date` DATETIME(6) NOT NULL,
   `kw` FLOAT DEFAULT NULL,
   `price` FLOAT DEFAULT 0,
-  `is_billed` TINYINT(1) DEFAULT '0',
+  `id_bill` TINYINT(1) DEFAULT '0',
   `id_residence` INT DEFAULT NULL,
   CONSTRAINT pk_measure PRIMARY KEY (id),
   CONSTRAINT fk_measureResidence FOREIGN KEY (id_residence) REFERENCES residences(id)ON UPDATE CASCADE ON DELETE CASCADE) ENGINE=INNODB;
