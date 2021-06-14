@@ -58,28 +58,24 @@ BEGIN
 
     IF( vDate IS NOT NULL) THEN
         SET vLastMueasureKW = (SELECT MAX(m.kw)FROM measures AS m WHERE (m.date = vDate) AND (m.id_residence = new.id_residence)) ;
-        SET new.price= (new.kw - vLastMueasureKW)*vLastMueasurePrice;
+	
+	IF(new.kw <= vLastMueasureKW) THEN
+		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT="The measure kws must be acumulatives!";
+	ELSE
+		SET new.price= (new.kw - vLastMueasureKW)*vLastMueasurePrice;
+	END IF;
     ELSE
         SET new.price =new.kw * vLastMueasurePrice;
     END IF;
 END;
 //
 
-#LAS MEDICIONES SE VAN ENVIANDO DE MANERA ACUMULATIVA
-INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:00:00 000000", 5, 1), ("2021-06-13 00:05:00 000000", 10, 1),
-						   ("2021-06-13 00:10:00 000000", 20, 1), ("2021-06-13 00:15:00 000000", 45, 1),
-						   ("2021-06-13 00:00:00 000000", 10, 2), ("2021-06-13 00:00:00 000000", 4, 2);
-
-SELECT * FROM measures;
-DELETE FROM measures;
- 
-
 
 #----- [PUNTO 2] Generar una factura ---------------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS getResidenceTariffId;
 DELIMITER //
-CREATE PROCEDURE getResidenceTariffId(IN idResidence INT, OUT id FLOAT)
+CREATE PROCEDURE getResidenceTariffId(IN idResidence INT, OUT id INT)
 BEGIN 
     
     SELECT t.id INTO id FROM tariffs AS  t
@@ -93,7 +89,7 @@ END;
 
 DROP PROCEDURE IF EXISTS getResidenceEnergyMeterId;
 DELIMITER //
-CREATE PROCEDURE getResidenceEnergyMeterId(IN idResidence INT, OUT id FLOAT)
+CREATE PROCEDURE getResidenceEnergyMeterId(IN idResidence INT, OUT id INT)
 BEGIN 
     
     SELECT e.id INTO id FROM energy_meters AS e
@@ -134,60 +130,85 @@ DROP PROCEDURE IF EXISTS generateBill;
 DELIMITER //
 CREATE PROCEDURE generateBill(IN idResidence INT)
 BEGIN 
-	DECLARE existsResidence INT DEFAULT 1;
-	SELECT COUNT(*) INTO existsResidence FROM residences WHERE id = idResidence;
-	
-	DECLARE vFinalDate DATETIME ;
-	DECLARE vFinalMedition FLOAT DEFAULT 0; 
-	DECLARE vInitialDate DATETIME;
-	DECLARE vInitialMedition FLOAT DEFAULT 0;
-	DECLARE vTariff INT DEFAULT 0; DECLARE vExpiration DATETIME  NOW();
-	DECLARE vTotalAmount FLOAT DEFAULT 0;
-	DECLARE vTotalEnergy FLOAT DEFAULT 0;
-	DECLARE vEnergyMeter INT DEFAULT 0;
-	IF(existsResidence>0) THEN 
-		
-		SELECT DATE_ADD(NOW(),INTERVAL 15 DAY) INTO vExpiration;     #Agrega 15 días a la fecha actual
-		
-		
-		CALL getResidenceTariffId(idResidence, vTariff);
-		
-		
-		SELECT INTO vTotalAmount SUM(m.price) FROM measures AS m
-					 INNER JOIN residences AS r
-					 ON r.id = m.id_residence
-					 WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);
-						
-		
-		SELECT INTO vTotalEnergy MAX(m.kw) FROM measures AS m
-					 INNER JOIN residences AS r
-					 ON r.id = m.id_residence
-					 WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);				
-		
-		
-		
-		CALL getFinalDateAndMedition(idResidence, vFinalDate, vFinalMedition);	
-		
-		
-		CALL getInitialDateAndMedition(idResidence, vInitialDate, vInitialMedition);			 
-			
-		
-		CALL getResidenceEnergyMeterId(idResidence, vEnergyMeter);
-		
-		INSERT INTO bills(id_residence, id_tariff, id_energyMeter, initial_date, initial_medition, 
-				  final_date, final_medition, final_amount, total_energy, expiration_date)
-		VALUES(idResidence, vTariff,vEnergyMeter,vInitialDate, vInitialMedition, vFinalDate, 
-			vFinalMedition, vTotalAmount,vTotalEnergy, vExpiration);		 
-	ELSE 
-		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The residence do not exists!';
-	END IF;
-	
+    DECLARE existsResidence INT DEFAULT 1;
+    DECLARE vFinalDate DATETIME ;
+    DECLARE vFinalMedition FLOAT DEFAULT 0 ; 
+    DECLARE vInitialDate DATETIME ;
+    DECLARE vInitialMedition FLOAT DEFAULT 0 ;
+    DECLARE vTariff INT DEFAULT 0; 
+    DECLARE vExpiration DATETIME DEFAULT NOW();
+    DECLARE vTotalAmount FLOAT DEFAULT 0;
+    DECLARE vTotalEnergy FLOAT DEFAULT 0;
+    DECLARE vEnergyMeter INT ;
+    
+    SELECT COUNT(*) INTO existsResidence FROM residences WHERE id = idResidence;
+    IF(existsResidence>0) THEN 
+    
+        
+        
+        SELECT DATE_ADD(NOW(),INTERVAL 15 DAY) INTO vExpiration;     #Agrega 15 dÃ­as a la fecha actual
+        CALL getResidenceTariffId(idResidence, vTariff);
+        
+        SELECT  SUM(m.price)INTO vTotalAmount FROM measures AS m
+                     INNER JOIN residences AS r
+                     ON r.id = m.id_residence
+                     WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);
+                        
+    
+        SELECT  MAX(m.kw)INTO vTotalEnergy FROM measures AS m
+                     INNER JOIN residences AS r
+                     ON r.id = m.id_residence
+                     WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);                
+        
+        CALL getFinalDateAndMedition(idResidence, vFinalDate, vFinalMedition);    
+        CALL getInitialDateAndMedition(idResidence, vInitialDate, vInitialMedition);                 
+        CALL getResidenceEnergyMeterId(idResidence, vEnergyMeter);
+        
+        INSERT INTO bills(id_residence
+        , id_tariff,
+         id_energy_meter,
+          initial_date,
+           initial_medition,
+          final_date,
+           final_medition,
+            final_amount,
+             total_energy,
+              expiration_date)
+        VALUE(idResidence
+        , vTariff,
+        vEnergyMeter,
+        vInitialDate,
+         vInitialMedition,
+          vFinalDate, 
+        vFinalMedition, 
+        vTotalAmount,
+        vTotalEnergy, 
+        vExpiration);    
+        
+    UPDATE measures  SET is_billed = LAST_INSERT_ID() WHERE id_residence = idResidence AND is_billed =0;     
+    ELSE 
+        SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The residence do not exists!';
+    END IF;
+    
 END;
 //
 
-CALL generateBill(4);
+CALL generateBill(1);
+SELECT * FROM bills;
+SELECT * FROM measures;
 
+#LAS MEDICIONES SE VAN ENVIANDO DE MANERA ACUMULATIVA
+INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:00:00 000000", 5, 1), ("2021-06-13 00:05:00 000000", 10, 1),
+						   ("2021-06-13 00:10:00 000000", 20, 1), ("2021-06-13 00:15:00 000000", 45, 1),
+						   ("2021-06-13 00:00:00 000000", 10, 2), ("2021-06-13 00:00:00 000000", 4, 2);
 
+INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-07-13 00:00:00 000000", 50, 1);
+
+SELECT  SUM(m.price)FROM measures AS m
+                     INNER JOIN residences AS r
+                     ON r.id = m.id_residence
+                     WHERE (m.is_billed = FALSE) AND (m.id_residence = 1);
+                        
 
 
 
