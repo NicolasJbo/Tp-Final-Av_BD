@@ -65,10 +65,10 @@ BEGIN
 END;
 //
 
+#LAS MEDICIONES SE VAN ENVIANDO DE MANERA ACUMULATIVA
 INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:00:00 000000", 5, 1), ("2021-06-13 00:05:00 000000", 10, 1),
 						   ("2021-06-13 00:10:00 000000", 20, 1), ("2021-06-13 00:15:00 000000", 45, 1),
 						   ("2021-06-13 00:00:00 000000", 10, 2), ("2021-06-13 00:00:00 000000", 4, 2);
-
 
 SELECT * FROM measures;
 DELETE FROM measures;
@@ -91,41 +91,96 @@ BEGIN
 END;
 //
 
-DROP PROCEDURE IF EXISTS getFinalDateAndMedition;
+DROP PROCEDURE IF EXISTS getResidenceEnergyMeterId;
 DELIMITER //
-CREATE PROCEDURE getFinalDateAndMedition(IN idResidence INT, OUT DATE DATETIME, OUT medition FLOAT)
+CREATE PROCEDURE getResidenceEnergyMeterId(IN idResidence INT, OUT id FLOAT)
 BEGIN 
     
-    SELECT MAX(m.date), m.kw
-    FROM measures AS m
-    INNER JOIN residences AS r
-    ON r.id = m.id_residence
-    WHERE m.id_residence = 1
+    SELECT e.id INTO id FROM energy_meters AS e
+    JOIN residences AS r
+    ON  r.id_energy_meter = e.id
+    WHERE r.id = idResidence
+    LIMIT 1;
  
-  
 END;
 //
 
-SELECT * FROM measures;
+DROP PROCEDURE IF EXISTS getFinalDateAndMedition;
+DELIMITER //
+CREATE PROCEDURE getFinalDateAndMedition(IN idResidence INT, OUT dateMedition DATETIME, OUT medition FLOAT)
+BEGIN 
+    SELECT m.date, m.kw INTO dateMedition, medition
+    FROM measures AS m
+    INNER JOIN residences AS r
+    ON r.id = m.id_residence
+    WHERE (m.id_residence = idResidence) AND (m.date =(SELECT MAX(DATE)FROM measures));
+END;
+//
+
+DROP PROCEDURE IF EXISTS getInitialDateAndMedition;
+DELIMITER //
+CREATE PROCEDURE getInitialDateAndMedition(IN idResidence INT, OUT dateMedition DATETIME, OUT medition FLOAT)
+BEGIN 
+    SELECT m.date, m.kw INTO dateMedition, medition
+    FROM measures AS m
+    INNER JOIN residences AS r
+    ON r.id = m.id_residence
+    WHERE (m.id_residence = idResidence) AND (m.date =(SELECT MIN(DATE)FROM measures));
+END;
+//
+
 
 DROP PROCEDURE IF EXISTS generateBill;
 DELIMITER //
 CREATE PROCEDURE generateBill(IN idResidence INT)
 BEGIN 
-	DECLARE vExpiration DATETIME DEFAULT NOW();
-	SELECT DATE_ADD(NOW(),INTERVAL 15 DAY) INTO vExpiration;     #Agrega 15 días a la fecha actual
+	DECLARE existsResidence INT DEFAULT 1;
+	SELECT COUNT(*) INTO existsResidence FROM residences WHERE id = idResidence;
 	
-	DECLARE vTariff INT DEFAULT 0;
-	CALL getResidenceTariffId(idResidence, vTariff);
-	
+	DECLARE vFinalDate DATETIME ;
+	DECLARE vFinalMedition FLOAT DEFAULT 0; 
+	DECLARE vInitialDate DATETIME;
+	DECLARE vInitialMedition FLOAT DEFAULT 0;
+	DECLARE vTariff INT DEFAULT 0; DECLARE vExpiration DATETIME  NOW();
 	DECLARE vTotalAmount FLOAT DEFAULT 0;
-	SELECT INTO vTotalAmount SUM(m.price) FROM measures AS m
-				 INNER JOIN residences AS r
-				 ON r.id = m.id_residence
-				 WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);
-				 
-				 
-	
+	DECLARE vTotalEnergy FLOAT DEFAULT 0;
+	DECLARE vEnergyMeter INT DEFAULT 0;
+	IF(existsResidence>0) THEN 
+		
+		SELECT DATE_ADD(NOW(),INTERVAL 15 DAY) INTO vExpiration;     #Agrega 15 días a la fecha actual
+		
+		
+		CALL getResidenceTariffId(idResidence, vTariff);
+		
+		
+		SELECT INTO vTotalAmount SUM(m.price) FROM measures AS m
+					 INNER JOIN residences AS r
+					 ON r.id = m.id_residence
+					 WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);
+						
+		
+		SELECT INTO vTotalEnergy MAX(m.kw) FROM measures AS m
+					 INNER JOIN residences AS r
+					 ON r.id = m.id_residence
+					 WHERE (m.is_billed = FALSE) AND (m.id_residence = idResidence);				
+		
+		
+		
+		CALL getFinalDateAndMedition(idResidence, vFinalDate, vFinalMedition);	
+		
+		
+		CALL getInitialDateAndMedition(idResidence, vInitialDate, vInitialMedition);			 
+			
+		
+		CALL getResidenceEnergyMeterId(idResidence, vEnergyMeter);
+		
+		INSERT INTO bills(id_residence, id_tariff, id_energyMeter, initial_date, initial_medition, 
+				  final_date, final_medition, final_amount, total_energy, expiration_date)
+		VALUES(idResidence, vTariff,vEnergyMeter,vInitialDate, vInitialMedition, vFinalDate, 
+			vFinalMedition, vTotalAmount,vTotalEnergy, vExpiration);		 
+	ELSE 
+		SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='The residence do not exists!';
+	END IF;
 	
 END;
 //
