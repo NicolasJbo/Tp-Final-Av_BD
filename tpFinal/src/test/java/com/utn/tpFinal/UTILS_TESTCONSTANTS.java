@@ -80,7 +80,7 @@ public class UTILS_TESTCONSTANTS {
         return list;
     }
 
-    public static EnergyMeter getEnergyMeter(Integer id) throws ParseException {
+    public static EnergyMeter getEnergyMeter(Integer id){
         return EnergyMeter.builder()
                 .model(getMeterModel_List().get(0))
                 .brand(getMeterBrand_List().get(0))

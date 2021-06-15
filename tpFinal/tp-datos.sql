@@ -20,7 +20,7 @@ INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:10:00 000000"
 INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:00:00 000000", 10, 2), ("2021-06-13 00:00:00 000000", 15, 2);
 INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-07-13 00:00:00 000000", 50, 1),("2021-07-13 00:12:00 000000", 72, 1) ;
 INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:00:00 000000", 25, 2), ("2021-06-13 00:00:00 000000", 35, 2);
-
+INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-07-13 00:20:00 000000", 80, 1),("2021-07-13 00:30:00 000000", 90, 1) ;
 
 #-------------------------------------------->> CARGA DE DATOS <<--------------------------------------------
 
@@ -32,4 +32,5 @@ SELECT * FROM users;
 SELECT * FROM clients;
 SELECT * FROM energy_meters;
 SELECT * FROM residences;
-
+SELECT * FROM bills;
+SELECT * FROM measures;
