@@ -245,6 +245,99 @@ END;
 //                    
 #--------------------------------->> REALIZAR LLAMADO UNA VEZ AL MES <<------------------------------------                
 
+#--------------------------------->> REALIZAR AJUSTE <<------------------------------------                
+
+DROP TRIGGER IF EXISTS verificateAmountTariff;
+DELIMITER //
+CREATE TRIGGER verificateAmountTariff BEFORE UPDATE ON tariffs FOR EACH ROW
+BEGIN
+    IF(new.amount<= old.amount) THEN
+          SIGNAL SQLSTATE'45000' SET MESSAGE_TEXT='We are in argentina, the tariff amount can not be decreased!';
+          #el cambio de amount solo se ejecuta si el nuevo monto es mayor al anterior
+    END IF;
+END;
+//
+
+DROP TRIGGER IF EXISTS updateTariffHandler;
+DELIMITER //
+CREATE TRIGGER updateTariffHandler AFTER UPDATE ON tariffs FOR EACH ROW
+BEGIN
+    #traemos todas las mediciones (no facturadas) que son de un domicilio en el cual se modifico el precio de la tarifa 
+    IF(old.amount <> new.amount) THEN
+        UPDATE measures AS m
+        INNER JOIN residences AS r
+        ON r.id = m.id_residence
+        INNER JOIN tariffs AS t
+        ON t.id = r.id_tariff
+        SET m.price = (m.price/old.amount)*new.amount
+        WHERE (t.id = new.id) AND (id_bill=0);
+	
+        CALL generateAjustBills(old.id,new.amount,old.amount);
+    END IF;
+END;
+//
+
+UPDATE tariffs
+SET amount = 100
+WHERE id=1;
+
+SELECT * FROM measures;
+
+DROP PROCEDURE IF EXISTS generateAjustBills;
+DELIMITER //
+CREATE PROCEDURE generateAjustBills(IN idTariff INT, IN newPriceTariff FLOAT,IN oldPriceTariff FLOAT)
+BEGIN 
+    
+    DECLARE vFinalDate DATETIME ; DECLARE vFinalMedition FLOAT DEFAULT 0 ; 
+    DECLARE vInitialDate DATETIME ;DECLARE vInitialMedition FLOAT DEFAULT 0 ;
+    DECLARE vExpiration DATETIME; DECLARE vEnergyMeterId INT DEFAULT 0;
+    
+    DECLARE vTotalKws FLOAT DEFAULT 0;
+    DECLARE vResidenceId INT DEFAULT 0;
+    DECLARE vNewTotalAmount FLOAT DEFAULT 0;
+
+    
+    DECLARE vContinue INT DEFAULT 1;
+    DECLARE residencesCursor CURSOR FOR (SELECT id FROM residences AS r
+                         WHERE id IN (SELECT id_residence FROM bills WHERE is_paid = 1));
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET vContinue = 0;
+
+    
+    OPEN residencesCursor;
+    
+    get_residences: LOOP
+        FETCH residencesCursor INTO vResidenceId;
+        IF(vContinue = 0) THEN
+            LEAVE get_residences;
+        END IF;
+        
+        SET vTotalKws = 0;  
+        SET vNewTotalAmount = 0;
+        
+        #total de kws de las bills de una residencia
+        SELECT SUM(final_medition), id_energy_meter INTO vTotalKws, vEnergyMeterId
+        FROM bills AS b
+        WHERE b.id_residence =  vResidenceId;
+        
+        SET vNewTotalAmount = (vTotalKws * newPriceTariff) - (vTotalKws * oldPriceTariff);
+        #--------------GENERAR FACTURA----------------------------------------------------------------
+        SELECT DATE_ADD(NOW(),INTERVAL 15 DAY) INTO vExpiration;
+        
+        INSERT INTO bills(id_residence, id_tariff, id_energy_meter, final_amount, total_energy,expiration_date,TYPE)
+        VALUE(vResidenceId, idTariff, vEnergyMeterId, vNewTotalAmount, vTotalKws, vExpiration,'ADJUSTEMENT'); #initial / final date y medition
+        
+    END LOOP get_residences;
+    
+    CLOSE residencesCursor; 
+END;
+//
+#--------------------------------->> REALIZAR AJUSTE <<------------------------------------                
+
+
+
+
+
 
 
 

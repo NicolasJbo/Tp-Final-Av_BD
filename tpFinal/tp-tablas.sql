@@ -18,7 +18,9 @@ CREATE TABLE IF NOT EXISTS tariffs (
   `amount` FLOAT NOT NULL,
   `name` VARCHAR(2) DEFAULT NULL,
   CONSTRAINT pk_tariff PRIMARY KEY (id),
-  CONSTRAINT unq_tariffName UNIQUE (`name`)) ENGINE=INNODB;
+  CONSTRAINT unq_tariffName UNIQUE (`name`),
+  CONSTRAINT chk_positiveAmount CHECK amount>0) ENGINE=INNODB;
+
 
 
 DROP TABLE IF EXISTS clients;
@@ -109,4 +111,6 @@ CREATE TABLE IF NOT EXISTS bills (
   CONSTRAINT fk_billResidence FOREIGN KEY (`id_residence`) REFERENCES residences(id),
   CONSTRAINT fk_billTariff FOREIGN KEY (`id_tariff`) REFERENCES tariffs(id),
   CONSTRAINT fk_billEnergyMeter FOREIGN KEY (`id_energy_meter`) REFERENCES energy_meters(id)) ENGINE=INNODB;
+  
+  ALTER TABLE bills ADD COLUMN `type` VARCHAR(50) DEFAULT 'NORMAL';
 

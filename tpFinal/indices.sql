@@ -47,6 +47,7 @@ CREATE  INDEX idx_unq_measure_date ON measures (DATE) USING HASH;
 CREATE  INDEX idx_unq_user_id ON clients (id_user) USING HASH;
 
 
+SELECT * FROM bills
 
 
 CREATE VIEW report AS
