@@ -1,0 +1,221 @@
+
+"tp_basedatos.energy_meters" = [
+    "001" : {
+                "password": "*****",
+                "brand": "Samsung",
+                "model": "model2021"
+            } ,
+    "002" : {
+                "password": "*****",
+                "brand": "Samsung",
+                "model": "model2018"
+            } ,
+    "003" : {
+                "password": "*****",
+                "brand": "Alcatel",
+                "model": "modelAT"
+            }        
+]
+
+"tp_basedatos.tariffs" = [
+    "507f1f77bc4" : {
+                        "name" : "A8",
+                        "price" : 1.5 
+                    } ,
+    "507f1f77bc5" : {
+                        "name" : "C3",
+                        "price" : 3.7 
+                    } 
+]
+
+`"tp_basedatos.clients" = [
+    "43317286":{
+                    "name": "Nicolas",
+                    "lastname": "Bertuccio",
+                    "birthday": "15-12-98",
+                    "user": {
+                                "mail" : "nico@gmail.com",
+                                "password" : "*****"
+                            } 
+                } ,
+    "41661184":{
+                    "name": "Lautaro",
+                    "lastname": "Fullone",
+                    "birthday": "09-03-12",
+                    "user": {
+                                "mail" : "nico@gmail.com",
+                                "password" : "*****"
+                            }               
+                } ,
+    "35479552":{
+                    "name": "*****",
+                    "lastname": "Alcatel",
+                    "birthday": "modelAT",
+                    "user": {
+                                "mail" : "nico@gmail.com",
+                                "password" : "*****"
+                            } 
+                }        
+]
+
+"tp_basedatos.residence" = [
+    "507f1f77bc5":{
+                    "street": "Corrientes",
+                    "number": "3047",
+                    "energy_meter":{
+                                        "serialNumber" : "003",
+                                        "brand" : "Alcatel",
+                                        "model" : "modelAT"
+                                    },
+                    "tarrif":  {
+                                    "name": "C3",
+                                    "price": 3.7
+                               } 
+                } ,
+    "527f1f77bc5":{
+                    "street": "La Rioja",
+                    "number": "3125",
+                    "floor": "4",
+                    "apartament": "C",
+                    "energy_meter":{
+                                        "serialNumber" : "002",
+                                        "brand" : "Samsung",
+                                        "model" : "model2018"
+                                    },
+                    "tarrif":  {
+                                    "name": "C3",
+                                    "price": 3.7
+                               }                               
+                } ,
+    "507f1f77bc5":{
+                    "street": "EspaÃ±a",
+                    "number": "3571",
+                    "energy_meter":{
+                                        "serialNumber" : "001",
+                                        "brand" : "Samsung",
+                                        "model" : "model2021"
+                                    },
+                    "tarrif":  {
+                                    "name": "C3",
+                                    "price": 3.7
+                               }
+                }        
+]
+
+"tp_basedatos.bills" =[
+     "507f1f77bc5" :{
+                     "ExpDate":"02-04-2021",
+                     "IniDate":"01-03-2021",
+                     "TotalKw":90,
+                     "IniMedition":2,
+                     "FinalMedition":90,
+                        "tariff":{
+                                    "price":3.7,
+                                    "name":"c3"
+                                },
+                        "Residence":{
+                                    "street":"Las Heras",
+                                    "number":3241
+                                    },
+                        "energyMeter":{
+                                    "serialNumber":"003",
+                                    "brand":"Alcatel",
+                                    "model":"modelAT"
+                                    },
+                         "isPaid":"false",
+                         "type":"NORMAL"                          
+
+                    },
+     "507f1f77bc6" :{
+                     "ExpDate":"02-04-2021",
+                     "IniDate":"01-03-2021",
+                     "TotalKw":90,
+                     "IniMedition":2,
+                     "FinalMedition":90,
+                        "tariff":{
+                                    "price":3.7,
+                                    "name":"c3"
+                                  },
+                        "Residence":{
+                                    "street":"España",
+                                    "number":3245
+                                    },
+                        "energyMeter":{
+                                    "serialNumber":"001",
+                                    "brand":"samsung",
+                                    "model":"model2021"
+                                 } ,
+                      "isPaid":"false" ,
+                      "type":"NORMAL"                        
+                    },
+    "507f1f77bc7" :{
+                    "ExpDate":"02-04-2021",
+                    "IniDate":"01-03-2021",
+                    "TotalKw":90,
+                    "IniMedition":2,
+                    "FinalMedition":90,
+                        "tariff":{
+                                    "price":3.7,
+                                    "name":"c3"
+                                },
+                        "Residence":{
+                                    "street":"La rioja",
+                                    "number":3245,
+                                    "apartment":"b",
+                                    "floor":3
+                                    },
+                        "energyMeter":{
+                                    "serialNumber":"001",
+                                    "brand":"Alcatel",
+                                    "model":"modelAT"
+                                },
+                     "isPaid":"false",
+                     "type":"NORMAL"           
+                 }
+]
+"tp_basedatos.measures" = [
+        "A23b561A123":{
+                        "Kw":40,
+                        "Date":"01-01-2021",
+                        "Price":12.5,
+                        "id_bill":0,
+                        "Residence":{"street":"La Rioja",
+                                    "number":2315    
+                                    },
+                         "client":{
+                                    "name":"Nicolas",
+                                    "lastname":"Bertucico",
+                                    "dni":"41555666"
+                                 }           
+
+                    },                    
+        "A23b561A123":{
+                        "Kw":90,
+                        "Date":"01-01-2021",
+                        "Price":12.5,
+                        "id_bill":0,
+                        "Residence":{"street":"La Rioja",
+                                    "number":2315    
+                                    },
+                         "client":{
+                                    "name":"Lautaro",
+                                    "lastname":"Fullone",
+                                    "dni":"1234531"
+                                  }           
+
+                      },                
+        "A23b561A123":{
+                        "Kw":60,
+                        "Date":"01-01-2021",
+                        "Price":12.5,
+                        "id_bill":0,
+                        "Residence":{"street":"La Rioja",
+                                    "number":2315    
+                                    },
+                         "client":{
+                                    "name":"Juan",
+                                    "lastname":"Cortez",
+                                    "dni":"34123567"
+                                  }           
+                     }                                   
+]
