@@ -190,7 +190,7 @@ BEGIN
 END;
 //
 
-CALL generateBill(2);
+CALL generateBill(1);
 #--------------------------------------->> GENERAR UNA UNICA FACTURA  <<-----------------------------------
 
 INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-06-13 00:00:00 000000", 5, 1), ("2021-06-13 00:05:00 000000", 10, 1);
@@ -213,7 +213,8 @@ BEGIN
 	DECLARE vResidenceId INT DEFAULT 0; 
 	
 	DECLARE vContinue INT DEFAULT 1;
-	DECLARE residencesCursor CURSOR FOR (SELECT id FROM residences);
+	DECLARE residencesCursor CURSOR FOR (SELECT id FROM residences
+						  WHERE id IN (SELECT id_residence FROM measures WHERE id_bill = 0));
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET vContinue = 0;
 
 	OPEN residencesCursor;
@@ -235,14 +236,18 @@ CALL generateAllBills();
 #------------------------------------------>> GENERAR UNA FACTURA UNICA <<---------------------------------
 
 
-#--------------------------------->> REALIZAR LLAMADO UNA VEZ AL MES <<------------------------------------                
-DELIMITER //
-CREATE EVENT billingDay ON SCHEDULE EVERY 1 MONTH
+#--------------------------------->> REALIZAR LLAMADO UNA VEZ AL MES <<------------------------------------   
+
+
+INSERT INTO measures(DATE, kw, id_residence) VALUES("2021-07-16 11:20:00 000000", 72, 5),("2021-07-18 14:20:00 000000", 75, 5),("2021-07-18 18:20:00 000000", 80, 5),("2021-07-19 21:20:00 000000", 85, 5),("2021-07-20 22:50:00 000000", 90, 5);             
+DELIMITER//
+CREATE EVENT billingDay ON SCHEDULE EVERY 12 SECOND
 STARTS NOW() DO
-BEGIN 
+BEGIN
 	CALL generateAllBills();
 END;
-//                    
+//
+                 
 #--------------------------------->> REALIZAR LLAMADO UNA VEZ AL MES <<------------------------------------                
 
 #--------------------------------->> REALIZAR AJUSTE <<------------------------------------                
